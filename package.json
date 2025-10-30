@@ -6,19 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.8",
+    "@apollo/client-integration-nextjs": "^0.14.1",
+    "@graphql-codegen/fragment-matcher": "^6.0.0",
+    "@graphql-codegen/typescript-apollo-client-helpers": "^3.0.1",
+    "@next/env": "^16.0.1",
+    "next": "16.0.1",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "next": "16.0.1"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@graphql-codegen/cli": "^6.0.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.0.1"
+    "eslint-config-next": "16.0.1",
+    "graphql-config": "^5.1.5",
+    "typescript": "^5"
   }
 }

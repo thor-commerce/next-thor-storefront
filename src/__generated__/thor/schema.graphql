@@ -1,0 +1,2476 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type AbsoluteShippingMethodRate implements CartAvailableShippingMethodRate {
+  """The unique identifier for the shipping method rate."""
+  id: ID!
+  """The price of the shipping method rate."""
+  price: Money!
+}
+
+"""An identical address already exists for this customer."""
+type AddressAlreadyExistsError implements UserError {
+  message: String!
+}
+
+"""The address with the specified ID was not found."""
+type AddressNotFoundError implements UserError {
+  message: String!
+}
+
+type AggregateDto {
+  name: String!
+  values: [AggregateValueDto!]!
+}
+
+type AggregateValueDto {
+  count: Long!
+  name: String!
+}
+
+type Attribute {
+  """The unique identifier of the attribute."""
+  id: ID!
+  """The metadata associated with the attribute."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The name of the attribute."""
+  name: String!
+  """The type of the attribute."""
+  type: ProductAttributeType!
+}
+
+"""
+Represents an attribute assignment for a product, encapsulating the details of the attribute assigned to the product.
+
+Each attribute assignment includes the unique identifier of the attribute, its name, and the values assigned to the product. This allows for flexible and dynamic product attributes that can be used across different products and variants.
+"""
+type AttributeAssignment {
+  """The attribute assigned to the product."""
+  attribute: Attribute!
+  """Gets the unique identifier of the attribute assignment."""
+  id: ID!
+  """Gets the name of the attribute."""
+  name: String!
+  """
+  The values assigned to the product, based on which values the variants have.
+  """
+  values(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): AttributeValueConnection!
+}
+
+interface AttributeValue {
+  """The unique identifier of the attribute value."""
+  id: ID!
+  """The metadata associated with the attribute value."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The value of the attribute."""
+  value: String!
+}
+
+"""A connection to a list of items."""
+type AttributeValueConnection {
+  """A list of edges."""
+  edges: [AttributeValueEdge!]
+  """A flattened list of the nodes"""
+  nodes: [AttributeValue!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type AttributeValueEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: AttributeValue!
+}
+
+interface BaseAddress {
+  """The first line of the address."""
+  address1: String
+  """The second line of the address."""
+  address2: String
+  """The name of the city, district, village, or town."""
+  city: String
+  """The name of the customer's company or organization."""
+  company: String
+  """The two-letter code for the country of the address."""
+  countryCode: String
+  """The email address of the address."""
+  email: String
+  """THe first name of the address."""
+  firstName: String
+  """The formatted address."""
+  formatted: String
+  """The unique identifier of the address."""
+  id: ID!
+  """The last name of the address."""
+  lastName: String
+  """
+  The metadata of the address, which can be used to store additional information about the address.
+  """
+  metadata: [KeyValuePairOfStringAndString!]
+  """The phone number of the address."""
+  phone: String
+  """The zip or postal code of the address."""
+  postalCode: String
+  """The region of the address, such as the province, state, or district."""
+  state: String
+}
+
+"""
+Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
+
+Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
+"""
+type Cart implements Node {
+  """List of available shipping methods for this cart."""
+  availableShippingMethods: [CartAvailableShippingMethod!]!
+  """
+  Gets the billing address associated with the cart. This may be the same as the shipping address.
+  """
+  billingAddress: CartAddress
+  """Gets the `Channel` that the cart belongs to."""
+  channel: Channel
+  """Used internally to resolve the channel"""
+  channelId: ID!
+  """Gets the currency of the cart."""
+  currency: String!
+  """Gets the customer email associated with the cart, if any."""
+  customerEmail: String
+  """Gets the customer ID associated with the cart, if any."""
+  customerId: ID
+  """Gets the discount codes applied to the cart."""
+  discountCodes: [DiscountCodeDto!]!
+  """The unique identifier of the cart"""
+  id: ID!
+  """Retrieves a paginated list of line items for a specific cart."""
+  lineItems(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): CartLineItemConnection!
+  """Sum of all LineItem quantities."""
+  lineItemsQuantity: Long!
+  """
+  Gets the metadata associated with the cart. Once the cart is ordered, this metadata is transferred to the order.
+  """
+  metadata: [KeyValuePairOfStringAndString!]!
+  """Gets the payment session associated with the cart, if any."""
+  paymentSession: PaymentSession
+  """Gets the shipping address associated with the cart."""
+  shippingAddress: CartAddress
+  """Gets the shipping lines applied to the cart."""
+  shippingLines: [CartShippingLine!]!
+  """Gets the current state of the cart."""
+  state: CartState!
+  """Gets the total price of the cart before discounts and taxes."""
+  subtotal: Money!
+  """
+  Gets the taxed price of the cart. This may be null if the cart does not yet have a taxed price.
+  """
+  taxedPrice: TaxedPrice
+  """Gets the total price of the cart after discounts and taxes."""
+  total: Money!
+}
+
+"""
+This exception is thrown when adding a discount code fails because it was not found.
+"""
+type CartAddDiscountCodeNotFoundError implements UserError {
+  message: String!
+}
+
+type CartAddress implements BaseAddress {
+  """
+  The first line of the address. Typically the street address or PO Box number.
+  """
+  address1: String
+  """
+  The second line of the address. Typically the number of the apartment, suite, or unit.
+  """
+  address2: String
+  """Name of the city."""
+  city: String
+  """Name of the company."""
+  company: String
+  """Two-digit country code as per  ISO 3166-1 alpha-2"""
+  countryCode: String
+  """Email address of the contact."""
+  email: String
+  """Given name (first name) of the contact."""
+  firstName: String
+  """The formatted address."""
+  formatted: String
+  """/// The unique identifier of the address."""
+  id: ID!
+  """Family name (last name) of the contact."""
+  lastName: String
+  """Metadata"""
+  metadata: [KeyValuePairOfStringAndString!]
+  """Phone number of the contact."""
+  phone: String
+  """Postal code."""
+  postalCode: String
+  """Name of the state, for example, Colorado."""
+  state: String
+}
+
+"""Input type for creating or updating an address in a cart."""
+input CartAddressInput {
+  address1: String
+  address2: String
+  city: String
+  company: String
+  countryCode: String
+  email: String
+  firstName: String
+  lastName: String
+  phone: String
+  postalCode: String
+  state: String
+}
+
+"""This exception is thrown when cart authentication fails."""
+type CartAuthenticationFailedError implements UserError {
+  message: String!
+}
+
+"""This exception is thrown when cart authorization fails."""
+type CartAuthorizationFailedError implements UserError {
+  message: String!
+}
+
+type CartAvailableShippingMethod {
+  """The description of the shipping method."""
+  description: String
+  """The unique identifier of the shipping method."""
+  id: ID!
+  """Gets the metadata associated with the shipping method."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The name of the shipping method."""
+  name: String!
+  """Gets the rate associated with the shipping method."""
+  rate: CartAvailableShippingMethodRate!
+  """Gets the SKU (Stock Keeping Unit) associated with the shipping method."""
+  sku: String
+}
+
+interface CartAvailableShippingMethodRate {
+  """The unique identifier for the shipping method rate."""
+  id: ID!
+}
+
+union CartCompleteError = CartCompletionDiscrepancyError | CartNotFoundError
+
+"""This is the input type for completing a cart."""
+input CartCompleteInput {
+  cartId: ID!
+}
+
+type CartCompletePayload {
+  errors: [CartCompleteError!]
+  order: Order
+}
+
+"""
+This exception is thrown when the cart completion detects a discrepancy between cart and order totals.
+"""
+type CartCompletionDiscrepancyError implements UserError {
+  message: String!
+}
+
+union CartCreateError = CreateCartAddressDoesNotHaveCountryCodeError | CreateCartAuthenticationFailedError | CreateCartAuthorizationFailedError | CreateCartChannelDoesNotSupportCountryError | CreateCartChannelDoesNotSupportCurrencyError | CreateCartChannelHasNoCountriesError | CreateCartChannelNotFoundError | CreateCartFailedNotAllLineItemsCouldBeAddedError
+
+"""This is the input type for creating a cart."""
+input CartCreateInput {
+  """Optional billing address for the cart."""
+  billingAddress: CartAddressInput
+  """The unique identifier of the channel."""
+  channelId: ID!
+  """Two-digit country code as per ISO 3166-1 alpha-2"""
+  countryCode: String
+  """ISO 4217 currency code."""
+  currency: String!
+  """Email address of the customer associated with the cart."""
+  customerEmail: String
+  """The unique identifier of the customer associated with the cart."""
+  customerId: ID
+  """Optional list of line items to be added to the cart."""
+  lineItems: [CartLineItemInput!]
+  """Optional shipping address for the cart."""
+  shippingAddress: CartAddressInput
+}
+
+type CartCreatePayload {
+  cart: Cart
+  errors: [CartCreateError!]
+}
+
+union CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartNotFoundError | DiscountCodeMaxApplicationCountReachedError
+
+"""This is the input type for adding a discount code to a cart."""
+input CartDiscountCodeAddInput {
+  """
+  The unique identifier of the cart to which the discount code will be added.
+  """
+  cartId: ID!
+  """
+  The discount code to be applied to the cart. This code is typically provided by the store or promotion.
+  """
+  discountCode: String!
+}
+
+type CartDiscountCodeAddPayload {
+  cart: Cart
+  errors: [CartDiscountCodeAddError!]
+}
+
+union CartDiscountCodeRemoveError = CartNotFoundError
+
+"""This is the input type for removing a discount code from a cart."""
+input CartDiscountCodeRemoveInput {
+  """
+  The unique identifier of the cart from which the discount code will be removed.
+  """
+  cartId: ID!
+  """The discount codes to be removed from the cart."""
+  discountCodes: [String!]!
+}
+
+type CartDiscountCodeRemovePayload {
+  cart: Cart
+  errors: [CartDiscountCodeRemoveError!]
+}
+
+"""
+Represents a line item in a cart, which includes details about the product, variant, and any associated discounts.
+
+Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
+"""
+type CartLineItem {
+  """used in fusion"""
+  channelId: ID!
+  """used in fusion"""
+  currency: String!
+  """Retrieves a paginated list of payments for a specific order."""
+  discountApplications(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): DiscountApplicationConnection!
+  """The unique identifier of the line item"""
+  id: ID!
+  """
+  The metadata associated with the cart line item. This can include additional information such as custom attributes or tags.
+  """
+  metadata: [KeyValuePairOfStringAndString!]!
+  """
+  This retrieves the product associated with a cart line item. If the product no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
+  In such cases, you can still use other properties like `productName` and `productSlug` to display information about the product.
+  These fields are not directly tied to the product reference and remain available for display, even if the product itself is missing.
+  Note that these properties are eventually consistent and may not always reflect the latest product state.
+  """
+  product: Product
+  """
+  The unique identifier of the product associated with the cart line item.
+  """
+  productId: ID!
+  """The name of the product."""
+  productName: String!
+  """
+  Retrieves the slug of the product associated with a cart line item. This is useful for generating URLs or displaying product information.
+  """
+  productSlug: String!
+  """Retrieves the quantity of the cart line item."""
+  quantity: Int!
+  """
+  Retrieves the SKU (Stock Keeping Unit) of the variant associated with a cart line item. The SKU is a unique identifier for the variant, often used for inventory management.
+  """
+  sku: String!
+  """The line items total excluding discounts and taxes."""
+  subtotal: Money!
+  """
+  Gets the tax behavior of the cart line item, which indicates how taxes are applied to the item.
+  """
+  taxBehavior: TaxBehavior!
+  """
+  Retrieves the tax rate applied to the cart line item. This may be null if the line item does not have a tax rate defined.
+  """
+  taxRate: TaxRate
+  """
+  Gets the taxed price of the `LineItem`. This may be null if the `LineItem` does not yet have a taxed price.
+  """
+  taxedPrice: TaxedPrice
+  """Retrieves the total amount for the cart line item."""
+  total: Money!
+  """Retrieves the unit price of the cart line item."""
+  unitPrice: UnitPrice!
+  """
+  This retrieves the variant associated with a cart line item. If the variant no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
+  In such cases, you can still use other properties like `variantName` and `variantSku` to display information about the variant.
+  These fields are not directly tied to the variant reference and remain available for display, even if the variant itself is missing.
+  Note that these properties are eventually consistent and may not always reflect the latest variant state.
+  """
+  variant: ProductVariant
+  """
+  The unique identifier of the variant associated with the cart line item.
+  """
+  variantId: ID!
+  """
+  Retrieves the name of the variant associated with a cart line item. This is useful for displaying the specific variant details to the user.
+  """
+  variantName: String!
+}
+
+"""A connection to a list of items."""
+type CartLineItemConnection {
+  """A list of edges."""
+  edges: [CartLineItemEdge!]
+  """A flattened list of the nodes"""
+  nodes: [CartLineItem!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type CartLineItemEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: CartLineItem!
+}
+
+"""This is the input type for adding a line item to a cart."""
+input CartLineItemInput {
+  """
+  Optional metadata for the line item. This can be used to store additional information about the line item.
+  """
+  metadata: [KeyValuePairOfStringAndStringInput!]
+  """The number of line items of the given variant present in the cart."""
+  quantity: Int!
+  """The unique identifier of the product variant."""
+  variantId: ID!
+}
+
+"""
+This exception is thrown when a cart line item with the specified ID cannot be found.
+"""
+type CartLineItemNotFoundError implements UserError {
+  message: String!
+}
+
+"""This is the input type for updating the line item in a cart."""
+input CartLineItemUpdateInput {
+  """The unique identifier of the line item to be updated."""
+  lineItemId: ID!
+  """
+  Optional metadata for the line item. This can be used to store additional information about the line item.
+  """
+  metadata: [KeyValuePairOfStringAndStringInput!]
+  """
+  The new quantity for the line item. If set to 0, the line item will be removed from the cart.
+  """
+  quantity: Int!
+}
+
+union CartLineItemsAddError = CartNotFoundError | ProductVariantNotFoundError
+
+"""This is the input type for adding line items to a cart."""
+input CartLineItemsAddInput {
+  """The unique identifier of the cart."""
+  cartId: ID!
+  """The list of line items to be added to the cart."""
+  lineItems: [CartLineItemInput!]!
+}
+
+type CartLineItemsAddPayload {
+  cart: Cart
+  errors: [CartLineItemsAddError!]
+}
+
+union CartLineItemsRemoveError = CartNotFoundError
+
+"""This is the input type for removing line items from a cart."""
+input CartLineItemsRemoveInput {
+  """The unique identifier of the cart."""
+  cartId: ID!
+  """The unique identifiers of the line items to be removed."""
+  lineItemIds: [ID!]!
+}
+
+type CartLineItemsRemovePayload {
+  cart: Cart
+  errors: [CartLineItemsRemoveError!]
+}
+
+union CartLineItemsUpdateError = CartLineItemNotFoundError | CartNotFoundError
+
+"""
+This is the input type for updating the quantity of a line item in a cart.
+"""
+input CartLineItemsUpdateInput {
+  """The unique identifier of the cart to be updated."""
+  cartId: ID!
+  """
+  The list of line items to be updated in the cart. Each line item must have a valid LineItemId.
+  """
+  lineItems: [CartLineItemUpdateInput!]!
+}
+
+type CartLineItemsUpdatePayload {
+  cart: Cart
+  errors: [CartLineItemsUpdateError!]
+}
+
+"""
+This exception is thrown when a cart with the specified ID cannot be found.
+"""
+type CartNotFoundError implements UserError {
+  message: String!
+}
+
+union CartPaymentSessionInitializeError = CartNotFoundError | PaymentGatewayChannelMismatchError | PaymentGatewayNotFoundError | PaymentGatewaySessionInitializeFailedError
+
+"""
+This is the input type for initializing a payment gateway session for a cart.
+"""
+input CartPaymentSessionInitializeInput {
+  """
+  The unique identifier of the cart for which the payment gateway session is being initialized.
+  """
+  cartId: ID!
+  """
+  The unique identifier of the payment gateway to be used for the session.
+  """
+  gatewayId: ID!
+}
+
+type CartPaymentSessionInitializePayload {
+  cart: Cart
+  errors: [CartPaymentSessionInitializeError!]
+}
+
+union CartReplicateError = CartNotFoundError | CartReplicateStrictValidationFailedError
+
+"""This is the input type for replicating a cart."""
+input CartReplicateInput {
+  """The unique identifier of the cart to be replicated."""
+  cartId: ID!
+  """
+  The unique identifier of the channel to which the cart will be replicated.
+  """
+  channelId: ID!
+  """The ISO 4217 currency code for the cart to be replicated."""
+  currency: String!
+  """The replication strategy to be used when replicating the cart."""
+  strategy: ReplicationStrategy!
+}
+
+type CartReplicatePayload {
+  cart: Cart
+  errors: [CartReplicateError!]
+}
+
+"""
+This exception is thrown when a cart cannot be replicated due to strict validation failures.
+"""
+type CartReplicateStrictValidationFailedError implements UserError {
+  message: String!
+}
+
+"""Represents a shipping line on a cart, including method and totals."""
+type CartShippingLine {
+  """The unique identifier of the cart shipping line."""
+  id: ID!
+  """The shipping method selected for this shipping line."""
+  shippingMethod: LineShippingMethod!
+  """The subtotal of the shipping line before discounts and taxes."""
+  subtotal: Money!
+  """The tax behavior used to calculate this shipping line."""
+  taxBehavior: TaxBehavior!
+  """The taxed price (net, gross, tax) of this shipping line, if available."""
+  taxedPrice: TaxedPrice
+  """The total amount for the shipping line after discounts and taxes."""
+  total: Money!
+}
+
+union CartShippingLineAddError = CartNotFoundError | ShippingMethodNotFoundError
+
+"""This is the input type for adding a shipping line to a cart."""
+input CartShippingLineAddInput {
+  cartId: ID!
+  shippingMethodId: ID!
+}
+
+type CartShippingLineAddPayload {
+  cart: Cart
+  errors: [CartShippingLineAddError!]
+}
+
+"""
+This exception is thrown when a cart shipping line with the specified ID cannot be found.
+"""
+type CartShippingLineNotFoundError implements UserError {
+  message: String!
+}
+
+union CartShippingLineRemoveError = CartNotFoundError | CartShippingLineNotFoundError
+
+"""This is the input type for removing a shipping line from a cart."""
+input CartShippingLineRemoveInput {
+  cartId: ID!
+  shippingLineId: ID!
+}
+
+type CartShippingLineRemovePayload {
+  cart: Cart
+  errors: [CartShippingLineRemoveError!]
+}
+
+union CartShippingLinesSetError = CartNotFoundError | ShippingMethodNotFoundError
+
+"""
+This is the input type for setting the shipping lines on a cart.
+Providing the list will replace any existing shipping lines.
+"""
+input CartShippingLinesSetInput {
+  cartId: ID!
+  shippingMethodIds: [ID!]!
+}
+
+type CartShippingLinesSetPayload {
+  cart: Cart
+  errors: [CartShippingLinesSetError!]
+}
+
+enum CartState {
+  """The default state where a Cart can be updated and ordered."""
+  ACTIVE
+  """A Cart was ordered, and no further operations are allowed on the Cart."""
+  ORDERED
+}
+
+union CartUpdateError = CartAuthenticationFailedError | CartAuthorizationFailedError | CartNotFoundError
+
+"""This is the input type for updating a cart."""
+input CartUpdateInput {
+  """
+  Optional billing address for the cart. If not provided, the existing billing address will remain unchanged.
+  """
+  billingAddress: CartAddressInput
+  """The unique identifier of the cart to be updated."""
+  cartId: ID!
+  """
+  Email address of the customer associated with the cart. If not provided, the existing email will remain unchanged.
+  """
+  customerEmail: String
+  """
+  The unique identifier of the customer associated with the cart. If not provided, the existing customer will remain unchanged.
+  """
+  customerId: ID
+  """
+  Optional metadata for the cart. This can be used to store additional information about the cart.
+  """
+  metadata: [KeyValuePairOfStringAndStringInput!]
+  """
+  Optional shipping address for the cart. If not provided, the existing shipping address will remain unchanged.
+  """
+  shippingAddress: CartAddressInput
+}
+
+type CartUpdatePayload {
+  cart: Cart
+  errors: [CartUpdateError!]
+}
+
+"""
+Represents a category, encapsulating all information required to display and manage categories across storefronts and sales channels.
+
+Each category includes core details such as title, description, and associated products. Categories can be organized hierarchically to create a structured navigation experience for customers.
+"""
+type Category {
+  """The ancestors of the category."""
+  ancestors: [Category!]!
+  """The direct children of the category."""
+  children: [Category!]!
+  """The number of direct children of the category."""
+  childrenCount: Long!
+  """The descendants of the category."""
+  descendants: [Category!]!
+  """The number of descendants of the category."""
+  descendantsCount: Long!
+  """The ID of the category."""
+  id: ID!
+  """The name of the category."""
+  name: String!
+  """The parent category of the category."""
+  parent: Category
+  """List of products in the collection."""
+  products(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+    sortDirection: SortDirection! = ASC
+    sortKey: ProductCategorySortKeys! = ID
+  ): ProductConnection!
+  """The number of products that are associated with the category."""
+  productsCount: Long!
+  """The slug of the category."""
+  slug: String!
+}
+
+"""A connection to a list of items."""
+type CategoryConnection {
+  """A list of edges."""
+  edges: [CategoryEdge!]
+  """A flattened list of the nodes"""
+  nodes: [Category!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type CategoryEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: Category!
+}
+
+type Channel {
+  """The unique identifier of the Channel."""
+  id: ID!
+  """The name of the Channel."""
+  name: String!
+  """The slug of the Channel."""
+  slug: String!
+}
+
+"""
+Represents a collection, encapsulating all information required to display and manage collections across storefronts and sales channels.
+
+ Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
+"""
+type Collections {
+  """The ID of the collection."""
+  id: ID!
+  """The name of the collection."""
+  name: String!
+  """List of products in the collection."""
+  products(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): ProductConnection!
+  """The slug of the collection."""
+  slug: String!
+}
+
+"""A connection to a list of items."""
+type CollectionsConnection {
+  """A list of edges."""
+  edges: [CollectionsEdge!]
+  """A flattened list of the nodes"""
+  nodes: [Collections!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type CollectionsEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: Collections!
+}
+
+type CountryInfo {
+  code: String!
+  name: String!
+  postalCode: PostalCodeInfo
+  zones: [ZoneInfo!]!
+}
+
+"""
+This exception is thrown when an address is not null, but does not have a country code.
+"""
+type CreateCartAddressDoesNotHaveCountryCodeError implements UserError {
+  message: String!
+}
+
+"""This exception is thrown when cart authentication fails."""
+type CreateCartAuthenticationFailedError implements UserError {
+  message: String!
+}
+
+"""This exception is thrown when cart authorization fails."""
+type CreateCartAuthorizationFailedError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when a channel does not support the specified country.
+"""
+type CreateCartChannelDoesNotSupportCountryError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when a channel does not support the specified currency.
+"""
+type CreateCartChannelDoesNotSupportCurrencyError implements UserError {
+  message: String!
+}
+
+"""This exception is thrown when a channel has no countries defined."""
+type CreateCartChannelHasNoCountriesError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when a channel with the specified ID cannot be found.
+"""
+type CreateCartChannelNotFoundError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when not all line items could be added to the cart.
+"""
+type CreateCartFailedNotAllLineItemsCouldBeAddedError implements UserError {
+  message: String!
+}
+
+type Customer implements Node {
+  """The addresses associated with the customer."""
+  addresses(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): CustomerAddressConnection!
+  """
+  Retrieves a paged list of customers associated with the customer group.
+  """
+  customerGroups(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): CustomerGroupConnection!
+  """The default billing address associated with the customer."""
+  defaultBillingAddress: CustomerAddress
+  """The default shipping address associated with the customer."""
+  defaultShippingAddress: CustomerAddress
+  """The email address of the customer."""
+  email: String
+  """The first name of the customer."""
+  firstName: String
+  """The unique identifier for the customer."""
+  id: ID!
+  """The last name of the customer."""
+  lastName: String
+  """
+  A set of key-value pairs that can be attached to the customer for storing additional information.
+  """
+  metadata: [KeyValuePairOfStringAndString!]!
+  """A list of orders associated with the customer."""
+  orders(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+    """Sort direction (ascending or descending)."""
+    sortDirection: SortDirection
+    """Field key to sort by."""
+    sortKey: OrderSortKeys
+  ): OrderConnection!
+  """The number of orders that are associated with the customer."""
+  ordersCount: Long!
+}
+
+type CustomerAccessToken {
+  """
+  The opaque bearer token to send as part of the Authorization request header.
+  """
+  accessToken: String!
+  """The number of seconds before the access token expires."""
+  expiresIn: Long!
+  """
+  If set, this provides the ability to get a new access_token after it expires using a refresh endpoint.
+  """
+  refreshToken: String!
+}
+
+union CustomerAccessTokenCreateError = InvalidCredentialsError
+
+"""The fields used to create a customer access token."""
+input CustomerAccessTokenCreateInput {
+  """The email address of the customer."""
+  email: String!
+  """The password of the customer."""
+  password: String!
+}
+
+type CustomerAccessTokenCreatePayload {
+  customerAccessToken: CustomerAccessToken
+  errors: [CustomerAccessTokenCreateError!]
+}
+
+union CustomerAccessTokenRefreshError = InvalidRefreshTokenError
+
+"""Specifies the fields to refresh a customer access token."""
+input CustomerAccessTokenRefreshInput {
+  """The refresh token of the customer access token."""
+  refreshToken: String!
+}
+
+type CustomerAccessTokenRefreshPayload {
+  customerAccessToken: CustomerAccessToken
+  errors: [CustomerAccessTokenRefreshError!]
+}
+
+union CustomerActivateError = CustomerEmailAlreadyConfirmedError | CustomerInvalidActivationTokenError | CustomerInvalidPasswordError
+
+"""
+Activates a customer account using the provided token and sets the customer's password.
+"""
+input CustomerActivateInput {
+  """The email address of the customer to be activated."""
+  email: String!
+  """The first name of the customer."""
+  firstName: String
+  """The last name of the customer."""
+  lastName: String
+  """
+  The metadata of the customer, which can be used to store additional information about the customer
+  """
+  metadata: [KeyValuePairOfStringAndStringInput!]
+  """The password to set for the customer account."""
+  password: String!
+  """
+  The activation token that was sent to the customer's email address, through `CustomerRegister`.
+  """
+  token: String!
+}
+
+"""The payload of customer activation."""
+type CustomerActivatePayload {
+  """The customer that was activated."""
+  customer: Customer
+  """The access token for the activated customer."""
+  customerAccessToken: CustomerAccessToken
+  errors: [CustomerActivateError!]
+}
+
+type CustomerAddress implements BaseAddress & Node {
+  """The first line of the address."""
+  address1: String
+  """The second line of the address."""
+  address2: String
+  """The name of the city, district, village, or town."""
+  city: String
+  """The name of the customer's company or organization."""
+  company: String
+  """The two-letter code for the country of the address."""
+  countryCode: String
+  """The email address of the address."""
+  email: String
+  """THe first name of the address."""
+  firstName: String
+  """The formatted address."""
+  formatted: String
+  """The unique identifier of the address."""
+  id: ID!
+  """The last name of the address."""
+  lastName: String
+  """
+  The metadata of the address, which can be used to store additional information about the address.
+  """
+  metadata: [KeyValuePairOfStringAndString!]
+  """The name of the address."""
+  name: String
+  """The phone number of the address."""
+  phone: String
+  """The zip or postal code of the address."""
+  postalCode: String
+  """The region of the address, such as the province, state, or district."""
+  state: String
+}
+
+"""A connection to a list of items."""
+type CustomerAddressConnection {
+  """A list of edges."""
+  edges: [CustomerAddressEdge!]
+  """A flattened list of the nodes"""
+  nodes: [CustomerAddress!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+union CustomerAddressCreateError = AddressAlreadyExistsError | CustomerNotFoundError
+
+"""Creates a new address for a customer."""
+input CustomerAddressCreateInput {
+  """Specifies the fields to use when creating the address."""
+  address: CustomerAddressInput!
+}
+
+type CustomerAddressCreatePayload {
+  customerAddress: CustomerAddress
+  errors: [CustomerAddressCreateError!]
+}
+
+union CustomerAddressDeleteError = AddressNotFoundError | CustomerNotFoundError
+
+"""The input fields to delete a customer's address."""
+input CustomerAddressDeleteInput {
+  """The ID of the address to be deleted from the customer."""
+  id: ID!
+}
+
+type CustomerAddressDeletePayload {
+  customer: Customer
+  errors: [CustomerAddressDeleteError!]
+}
+
+type CustomerAddressEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: CustomerAddress!
+}
+
+"""Specifies the fields to use when creating/updating an address."""
+input CustomerAddressInput {
+  """
+  The first line of the address. Typically the street address or PO Box number.
+  """
+  address1: String
+  """
+  The second line of the address. Typically the apartment, suite, or unit number.
+  """
+  address2: String
+  """The name of the city, district, village, or town."""
+  city: String
+  """The name of the customer's company or organization."""
+  company: String
+  """The two-letter ISO 3166-1 alpha-2 country code of the address."""
+  countryCode: String
+  """The email address associated with the address."""
+  email: String
+  """The first name of the address."""
+  firstName: String
+  """
+  Indicates if the address should be set as the default billing address for the customer.
+  """
+  isDefaultBilling: Boolean
+  """
+  Indicates if the address should be set as the default shipping address for the customer.
+  """
+  isDefaultShipping: Boolean
+  """The last name of the address."""
+  lastName: String
+  """
+  The metadata of the address, which can be used to store additional information about the address.
+  """
+  metadata: [KeyValuePairOfStringAndStringInput!]
+  """The name of the address."""
+  name: String
+  """
+  The address's unique phone number, formatted using E.164 standard. For example, +16135551111.
+  """
+  phone: String
+  """The zip or postal code of the address."""
+  postalCode: String
+  """The name of the state, province, or region. For example, Colorado."""
+  state: String
+}
+
+union CustomerAddressUpdateError = AddressAlreadyExistsError | AddressNotFoundError | CustomerNotFoundError
+
+"""Updates a specific address for a customer."""
+input CustomerAddressUpdateInput {
+  """Specifies the fields to use when updating the address."""
+  address: CustomerAddressInput!
+  """The ID of the address to be updated."""
+  id: ID!
+}
+
+type CustomerAddressUpdatePayload {
+  customerAddress: CustomerAddress
+  errors: [CustomerAddressUpdateError!]
+}
+
+"""The email address has already been confirmed."""
+type CustomerEmailAlreadyConfirmedError implements UserError {
+  message: String!
+}
+
+type CustomerGroup implements Node {
+  """The unique identifier for the customer."""
+  id: ID!
+  """The name of the customer group."""
+  name: String!
+}
+
+"""A connection to a list of items."""
+type CustomerGroupConnection {
+  """A list of edges."""
+  edges: [CustomerGroupEdge!]
+  """A flattened list of the nodes"""
+  nodes: [CustomerGroup!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type CustomerGroupEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: CustomerGroup!
+}
+
+"""The provided activation token is invalid or has expired."""
+type CustomerInvalidActivationTokenError implements UserError {
+  message: String!
+}
+
+"""The provided password does not meet the required criteria."""
+type CustomerInvalidPasswordError implements UserError {
+  message: String!
+}
+
+"""The customer with the specified ID was not found."""
+type CustomerNotFoundError implements UserError {
+  message: String!
+}
+
+union CustomerPasswordResetError = InvalidPasswordError | InvalidTokenError
+
+"""Represents the input for resetting a customer's password."""
+input CustomerPasswordResetInput {
+  """The email address of the customer whose password is being reset."""
+  email: String!
+  """The new password for the customer."""
+  password: String!
+  """The reset token that was sent to the customer's email address."""
+  resetToken: String!
+}
+
+"""Represents the payload for resetting a customer's password."""
+type CustomerPasswordResetPayload {
+  """The customer object which was reset."""
+  customer: Customer
+  """A newly created customer access token object for the customer."""
+  customerAccessToken: CustomerAccessToken
+  errors: [CustomerPasswordResetError!]
+}
+
+union CustomerPasswordResetTokenError = InvalidCredentialsError
+
+"""
+Represents the input for requesting a password reset token for a customer.
+"""
+input CustomerPasswordResetTokenInput {
+  """The email address of the customer to recover."""
+  email: String!
+}
+
+"""Represents the payload for requesting a password reset token."""
+type CustomerPasswordResetTokenPayload {
+  errors: [CustomerPasswordResetTokenError!]
+}
+
+union CustomerRegisterError = CustomerRegisterFailedError
+
+"""Registration of the customer failed."""
+type CustomerRegisterFailedError implements UserError {
+  message: String!
+}
+
+"""
+Generates a CustomerEmailConfirmationToken event in webhooks, you can use this to send a confirmation email to the customer.
+"""
+input CustomerRegisterInput {
+  """The customer's email address."""
+  email: String!
+}
+
+"""The payload of customer registration."""
+type CustomerRegisterPayload {
+  errors: [CustomerRegisterError!]
+}
+
+"""Specifies the fields to update a customer."""
+input CustomerUpdateInput {
+  """The new email address of the customer."""
+  email: String
+  """The new first name of the customer."""
+  firstName: String
+  """The new last name of the customer."""
+  lastName: String
+}
+
+type CustomerUpdatePayload {
+  customer: Customer
+}
+
+"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+scalar DateTime
+
+"""The `Decimal` scalar type represents a decimal floating-point number."""
+scalar Decimal
+
+type DiscountApplication {
+  """
+  The code of the discount that was applied. If it was an automatic discount, this field is null.
+  """
+  discountCode: String
+  """The discounted amount."""
+  discountedAmount: Money!
+  """The title of the discount that was applied."""
+  label: String!
+  """
+  The value of the discount application, either absolute or relative (Money value).
+  """
+  value: DiscountApplicationValue!
+}
+
+"""A connection to a list of items."""
+type DiscountApplicationConnection {
+  """A list of edges."""
+  edges: [DiscountApplicationEdge!]
+  """A flattened list of the nodes"""
+  nodes: [DiscountApplication!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type DiscountApplicationEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: DiscountApplication!
+}
+
+union DiscountApplicationValue = Money | RelativeValue
+
+type DiscountCodeDto {
+  cartId: TypeIdDecoded!
+  code: String!
+}
+
+"""
+This exception is thrown when a discount code's max application count has been reached.
+"""
+type DiscountCodeMaxApplicationCountReachedError implements UserError {
+  message: String!
+}
+
+"""Represents a discounted price for a product variant."""
+type DiscountedPrice {
+  """The product discount associated with this discounted price."""
+  discount: ProductDiscount
+  """Money value of the discounted price."""
+  value: Money!
+}
+
+"""
+Represents an exception that occurs when a user provides invalid credentials.
+"""
+type InvalidCredentialsError implements UserError {
+  message: String!
+}
+
+"""
+Represents an exception that occurs when a user provides an invalid email address.
+"""
+type InvalidPasswordError implements UserError {
+  message: String!
+}
+
+"""
+Represents an exception that occurs when a user provides an invalid refresh token.
+"""
+type InvalidRefreshTokenError implements UserError {
+  message: String!
+}
+
+"""
+Represents an exception that occurs when a user provides an invalid token.
+"""
+type InvalidTokenError implements UserError {
+  message: String!
+}
+
+type KeyValuePairOfStringAndString {
+  key: String!
+  value: String!
+}
+
+input KeyValuePairOfStringAndStringInput {
+  key: String!
+  value: String!
+}
+
+"""Represents the shipping method associated with a cart shipping line."""
+type LineShippingMethod {
+  """The unique identifier of the shipping method."""
+  id: ID!
+  """The display name of the shipping method."""
+  name: String!
+  """The SKU of the shipping method, if any."""
+  sku: String
+}
+
+"""
+The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+"""
+scalar Long
+
+type Media {
+  """The content type of the media."""
+  contentType: String!
+  """The file extension of the media."""
+  fileExtension: String!
+  """The file name of the media."""
+  fileName: String!
+  """The unique identifier of the media."""
+  id: ID!
+  """The full source URL of the media."""
+  src: String!
+}
+
+"""A connection to a list of items."""
+type MediaConnection {
+  """A list of edges."""
+  edges: [MediaEdge!]
+  """A flattened list of the nodes"""
+  nodes: [Media!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type MediaEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: Media!
+}
+
+"""The monetary value in the smallest unit of the currency."""
+type Money {
+  """
+  The amount of money in the smallest unit of the currency. For example, 100 cents in USD.
+  """
+  centAmount: Long!
+  """
+  The three-letter currency code that represents a world currency used in a store. Currency codes include standard standard ISO 4217 codes, legacy codes, and non-standard codes. For example, USD.
+  """
+  currencyCode: String!
+  """
+  The number of digits after the decimal separator in the currency. For example, 2 for USD and 0 for JPY.
+  """
+  fractionDigits: Int!
+}
+
+"""This class contains the mutations for managing carts."""
+type Mutation {
+  """
+  Completes the specified cart and creates an order if all validations pass.
+  """
+  cartComplete(input: CartCompleteInput!): CartCompletePayload!
+  """Creates a new cart using the provided currency."""
+  cartCreate(input: CartCreateInput!): CartCreatePayload!
+  """
+  Applies a discount code to an existing cart using the given discount code.
+  """
+  cartDiscountCodeAdd(input: CartDiscountCodeAddInput!): CartDiscountCodeAddPayload!
+  """
+  Removes a discount code from an existing cart using the given discount code.
+  """
+  cartDiscountCodeRemove(input: CartDiscountCodeRemoveInput!): CartDiscountCodeRemovePayload!
+  """
+  Adds a new line item to an existing cart. This is safe to call concurrently.
+  """
+  cartLineItemsAdd(input: CartLineItemsAddInput!): CartLineItemsAddPayload!
+  """
+  Removes line items from an existing cart. This is safe to call concurrently.
+  """
+  cartLineItemsRemove(input: CartLineItemsRemoveInput!): CartLineItemsRemovePayload!
+  """Updates one or more line items in an existing cart."""
+  cartLineItemsUpdate(input: CartLineItemsUpdateInput!): CartLineItemsUpdatePayload!
+  """
+  Initializes a new payment session for the specified cart and payment gateway.
+  The payment session is valid for the duration "validUntil" as long as the cart total does not change.
+  If the cart total changes, a new payment session must be initialized.
+  """
+  cartPaymentSessionInitialize(input: CartPaymentSessionInitializeInput!): CartPaymentSessionInitializePayload!
+  """
+  Replicates an existing cart. This is useful for creating a new cart based on an existing one,
+  such if the user want to swap to another channel or currency.
+  """
+  cartReplicate(input: CartReplicateInput!): CartReplicatePayload!
+  """Adds a shipping line to the cart using a shipping method ID."""
+  cartShippingLineAdd(input: CartShippingLineAddInput!): CartShippingLineAddPayload!
+  """Removes a shipping line from the cart using a shipping line ID."""
+  cartShippingLineRemove(input: CartShippingLineRemoveInput!): CartShippingLineRemovePayload!
+  """
+  Sets the shipping lines on the cart using the provided shipping method IDs.
+  Existing shipping lines are replaced with the new selection.
+  """
+  cartShippingLinesSet(input: CartShippingLinesSetInput!): CartShippingLinesSetPayload!
+  """Updates an existing cart. This is safe to call concurrently."""
+  cartUpdate(input: CartUpdateInput!): CartUpdatePayload!
+  """
+  Creates a customer access token. The customer access token is required to modify the customer object in any way.
+  """
+  customerAccessTokenCreate(
+    """The fields used to create a customer access token."""
+    input: CustomerAccessTokenCreateInput!
+  ): CustomerAccessTokenCreatePayload!
+  """
+  Refreshes a customer access token using the refresh token. The refresh token is used to obtain a new access token without requiring the customer to log in again.
+  """
+  customerAccessTokenRefresh(
+    """The fields used to refresh a customer access token."""
+    input: CustomerAccessTokenRefreshInput!
+  ): CustomerAccessTokenRefreshPayload!
+  """
+  Activates a customer account using the provided token and sets the customer's password.
+  """
+  customerActivate(
+    """Specifies the fields to activate a customer."""
+    input: CustomerActivateInput!
+  ): CustomerActivatePayload!
+  """Creates a new address for a customer."""
+  customerAddressCreate(
+    """Specifies the fields to create a customer address."""
+    input: CustomerAddressCreateInput!
+  ): CustomerAddressCreatePayload!
+  """Deletes a specific address for a customer."""
+  customerAddressDelete(
+    """Specifies the fields to delete a customer address."""
+    input: CustomerAddressDeleteInput!
+  ): CustomerAddressDeletePayload!
+  """Updates a specific address for a customer."""
+  customerAddressUpdate(
+    """Specifies the fields to update a customer address."""
+    input: CustomerAddressUpdateInput!
+  ): CustomerAddressUpdatePayload!
+  """
+  Resets a customer's password using a valid reset token. This mutation requires the customer to provide their email, the new password, and the reset token they received via email.
+  """
+  customerPasswordReset(
+    """The fields used to reset a customer's password."""
+    input: CustomerPasswordResetInput!
+  ): CustomerPasswordResetPayload!
+  """
+  If an customer exists, this mutation will fire a `CustomerPasswordResetTokenEvent` webhook event, which can be used to send a password reset email to the customer.
+  The customer will receive an email with a link to reset their password.
+  """
+  customerPasswordResetToken(
+    """The fields used to request a password reset token for a customer."""
+    input: CustomerPasswordResetTokenInput!
+  ): CustomerPasswordResetTokenPayload!
+  """
+  If the customer does not exist or does not have a confirmed account, a email confirmation token event will be generated in webhooks.
+  You can use this to send a confirmation email to the customer.
+  If the customer already has a confirmed account, nothing happens
+  """
+  customerRegister(
+    """Specifies the fields to register a customer."""
+    input: CustomerRegisterInput!
+  ): CustomerRegisterPayload!
+  """Updates an existing customer with the provided details."""
+  customerUpdate(
+    """Specifies the fields to update a customer."""
+    input: CustomerUpdateInput!
+  ): CustomerUpdatePayload!
+}
+
+"""
+The node interface is implemented by entities that have a global unique identifier.
+"""
+interface Node {
+  id: ID!
+}
+
+type Order implements Node {
+  """
+  Gets the billing address associated with the order. This may be the same as the shipping address.
+  """
+  billingAddress: CartAddress
+  channel: Channel
+  """The date and time when the order was created."""
+  createdAt: DateTime!
+  """Retrieves the customer associated with the order."""
+  customer: Customer
+  """The external reference for the order."""
+  externalReference: String
+  """The unique identifier for the order."""
+  id: ID!
+  """Retrieves a paginated list of line items for a specific order."""
+  lineItems(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): OrderLineItemConnection!
+  """Sum of all LineItem quantities."""
+  lineItemsQuantity: Long!
+  """The metadata associated with the order."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The order number."""
+  orderNumber: Int!
+  """Current status of the Order."""
+  orderState: OrderState!
+  """Payment status of the Order."""
+  paymentState: PaymentState!
+  """Retrieves a paginated list of payments for a specific order."""
+  payments(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): PaymentDtoConnection!
+  """Shipment status of the Order."""
+  shipmentState: ShipmentState!
+  """Gets the shipping address associated with the order."""
+  shippingAddress: CartAddress
+  """Gets the shipping lines associated with the order."""
+  shippingLines: [OrderShippingLine!]!
+  """Gets the total price of the order before discounts and taxes."""
+  subtotal: Money!
+  """
+  Gets the taxed price of the order. This may be null if the order does not yet have a taxed price.
+  """
+  taxedPrice: TaxedPrice
+  """Gets the total price of the order after discounts and taxes."""
+  total: Money!
+}
+
+"""A connection to a list of items."""
+type OrderConnection {
+  """A list of edges."""
+  edges: [OrderEdge!]
+  """A flattened list of the nodes"""
+  nodes: [Order!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type OrderEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: Order!
+}
+
+"""
+Represents a line item in a order, which includes details about the product, variant, and any associated discounts.
+
+Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
+"""
+type OrderLineItem {
+  """used in fusion"""
+  channelId: ID!
+  """used in fusion"""
+  currency: String!
+  """
+  Retrieves a paginated list of discount applications for a specific line item.
+  """
+  discountApplications(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): DiscountApplicationConnection!
+  """The unique identifier of the line item"""
+  id: ID!
+  """
+  The metadata associated with the order line item. This can include additional information such as custom attributes or tags.
+  """
+  metadata: [KeyValuePairOfStringAndString!]!
+  """
+  This retrieves the product associated with a cart line item. If the product no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
+  In such cases, you can still use other properties like `productName` and `productSlug` to display information about the product.
+  These fields are not directly tied to the product reference and remain available for display, even if the product itself is missing.
+  Note that these properties are eventually consistent and may not always reflect the latest product state.
+  """
+  product: Product
+  """
+  The unique identifier of the product associated with the order line item.
+  """
+  productId: ID!
+  """The name of the product."""
+  productName: String!
+  """
+  Retrieves the slug of the product associated with a order line item. This is useful for generating URLs or displaying product information.
+  """
+  productSlug: String!
+  """Retrieves the quantity of the order line item."""
+  quantity: Int!
+  """
+  Retrieves the SKU (Stock Keeping Unit) of the variant associated with a order line item. The SKU is a unique identifier for the variant, often used for inventory management.
+  """
+  sku: String!
+  """The line items total excluding discounts and taxes."""
+  subtotal: Money!
+  """
+  Gets the tax behavior of the order line item, which indicates how taxes are applied to the item.
+  """
+  taxBehavior: TaxBehavior!
+  """
+  Retrieves the tax rate applied to the order line item. This may be null if the line item does not have a tax rate defined.
+  """
+  taxRate: TaxRate
+  """
+  Gets the taxed price of the `LineItem`. This may be null if the `LineItem` does not yet have a taxed price.
+  """
+  taxedPrice: TaxedPrice
+  """Retrieves the total amount for the order line item."""
+  total: Money!
+  """Retrieves the unit price of the order line item."""
+  unitPrice: UnitPrice!
+  """
+  This retrieves the variant associated with a cart line item. If the variant no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
+  In such cases, you can still use other properties like `variantName` and `variantSku` to display information about the variant.
+  These fields are not directly tied to the variant reference and remain available for display, even if the variant itself is missing.
+  Note that these properties are eventually consistent and may not always reflect the latest variant state.
+  """
+  variant: ProductVariant
+  """
+  The unique identifier of the variant associated with the order line item.
+  """
+  variantId: ID!
+  """
+  Retrieves the name of the variant associated with a order line item. This is useful for displaying the specific variant details to the user.
+  """
+  variantName: String!
+}
+
+"""A connection to a list of items."""
+type OrderLineItemConnection {
+  """A list of edges."""
+  edges: [OrderLineItemEdge!]
+  """A flattened list of the nodes"""
+  nodes: [OrderLineItem!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type OrderLineItemEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: OrderLineItem!
+}
+
+"""Represents a shipping line applied to an order."""
+type OrderShippingLine {
+  """The unique identifier of the order shipping line."""
+  id: ID!
+  """The shipping method associated with this shipping line."""
+  shippingMethod: LineShippingMethod!
+  """The subtotal for the shipping line before discounts and tax."""
+  subtotal: Money!
+  """The tax behavior applied when calculating this shipping line."""
+  taxBehavior: TaxBehavior!
+  """The tax rate used for this shipping line, if available."""
+  taxRate: TaxRate
+  """
+  The taxed prices (net, gross, tax) for this shipping line, if calculated.
+  """
+  taxedPrice: TaxedPrice
+  """The total amount charged for the shipping line after adjustments."""
+  total: Money!
+}
+
+"""The set of valid sort keys for the Orders query."""
+enum OrderSortKeys {
+  """Sorts by the date and time the order was created."""
+  CREATED_AT
+  """Sort by customer `ID`."""
+  ID
+  """Sorts by the order number."""
+  ORDER_NUMBER
+}
+
+enum OrderState {
+  CANCELLED
+  COMPLETE
+  CONFIRMED
+  OPEN
+}
+
+"""Information about pagination in a connection."""
+type PageInfoV2 {
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+  """
+  Indicates whether more edges exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+}
+
+type PaymentDto {
+  id: TypeIdDecoded!
+  intendedAmount: Money!
+  orderId: TypeIdDecoded!
+  paidAmount: Money!
+  paymentGatewayId: TypeIdDecoded!
+  paymentMethod: PaymentMethod!
+  pspReference: String!
+  refundedAmount: Money!
+}
+
+"""A connection to a list of items."""
+type PaymentDtoConnection {
+  """A list of edges."""
+  edges: [PaymentDtoEdge!]
+  """A flattened list of the nodes"""
+  nodes: [PaymentDto!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type PaymentDtoEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: PaymentDto!
+}
+
+interface PaymentGateway {
+  """The channel IDs associated with the payment gateway."""
+  channelIds: [ID!]!
+  """The unique identifier of the payment gateway."""
+  id: ID!
+  """The name of the payment gateway."""
+  name: String!
+}
+
+"""
+This exception is thrown when the payment gateway cannot be used with the cart due to channel mismatch.
+"""
+type PaymentGatewayChannelMismatchError implements UserError {
+  message: String!
+}
+
+"""A connection to a list of items."""
+type PaymentGatewayConnection {
+  """A list of edges."""
+  edges: [PaymentGatewayEdge!]
+  """A flattened list of the nodes"""
+  nodes: [PaymentGateway!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type PaymentGatewayEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: PaymentGateway!
+}
+
+"""This exception is thrown when a payment gateway is not found."""
+type PaymentGatewayNotFoundError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when initializing the payment session fails at the provider.
+"""
+type PaymentGatewaySessionInitializeFailedError implements UserError {
+  message: String!
+}
+
+type PaymentMethod {
+  copy: ValueObject
+  """Name of the Payment Method."""
+  name: String!
+}
+
+interface PaymentSession {
+  """The payment gateway associated with the payment session."""
+  paymentGateway: PaymentGateway!
+}
+
+enum PaymentState {
+  AUTHORIZED
+  BALANCE_DUE
+  FAILED
+  OVERPAID
+  PAID
+  PARTIALLY_AUTHORIZED
+  PARTIALLY_REFUNDED
+  PENDING
+  REFUNDED
+}
+
+type PostalCodeInfo {
+  exampleList: [String!]!
+  examples: String!
+  fieldName: String!
+  isRequired: Boolean!
+  regex: String!
+}
+
+type Price {
+  """
+  The discounted price, if applicable. This is the price after any discounts have been applied.
+  """
+  discountedPrice: DiscountedPrice
+  """The unique identifier of the price."""
+  id: ID!
+  """The tax behavior of the product variant price."""
+  taxBehavior: TaxBehavior!
+  """The Date and Time when the price becomes valid."""
+  validFrom: DateTime
+  """The Date and Time when the price becomes invalid."""
+  validTo: DateTime
+  """The value of the original price. This does not contains discounts."""
+  value: Money!
+}
+
+"""
+Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
+
+Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
+"""
+type Product implements Node {
+  """A list of attributes associated with the product."""
+  attributeAssignments: [AttributeAssignment!]!
+  """The rich description of the product."""
+  description: String
+  """
+  Gets the hero variant for the product, the hero variant is the first variant of the product, or the specific variant chosen for the channel
+  """
+  heroVariant: ProductVariant
+  """The unique identifier of the product."""
+  id: ID!
+  """The metadata associated with the product."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The name of the product."""
+  name: String!
+  """
+  The price range of the product, which includes the minimum and maximum prices across all variants.
+  """
+  priceRange: ProductPriceRange
+  """The slug of the product, which is a URL-friendly identifier."""
+  slug: String!
+  """The tags associated with the product."""
+  tags: [String!]!
+  """The variants of the product."""
+  variants(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): ProductVariantConnection!
+  """
+  The number of variants that are associated with the product and published in the current channel.
+  """
+  variantsCount: Long!
+  """The vendor of the product."""
+  vendor: String
+}
+
+enum ProductAttributeType {
+  SWATCH
+  TEXT
+}
+
+"""The set of valid sort keys for the products inside a category."""
+enum ProductCategorySortKeys {
+  """Sort by product identifier."""
+  ID
+  """Sorts by the manual sort order of the product in the category."""
+  MANUAL
+  """Sort by product name."""
+  NAME
+  """
+  Sorts by product variant prices, if ASC is specified, it will sort by the lowest price of the variants.
+  If DESC is specified, it will sort by the highest price of the variants.
+  """
+  PRICE
+}
+
+"""A connection to a list of items."""
+type ProductConnection {
+  """A list of edges."""
+  edges: [ProductEdge!]
+  """A flattened list of the nodes"""
+  nodes: [Product!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+"""Represents a discounted price for a product variant."""
+type ProductDiscount implements Node {
+  """Gets the ID of the product discount."""
+  id: ID!
+  """The name of the product discount."""
+  name: String!
+  """Gets the date and time when the product discount becomes valid."""
+  validFrom: DateTime
+  """Gets the date and time when the product discount is no longer valid."""
+  validUntil: DateTime
+  """Gets the value of the product discount."""
+  value: ProductDiscountValue!
+}
+
+"""Represents an absolute discount value for a product variant."""
+type ProductDiscountAbsoluteValue {
+  """Gets the absolute discount values."""
+  value: Money
+}
+
+"""Represents a relative discount value for a product variant."""
+type ProductDiscountRelativeValue {
+  """Gets the factor of the relative discount value."""
+  factor: Decimal!
+}
+
+union ProductDiscountValue = ProductDiscountAbsoluteValue | ProductDiscountRelativeValue
+
+type ProductEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: Product!
+}
+
+type ProductPriceRange {
+  """Gets the maximum price of the product in the specified currency."""
+  maxPrice: Price!
+  """Gets the minimum price of the product in the specified currency."""
+  minPrice: Price!
+}
+
+"""The set of valid sort keys for the Products query."""
+enum ProductSortKeys {
+  """Sort by product identifier."""
+  ID
+  """Sort by product name."""
+  NAME
+  """
+  Sorts by product variant prices, if ASC is specified, it will sort by the lowest price of the variants.
+  If DESC is specified, it will sort by the highest price of the variants.
+  """
+  PRICE
+}
+
+type ProductVariant {
+  """
+  Returns the availability status of the variant, including sale eligibility and stock details.
+  """
+  availability: ProductVariantAvailability
+  """
+  The barcode (for example, ISBN, UPC, or GTIN) associated with the variant.
+  """
+  barcode: String
+  """Gets the unique identifier of the variant."""
+  id: ID!
+  """
+  Gets the featured image for the variant, the featured image is the first media of type image
+  """
+  image: Media
+  """A list of media associated with the variant."""
+  media(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): MediaConnection!
+  """The metadata associated with the variant."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The name of the variant."""
+  name: String!
+  """
+  Gets the scoped price for the variant, the scoped price is the price for the current channel and currency.
+  """
+  price: Price
+  """Gets the product associated with the variant."""
+  product: Product!
+  """List of attributes and values applied to the variant."""
+  selectedAttributes: [SelectedAttribute!]!
+  """Gets the SKU (Stock Keeping Unit) of the variant."""
+  sku: String
+}
+
+type ProductVariantAvailability {
+  """
+  Indicates whether the variant is available for purchase in the current channel. If `Channel`, isn't specified, it will throw an exception.
+  """
+  availableForPurchase: Boolean!
+  """Number of items of the Product Variant that are in stock."""
+  availableQuantity: Int!
+  """
+  The stock policy for the inventory, which determines how stock is managed.
+  """
+  stockPolicy: StockPolicy!
+}
+
+"""A connection to a list of items."""
+type ProductVariantConnection {
+  """A list of edges."""
+  edges: [ProductVariantEdge!]
+  """A flattened list of the nodes"""
+  nodes: [ProductVariant!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type ProductVariantEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: ProductVariant!
+}
+
+"""
+This exception is thrown when a product variant with the specified ID cannot be found.
+"""
+type ProductVariantNotFoundError implements UserError {
+  message: String!
+}
+
+type ProductsConnection {
+  """Gets the aggregates for the products in the current connection."""
+  aggregates: [AggregateDto!]!
+  """A list of edges."""
+  edges: [ProductsEdge!]
+  """A flattened list of the nodes"""
+  nodes: [Product!]
+  """Information to aid in pagination."""
+  pageInfo: PageInfoV2!
+  """Identifies the total count of items in the connection."""
+  totalCount: Int!
+}
+
+type ProductsEdge {
+  """A cursor for use in pagination."""
+  cursor: String!
+  """The item at the end of the edge."""
+  node: Product!
+}
+
+"""The customer queries."""
+type Query {
+  """Retrieves a cart by its ID."""
+  cart(id: ID!): Cart
+  """Returns a list of categories."""
+  categories(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    channelId: ID
+    currency: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): CategoryConnection!
+  """Gets a single `Category` by its ID or slug."""
+  category(channelId: ID, currency: String, id: ID, slug: String): Category
+  """Gets a single `Collection` by its ID or slug."""
+  collection(id: ID, slug: String): Collections
+  """Returns a list of collections."""
+  collections(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): CollectionsConnection!
+  """Retrieves a list of all countries."""
+  countries: [CountryInfo!]!
+  """
+  The customer associated with the given access token given in the Authorization header.
+  """
+  customer: Customer
+  node(id: ID!): Node
+  """Retrieves a single order by `ID`."""
+  order(
+    """The `ID` of the Order."""
+    id: ID!
+  ): Order
+  """Retrieves a paginated list of payment gateways."""
+  paymentGateways(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    cartId: ID!
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): PaymentGatewayConnection!
+  """Gets a single `Product` by its ID or slug."""
+  product(channelId: ID, currency: String, id: ID, slug: String): Product
+  """Returns a list of products."""
+  products(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    channelId: ID
+    currency: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+    query: String
+    sortDirection: SortDirection! = ASC
+    sortKey: ProductSortKeys! = ID
+  ): ProductsConnection!
+}
+
+type RelativeShippingMethodRate implements CartAvailableShippingMethodRate {
+  """The unique identifier for the shipping method rate."""
+  id: ID!
+  """
+  The rate of the shipping method rate, expressed as a percentage of the total cost.
+  """
+  rate: Float!
+}
+
+type RelativeValue {
+  """The percentage value of the relative value."""
+  percentage: Decimal!
+}
+
+enum ReplicationStrategy {
+  """
+  Replicates the cart by approximating the requested quantities as closely as possible. For example, if a line item specifies a quantity of 5 but only 4 are available, 4 will be added to the replicated cart.
+  """
+  PARTIAL_REPLICATION
+  """
+  Replicates the cart while excluding any line items that cannot be fully replicated. For example, if a line item specifies a quantity of 5 but only 4 are available, the item will be removed from the replicated cart.
+  """
+  SKIP_UNAVAILABLE
+  """
+  Generates an error if the cart cannot be replicated exactly as specified.
+  """
+  STRICT
+}
+
+type SelectedAttribute {
+  """The selected attribute"""
+  attribute: Attribute!
+  """The selected attribute value."""
+  attributeValue: AttributeValue!
+  """The selected attribute name."""
+  name: String!
+  """The selected attribute ID."""
+  value: String!
+}
+
+enum ShipmentState {
+  CANCELLED
+  DELIVERED
+  PENDING
+  READY
+  SHIPPED
+}
+
+"""
+This exception is thrown when a shipping method with the specified ID cannot be found.
+"""
+type ShippingMethodNotFoundError implements UserError {
+  message: String!
+}
+
+"""Represents the direction of sorting."""
+enum SortDirection {
+  """Sorts in ascending order."""
+  ASC
+  """Sorts in descending order."""
+  DESC
+}
+
+enum StockPolicy {
+  NOT_TRACKED
+  TRACKED
+}
+
+type StripePaymentGateway implements PaymentGateway {
+  """The channel IDs associated with the payment gateway."""
+  channelIds: [ID!]!
+  """The unique identifier of the payment gateway."""
+  id: ID!
+  """Is true if the payment gateway is in test mode."""
+  isTest: Boolean!
+  """The name of the payment gateway."""
+  name: String!
+  """The publishable key for the Stripe payment gateway."""
+  publishableKey: String!
+}
+
+type StripePaymentSession implements PaymentSession {
+  """The unique identifier of the payment session."""
+  clientSecret: String!
+  """The unique identifier of the payment session."""
+  id: ID!
+  """The payment gateway associated with the payment session."""
+  paymentGateway: PaymentGateway!
+  """The unique identifier of the payment intent."""
+  paymentIntentId: String!
+}
+
+type SwatchAttributeValue implements AttributeValue {
+  color: String
+  id: ID!
+  """The media associated the swatch."""
+  media: Media
+  """The metadata associated with the attribute value."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The value of the attribute."""
+  value: String!
+}
+
+enum TaxBehavior {
+  """
+  Exclusive tax is added on top of the price. For example, a product has the price defined as 5.00 USD. The tax charged on this product could be 10% and would result in a final price of 5.50 USD. (Tax rates might differ—this is only an explanatory example.)
+  """
+  EXCLUSIVE
+  """
+  Inclusive tax is already included in the price. For example, a product has the price defined as 5.00 USD. The final price the customer pays is 5.00 USD.
+  """
+  INCLUSIVE
+}
+
+"""
+Represents a portion of a tax rate applied to a cart or line item, detailing the specific tax amount and its type.
+"""
+type TaxPortion {
+  """
+  Gets the name of the tax portion, which describes the type of tax applied (e.g., VAT, sales tax).
+  """
+  name: String!
+  """
+  Gets the amount of the tax portion, which is the specific tax amount applied to the cart or line item.
+  """
+  rate: Decimal!
+}
+
+"""
+Represents the tax rate applied to a cart or line item, including the rate and any applicable tax portions.
+"""
+type TaxRate {
+  """
+  Gets the tax composition of the tax rate, which includes details about how the tax is structured.
+  """
+  composition: TaxRateComposition!
+  """Gets the tax rate as a decimal value."""
+  rate: Decimal!
+  """
+  The tax portions of the tax rate, which detail how the tax is divided among different components.
+  """
+  taxPortions: [TaxPortion!]!
+}
+
+enum TaxRateComposition {
+  ADDITIVE
+  COMPOUND
+}
+
+"""The monetary value in the smallest unit of the currency."""
+type TaxedPrice {
+  """The total price including tax."""
+  gross: Money!
+  """The total price excluding tax."""
+  net: Money!
+  """The tax amount"""
+  tax: Money!
+}
+
+type TextAttributeValue implements AttributeValue {
+  """The unique identifier of the attribute value."""
+  id: ID!
+  """The metadata associated with the attribute value."""
+  metadata: [KeyValuePairOfStringAndString!]!
+  """The value of the attribute."""
+  value: String!
+}
+
+type TypeId {
+  decode: TypeIdDecoded!
+  hasType(type: String!): Boolean!
+}
+
+type TypeIdDecoded {
+  encode: TypeId!
+  hasType(type: String!): Boolean!
+  id: UUID!
+  suffix: String!
+  type: String!
+}
+
+scalar UUID
+
+"""
+Represents the unit price of a product or variant in a cart or order, including the monetary value and currency and potentially discounted price.
+
+The unit price is expressed in the smallest unit of the currency, allowing for precise calculations and display of product pricing.
+"""
+type UnitPrice {
+  """
+  The three-letter currency code that represents a world currency used in a store. Currency codes include standard ISO 4217 codes, legacy codes, and non-standard codes. For example, USD.
+  """
+  discountedPrice: DiscountedPrice
+  """Retrieves the tax behavior of the unit price."""
+  taxBehavior: TaxBehavior!
+  """The monetary value in the smallest unit of the currency."""
+  value: Money!
+}
+
+interface UserError {
+  message: String!
+}
+
+type ValueObject {
+  copy: ValueObject
+}
+
+type ZoneInfo {
+  code: String!
+  name: String!
+  postalCodeRegex: String
+}

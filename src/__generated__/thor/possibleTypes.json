@@ -1,0 +1,168 @@
+{
+  "possibleTypes": {
+    "AttributeValue": [
+      "SwatchAttributeValue",
+      "TextAttributeValue"
+    ],
+    "BaseAddress": [
+      "CartAddress",
+      "CustomerAddress"
+    ],
+    "CartAvailableShippingMethodRate": [
+      "AbsoluteShippingMethodRate",
+      "RelativeShippingMethodRate"
+    ],
+    "CartCompleteError": [
+      "CartCompletionDiscrepancyError",
+      "CartNotFoundError"
+    ],
+    "CartCreateError": [
+      "CreateCartAddressDoesNotHaveCountryCodeError",
+      "CreateCartAuthenticationFailedError",
+      "CreateCartAuthorizationFailedError",
+      "CreateCartChannelDoesNotSupportCountryError",
+      "CreateCartChannelDoesNotSupportCurrencyError",
+      "CreateCartChannelHasNoCountriesError",
+      "CreateCartChannelNotFoundError",
+      "CreateCartFailedNotAllLineItemsCouldBeAddedError"
+    ],
+    "CartDiscountCodeAddError": [
+      "CartAddDiscountCodeNotFoundError",
+      "CartNotFoundError",
+      "DiscountCodeMaxApplicationCountReachedError"
+    ],
+    "CartDiscountCodeRemoveError": [
+      "CartNotFoundError"
+    ],
+    "CartLineItemsAddError": [
+      "CartNotFoundError",
+      "ProductVariantNotFoundError"
+    ],
+    "CartLineItemsRemoveError": [
+      "CartNotFoundError"
+    ],
+    "CartLineItemsUpdateError": [
+      "CartLineItemNotFoundError",
+      "CartNotFoundError"
+    ],
+    "CartPaymentSessionInitializeError": [
+      "CartNotFoundError",
+      "PaymentGatewayChannelMismatchError",
+      "PaymentGatewayNotFoundError",
+      "PaymentGatewaySessionInitializeFailedError"
+    ],
+    "CartReplicateError": [
+      "CartNotFoundError",
+      "CartReplicateStrictValidationFailedError"
+    ],
+    "CartShippingLineAddError": [
+      "CartNotFoundError",
+      "ShippingMethodNotFoundError"
+    ],
+    "CartShippingLineRemoveError": [
+      "CartNotFoundError",
+      "CartShippingLineNotFoundError"
+    ],
+    "CartShippingLinesSetError": [
+      "CartNotFoundError",
+      "ShippingMethodNotFoundError"
+    ],
+    "CartUpdateError": [
+      "CartAuthenticationFailedError",
+      "CartAuthorizationFailedError",
+      "CartNotFoundError"
+    ],
+    "CustomerAccessTokenCreateError": [
+      "InvalidCredentialsError"
+    ],
+    "CustomerAccessTokenRefreshError": [
+      "InvalidRefreshTokenError"
+    ],
+    "CustomerActivateError": [
+      "CustomerEmailAlreadyConfirmedError",
+      "CustomerInvalidActivationTokenError",
+      "CustomerInvalidPasswordError"
+    ],
+    "CustomerAddressCreateError": [
+      "AddressAlreadyExistsError",
+      "CustomerNotFoundError"
+    ],
+    "CustomerAddressDeleteError": [
+      "AddressNotFoundError",
+      "CustomerNotFoundError"
+    ],
+    "CustomerAddressUpdateError": [
+      "AddressAlreadyExistsError",
+      "AddressNotFoundError",
+      "CustomerNotFoundError"
+    ],
+    "CustomerPasswordResetError": [
+      "InvalidPasswordError",
+      "InvalidTokenError"
+    ],
+    "CustomerPasswordResetTokenError": [
+      "InvalidCredentialsError"
+    ],
+    "CustomerRegisterError": [
+      "CustomerRegisterFailedError"
+    ],
+    "DiscountApplicationValue": [
+      "Money",
+      "RelativeValue"
+    ],
+    "Node": [
+      "Cart",
+      "Customer",
+      "CustomerAddress",
+      "CustomerGroup",
+      "Order",
+      "Product",
+      "ProductDiscount"
+    ],
+    "PaymentGateway": [
+      "StripePaymentGateway"
+    ],
+    "PaymentSession": [
+      "StripePaymentSession"
+    ],
+    "ProductDiscountValue": [
+      "ProductDiscountAbsoluteValue",
+      "ProductDiscountRelativeValue"
+    ],
+    "UserError": [
+      "AddressAlreadyExistsError",
+      "AddressNotFoundError",
+      "CartAddDiscountCodeNotFoundError",
+      "CartAuthenticationFailedError",
+      "CartAuthorizationFailedError",
+      "CartCompletionDiscrepancyError",
+      "CartLineItemNotFoundError",
+      "CartNotFoundError",
+      "CartReplicateStrictValidationFailedError",
+      "CartShippingLineNotFoundError",
+      "CreateCartAddressDoesNotHaveCountryCodeError",
+      "CreateCartAuthenticationFailedError",
+      "CreateCartAuthorizationFailedError",
+      "CreateCartChannelDoesNotSupportCountryError",
+      "CreateCartChannelDoesNotSupportCurrencyError",
+      "CreateCartChannelHasNoCountriesError",
+      "CreateCartChannelNotFoundError",
+      "CreateCartFailedNotAllLineItemsCouldBeAddedError",
+      "CustomerEmailAlreadyConfirmedError",
+      "CustomerInvalidActivationTokenError",
+      "CustomerInvalidPasswordError",
+      "CustomerNotFoundError",
+      "CustomerRegisterFailedError",
+      "DiscountCodeMaxApplicationCountReachedError",
+      "InvalidCredentialsError",
+      "InvalidPasswordError",
+      "InvalidRefreshTokenError",
+      "InvalidTokenError",
+      "PaymentGatewayChannelMismatchError",
+      "PaymentGatewayNotFoundError",
+      "PaymentGatewaySessionInitializeFailedError",
+      "ProductVariantNotFoundError",
+      "ShippingMethodNotFoundError"
+    ]
+  }
+}
