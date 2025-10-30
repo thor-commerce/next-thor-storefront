@@ -14,7 +14,9 @@
     "@apollo/client-integration-nextjs": "^0.14.1",
     "@graphql-codegen/fragment-matcher": "^6.0.0",
     "@graphql-codegen/typescript-apollo-client-helpers": "^3.0.1",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@next/env": "^16.0.1",
+    "graphql": "^16.11.0",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0"

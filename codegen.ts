@@ -31,6 +31,7 @@ const config: CodegenConfig = {
         fragmentMasking: false,
       },
       config: {
+        useTypeImports: true,
         customDirectives: {
           apolloUnmask: true,
         },
