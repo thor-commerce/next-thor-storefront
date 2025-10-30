@@ -7,6 +7,7 @@ import Link from "next/link";
 import ThorImage from "../thor-image/thor-image";
 import { formatMoney } from "@/utils/money";
 import Navigation from "../navigation/navigation";
+import clsx from "clsx";
 
 const PRODUCT_GRID_TILE_FRAGMENT = gql(/* GraphQL */ `
   fragment ProductGridTile on Product {
@@ -24,6 +25,27 @@ const PRODUCT_GRID_TILE_FRAGMENT = gql(/* GraphQL */ `
           currencyCode
           fractionDigits
         }
+        discountedPrice {
+          value {
+            centAmount
+            fractionDigits
+            currencyCode
+          }
+          discount {
+            value {
+              ... on ProductDiscountRelativeValue {
+                factor
+              }
+              ... on ProductDiscountAbsoluteValue {
+                value {
+                  centAmount
+                  currencyCode
+                  fractionDigits
+                }
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -40,6 +62,40 @@ export default function ProductGridTile({ productFragment }: Props) {
     fragmentName: "ProductGridTile",
   });
 
+  const minPrice = data.priceRange?.minPrice;
+  const discountedPrice = minPrice?.discountedPrice;
+  const discountValue = discountedPrice?.discount?.value;
+
+  let discountLabel: string | null = null;
+
+  if (discountedPrice && minPrice?.value) {
+    switch (discountValue?.__typename) {
+      case "ProductDiscountAbsoluteValue": {
+        const formattedDiscount = formatMoney({
+          money: {
+            centAmount:
+              minPrice.value.centAmount - discountedPrice.value.centAmount,
+            currencyCode: minPrice.value.currencyCode,
+            fractionDigits: minPrice.value.fractionDigits,
+          },
+        });
+        if (formattedDiscount) {
+          discountLabel = `${formattedDiscount} off`;
+        }
+        break;
+      }
+      case "ProductDiscountRelativeValue": {
+        const factor = Number(discountValue.factor);
+        if (Number.isFinite(factor) && factor > 0) {
+          const percentOff = Math.round(factor * 100);
+          if (percentOff > 0) {
+            discountLabel = `${percentOff}% off`;
+          }
+        }
+        break;
+      }
+    }
+  }
 
   return (
     <li className={s.tile}>
@@ -50,12 +106,39 @@ export default function ProductGridTile({ productFragment }: Props) {
             alt={data.name}
             sizes="33vw"
             fill
-            objectFit="cover"
+            className={s.productImage}
           />
         </div>
         <div className={s.productInfo}>{data.name}</div>
-        {data.priceRange?.minPrice && (
-          <div>{formatMoney({ money: data.priceRange.minPrice.value })}</div>
+
+        {minPrice && (
+          <div className={s.productPriceInfo}>
+            <div className={s.productPriceWrapper}>
+              <div
+                aria-hidden="true"
+                className={clsx(s.productPrice, s.isCurrentPrice)}
+              >
+                {formatMoney({
+                  money: discountedPrice
+                    ? discountedPrice.value
+                    : minPrice.value,
+                })}
+              </div>
+              {discountedPrice && (
+                <div
+                  className={clsx(s.productPrice, s.isStrikedOut)}
+                  aria-hidden="true"
+                >
+                  {formatMoney({
+                    money: minPrice.value,
+                  })}
+                </div>
+              )}
+            </div>
+            {discountLabel && (
+              <div className={s.discountLabel}>{discountLabel}</div>
+            )}
+          </div>
         )}
       </Navigation>
     </li>

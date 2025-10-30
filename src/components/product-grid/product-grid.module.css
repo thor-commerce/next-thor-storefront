@@ -22,6 +22,36 @@
   background-color: rgb(245, 245, 245);
 }
 
+.productImage {
+  object-fit: cover;
+}
+
 .productInfo {
   padding: 12px 0 2px 0;
+}
+.productPriceInfo {
+  display: flex;
+  padding-top: 10px;
+}
+
+.productPriceWrapper {
+  display: inline-flex;
+  flex-wrap: wrap;
+}
+
+.productPrice {
+  &.isCurrentPrice {
+    padding-right: 5px;
+  }
+  &.isStrikedOut {
+    text-decoration: line-through;
+    color: var(--text-muted);
+  }
+}
+
+.discountLabel {
+  margin-bottom: -4px;
+  padding-left: 8px;
+  font-weight: 600;
+  color: var(--text-discount)
 }
