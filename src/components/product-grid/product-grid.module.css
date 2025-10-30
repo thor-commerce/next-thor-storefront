@@ -1,0 +1,27 @@
+.grid {
+  display: grid;
+  list-style: none;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+  max-width: 1920px;
+  padding: 0 48px;
+  position: relative;
+}
+
+.tile {
+  grid-column: span 3;
+}
+
+.linkWrapper {
+  display: contents;
+}
+
+.imageWrapper {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background-color: rgb(245, 245, 245);
+}
+
+.productInfo {
+  padding: 12px 0 2px 0;
+}

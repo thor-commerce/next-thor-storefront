@@ -3,14 +3,15 @@ import { loadEnvConfig } from "@next/env";
 
 loadEnvConfig(process.cwd());
 
-const thorSchema: CodegenConfig["generates"] = {
+const thorSchema: CodegenConfig["generates"][number] = {
   schema: {
     [`https://api.thorcommerce.io/${process.env.THOR_COMMERCE_ORGANIZATION}/storefront/graphql/schema.graphql`]:
       {},
   },
+  documents: ["src/**/*.{ts,tsx}", "!src/__generated__/**"],
 };
 
-export const THOR_GENERATED_OUTPUT_DIR = "src/__generated__/thor" as const;
+const THOR_GENERATED_OUTPUT_DIR = "src/__generated__/thor" as const;
 
 const config: CodegenConfig = {
   overwrite: true,
