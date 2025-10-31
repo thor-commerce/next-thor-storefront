@@ -43,10 +43,10 @@
   justify-content: space-between;
 }
 .productDetails {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 
 .attributesText {
@@ -64,6 +64,75 @@
 .strikeThrough {
   text-decoration: line-through;
   color: var(--text-muted);
+}
+
+.lineItemControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.removeItemButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+
+  &:where([data-loading="true"]) {
+    cursor: not-allowed;
+    pointer-events: none;
+    justify-content: center;
+
+    .removeIcon {
+      opacity: 0;
+    }
+  }
+}
+
+.spinner {
+  display: inline-block;
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-radius: 99999px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  animation: 0.45s linear 0s infinite normal none running spinnerAnimation;
+  --spinner-size: 1rem;
+  color: currentcolor;
+  width: 1em;
+  height: 1em;
+}
+.spinnerButton {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  position: absolute;
+  margin-inline-end: 0px;
+  font-size: 1em;
+}
+.spinnerSpan {
+  border: 0px;
+  clip: rect(0px, 0px, 0px, 0px);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+}
+
+@keyframes spinnerAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .quantityControls {
@@ -96,4 +165,19 @@
   align-items: center;
   justify-content: center;
   width: 24px;
+}
+
+.discountLabelContainer {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-discount);
+}
+.discountLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-accent);
 }

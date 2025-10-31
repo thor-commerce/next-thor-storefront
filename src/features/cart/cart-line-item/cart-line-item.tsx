@@ -7,6 +7,7 @@ import clsx from "clsx";
 import EditItemQuantityButton from "./edit-quantity-button";
 import Navigation from "@/components/navigation/navigation";
 import DiscountLabelIcon from "@/components/icons/discount-label";
+import { RemoveItemButton } from "./remove-line-item-button";
 
 export default async function CartLineItem({
   line,
@@ -69,10 +70,13 @@ export default async function CartLineItem({
                   </div>
                 )}
               </div>
-              <div className={s.quantityControls}>
-                <EditItemQuantityButton item={line} type="decrease" />
-                <span className={s.quantity}>{line.quantity}</span>
-                <EditItemQuantityButton item={line} type="increase" />
+              <div className={s.lineItemControls}>
+                <div className={s.quantityControls}>
+                  <EditItemQuantityButton item={line} type="decrease" />
+                  <span className={s.quantity}>{line.quantity}</span>
+                  <EditItemQuantityButton item={line} type="increase" />
+                </div>
+                <RemoveItemButton item={line} />
               </div>
             </div>
             <div className={s.linePrice}>

@@ -107,9 +107,7 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
             )}
           </div>
         )}
-        {selectedVariant.availability?.availableQuantity}
-        {selectedVariant.availability?.availableForPurchase ? "true" : "false"}
-        {selectedVariant.availability?.stockPolicy}
+
 
         <AddToCartButton selectedVariantId={selectedVariant.id} />
       </div>
