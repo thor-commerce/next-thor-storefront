@@ -1,0 +1,33 @@
+.cartView {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  vertical-align: top;
+  position: relative;
+  margin: 0px auto 40px;
+}
+
+.container {
+  max-width: 1100px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.cartItemsContainer {
+  flex-basis: 66.6667%;
+  max-width: 66.6667%;
+  padding: 0 8px;
+}
+
+.cartSummaryContainer {
+  max-width: 33.3333%;
+  flex-grow: 1;
+  padding: 0 16px;
+}
+
+.cartItemList {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+}

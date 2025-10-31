@@ -1,3 +1,4 @@
+"use client";
 import Image, { ImageLoaderProps } from "next/image";
 import clsx from "clsx";
 type Props = {} & React.ComponentProps<typeof Image>;

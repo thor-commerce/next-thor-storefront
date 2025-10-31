@@ -1,0 +1,59 @@
+.cartLineItem {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  width: 100%;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #E5E5E5;
+  }
+}
+
+.lineRow {
+  display: flex;
+}
+
+.productThumbnail {
+  width: 180px;
+  min-width: 180px;
+  padding-right: 16px;
+  margin: 0px;
+  img {
+    background: var(--product-tile-bg);
+  }
+}
+
+.thumbnailWrapper {
+  aspect-ratio: 1 / 1;
+  position: relative;
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  -webkit-box-flex: 1;
+  flex-grow: 1;
+  min-width: 0px;
+}
+
+.productInfoWrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.attributesText {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.linePrice {
+  display: flex;
+  gap: 10px;
+  vertical-align: top;
+  margin-right: -8px;
+}
+
+.subtotal, .strikeThrough {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}

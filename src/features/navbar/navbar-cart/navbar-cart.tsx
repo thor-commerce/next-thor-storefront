@@ -5,6 +5,7 @@ import { getClient } from "@/lib/thor/apollo-client";
 import { CACHE_TAGS } from "@/constants";
 import clsx from "clsx";
 import { NAVBAR_CART_QUERY } from "@/features/cart/queries";
+import Navigation from "@/components/navigation/navigation";
 
 export default async function NavbarCart() {
   const cartId = await getCartIdFromCookies();
@@ -30,7 +31,7 @@ export default async function NavbarCart() {
   });
 
   return (
-    <div>
+    <Navigation href="/cart">
       <button className={s.cartButton}>
         <ShoppingCart />
         {data?.cart?.lineItemsQuantity && data.cart.lineItemsQuantity > 0 ? (
@@ -39,6 +40,6 @@ export default async function NavbarCart() {
           </span>
         ) : null}
       </button>
-    </div>
+    </Navigation>
   );
 }
