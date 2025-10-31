@@ -29,7 +29,6 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThorApolloProvider>
           <main className="main-root">
-            <Navbar />
             {children}
           </main>
         </ThorApolloProvider>
