@@ -1,0 +1,90 @@
+.button {
+  text-align: center;
+  text-decoration: none;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 18px 24px;
+  width: 100%;
+  min-height: 40px;
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0px, 0px, 0px);
+  background: #111111;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  font-weight: 600;
+
+  @media (hover: hover) {
+    &:hover:not(:disabled) {
+      background: #707072;
+    }
+  }
+  &:disabled {
+    background: #707072;
+    pointer-events: none;
+  }
+
+  &:where([data-loading="true"]) {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+    justify-content: center;
+
+    .label,
+    .icon,
+    .trailingIcon {
+      opacity: 0;
+    }
+  }
+}
+
+.spinner {
+  display: inline-block;
+  border-top: 2px solid currentcolor;
+  border-right: 2px solid currentcolor;
+  border-bottom-style: solid;
+  border-left-style: solid;
+  border-radius: 99999px;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  animation: 0.45s linear 0s infinite normal none running spinnerAnimation;
+  --spinner-size: 1rem;
+  color: currentcolor;
+  width: 1em;
+  height: 1em;
+}
+.spinnerButton {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  position: absolute;
+  margin-inline-end: 0px;
+  font-size: 1em;
+}
+.spinnerSpan {
+  border: 0px;
+  clip: rect(0px, 0px, 0px, 0px);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: absolute;
+}
+
+@keyframes spinnerAnimation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

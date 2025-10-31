@@ -13,6 +13,7 @@ const PRODUCT_GRID_TILE_FRAGMENT = gql(/* GraphQL */ `
   fragment ProductGridTile on Product {
     id
     name
+    slug
     heroVariant {
       image {
         src
@@ -99,7 +100,7 @@ export default function ProductGridTile({ productFragment }: Props) {
 
   return (
     <li className={s.tile}>
-      <Navigation href={`/products/${data.id}`} className={s.linkWrapper}>
+      <Navigation href={`/products/${data.slug}`} className={s.linkWrapper}>
         <div className={s.imageWrapper}>
           <ThorImage
             src={data.heroVariant?.image?.src ?? ""}

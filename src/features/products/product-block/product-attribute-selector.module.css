@@ -1,0 +1,93 @@
+.attributeSelectorForm {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+.optionsContainer {
+  margin: 0px auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0px, 1fr));
+  gap: 7px;
+  max-width: 100%;
+  border: 1px solid transparent;
+  width: 100%;
+
+  &.swatchOptionsContainer {
+    grid-template-columns: repeat(6, minmax(0px, 1fr));
+    column-gap: 10px;
+    row-gap: 10px;
+  }
+}
+
+.legend {
+  padding-bottom: 10px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.textOption {
+  font-size: 14px;
+  grid-column: span 1;
+  -webkit-box-align: center;
+  align-items: center;
+
+  display: flex;
+  height: 48px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover label {
+    border: 1px solid #171717;
+    border-radius: 4px;
+  }
+
+  label {
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    border: 1px solid #cacacb;
+    border-radius: 4px;
+  }
+}
+.textOptionInput:disabled ~ label {
+  background: #f5f5f5;
+  cursor: not-allowed;
+  color: var(--text-muted);
+}
+.textOptionInput:checked ~ label {
+  border: 1px solid #171717;
+  border-radius: 4px;
+}
+
+.swatchOption {
+  aspect-ratio: 1 / 1;
+  label {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    background: var(--product-tile-bg);
+    &:hover {
+      outline: 1px solid #171717;
+      outline-offset: 1px;
+    }
+  }
+}
+
+.swatchColor {
+  position: absolute;
+  inset: 0;
+  background: var(--color);
+}
+.swatchInput:checked ~ label {
+  outline: 1px solid #171717;
+  outline-offset: 1px;
+}

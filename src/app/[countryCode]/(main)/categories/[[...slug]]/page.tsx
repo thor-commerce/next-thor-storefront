@@ -1,17 +1,20 @@
 import { gql } from "@/__generated__/thor";
 import {
   CategoryGridQueryVariables,
+  ProductCategorySortKeys,
+  ProductSortKeys,
   SortDirection,
 } from "@/__generated__/thor/graphql";
 import CategoryGrid from "@/features/categories/category-grid/category-grid";
 import { CATEGORY_GRID_QUERY } from "@/features/categories/queries";
 
 import { PreloadQuery } from "@/lib/thor/apollo-client";
+import { getCountryByCountryCode } from "@/utils/countries";
 
 export default async function CategoryPage({
   params,
-}: PageProps<"/[channel]/categories/[[...slug]]">) {
-  const { slug } = await params;
+}: PageProps<"/[countryCode]/categories/[[...slug]]">) {
+  const { slug, countryCode } = await params;
 
   const categorySlug = slug?.[slug.length - 1];
 
@@ -19,14 +22,13 @@ export default async function CategoryPage({
     throw new Error("Category slug is required");
   }
 
+  const country = getCountryByCountryCode(countryCode);
   const variables: CategoryGridQueryVariables = {
-    slug: categorySlug,
+    slug: categorySlug.toLowerCase(),
+    currency: country.currencies[0],
+    channelId: country.channel,
+    sortKey: ProductCategorySortKeys.Manual,
     sortDirection: SortDirection.Asc,
-    curreny: "USD",
-    channelId: "ch_01k8tn63mgf9baxksv6exmq2gm",
-    // sortKey: sortKey,
-    // sortDirection: sortDirection,
-    // currency: country.currencies[0],
   };
 
   return (

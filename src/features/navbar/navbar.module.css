@@ -1,0 +1,38 @@
+.header {
+  z-index: 20;
+  top: 0;
+  left: 0;
+  right: 0;
+  position: sticky;
+  background: white;
+  box-shadow: 0 0 transparent, 0 0 transparent,
+    0 1.875rem 1.875rem rgba(0, 0, 0, 0.02), 0 0 0.5rem rgba(0, 0, 0, 0.03),
+    0 0.0625rem rgba(0, 0, 0, 0.05);
+}
+
+.wrapper {
+  padding: 0 32px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  gap: 10px;
+}
+
+.logo {
+  margin-right: 16px;
+}
+
+.nav {
+  font-size: 14px;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+}

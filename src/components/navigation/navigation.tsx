@@ -1,4 +1,6 @@
+"use client";
 import Link, { LinkProps } from "next/link";
+import { useParams } from "next/navigation";
 import { AnchorHTMLAttributes } from "react";
 
 type Props = object;
@@ -14,8 +16,9 @@ export default function Navigation({
   children,
   ...props
 }: NavigationProps) {
+  const { countryCode } = useParams<{ countryCode: string }>();
   return (
-    <Link href={href} {...props}>
+    <Link href={`/${countryCode}${href}`} {...props}>
       {children}
     </Link>
   );

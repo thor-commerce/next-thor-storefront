@@ -1,4 +1,4 @@
-import { Money } from "@/__generated__/thor/graphql";
+import { Money, Price } from "@/__generated__/thor/graphql";
 import { LOCALE } from "@/lib/thor/config";
 export const centToAmount = (money: Money) =>
   money.centAmount / 10 ** money.fractionDigits;
@@ -26,3 +26,4 @@ export const formatMoney = ({
     console.error(e);
   }
 };
+
