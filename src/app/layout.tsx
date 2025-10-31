@@ -28,9 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThorApolloProvider>
-          <main className="main-root">
-            {children}
-          </main>
+          <main className="main-root">{children}</main>
         </ThorApolloProvider>
       </body>
     </html>

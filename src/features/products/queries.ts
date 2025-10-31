@@ -1,5 +1,35 @@
 import { gql } from "@/__generated__/thor";
 
+export const PRODUCTS_GRID_QUERY = gql(/* GraphQL */ `
+  query ProductsGrid(
+    $channelId: ID!
+    $currency: String!
+    $after: String
+    $sortDirection: SortDirection!
+    $sortKey: ProductSortKeys!
+  ) {
+    products(
+      first: 15
+      after: $after
+      sortDirection: $sortDirection
+      sortKey: $sortKey
+      channelId: $channelId
+      currency: $currency
+    ) {
+      edges {
+        node {
+          id
+          ...ProductGridTile
+        }
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+    }
+  }
+`);
+
 export const PRODUCT_QUERY = gql(/* GraphQL */ `
   query ProductDetail($slug: String, $currency: String!, $channelId: ID!) {
     product(slug: $slug, channelId: $channelId, currency: $currency) {

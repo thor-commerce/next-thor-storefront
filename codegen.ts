@@ -5,7 +5,7 @@ loadEnvConfig(process.cwd());
 
 const thorSchema: CodegenConfig["generates"][number] = {
   schema: {
-    [`https://api.thorcommerce.io/${process.env.THOR_COMMERCE_ORGANIZATION}/storefront/graphql/schema.graphql`]:
+    [`https://api.thorcommerce.io/${process.env.NEXT_PUBLIC_THOR_COMMERCE_ORGANIZATION}/storefront/graphql/schema.graphql`]:
       {},
   },
   documents: ["src/**/*.{ts,tsx}", "!src/__generated__/**"],

@@ -1,8 +1,6 @@
-import { gql } from "@/__generated__/thor";
 import {
   CategoryGridQueryVariables,
   ProductCategorySortKeys,
-  ProductSortKeys,
   SortDirection,
 } from "@/__generated__/thor/graphql";
 import CategoryGrid from "@/features/categories/category-grid/category-grid";
