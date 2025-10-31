@@ -32,12 +32,18 @@ export const CART_DETAILS_QUERY = gql(/* GraphQL */ `
             variantName
             productName
             quantity
+            productSlug
             variant {
               image {
                 src
               }
               selectedAttributes {
                 value
+              }
+              availability {
+                availableForPurchase
+                availableQuantity
+                stockPolicy
               }
             }
             unitPrice {

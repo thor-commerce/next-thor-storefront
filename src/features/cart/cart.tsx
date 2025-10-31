@@ -23,15 +23,15 @@ export default async function Cart({ cart }: Props) {
     <div className={s.cartView}>
       <div className={s.container}>
         <div className={s.cartItemsContainer}>
-          <h1>Cart</h1>
+          <h1 className={s.cartHeading}>Cart</h1>
           <ul className={s.cartItemsList}>
             {lines.map((line) => (
-                <CartLineItem key={line.id} line={line} />
+              <CartLineItem key={line.id} line={line} />
             ))}
           </ul>
         </div>
         <div className={s.cartSummaryContainer}>
-          <h1>Summary</h1>
+          <h1 className={s.cartHeading}>Summary</h1>
         </div>
       </div>
     </div>

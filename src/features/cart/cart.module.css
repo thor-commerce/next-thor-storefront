@@ -5,6 +5,7 @@
   vertical-align: top;
   position: relative;
   margin: 0px auto 40px;
+  padding-top: 20px;
 }
 
 .container {
@@ -24,6 +25,11 @@
   max-width: 33.3333%;
   flex-grow: 1;
   padding: 0 16px;
+}
+
+.cartHeading {
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .cartItemList {

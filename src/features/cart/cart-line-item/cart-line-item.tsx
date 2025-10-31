@@ -4,6 +4,9 @@ import s from "./cart-line-item.module.css";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
 import clsx from "clsx";
+import EditItemQuantityButton from "./edit-quantity-button";
+import Navigation from "@/components/navigation/navigation";
+import DiscountLabelIcon from "@/components/icons/discount-label";
 
 export default async function CartLineItem({
   line,
@@ -49,9 +52,28 @@ export default async function CartLineItem({
         </div>
         <div className={s.productInfo}>
           <div className={s.productInfoWrapper}>
-            <div className="">
-              <div>{line.productName}</div>
-              <div className={s.attributesText}>{attributesText}</div>
+            <div className={s.productDetails}>
+              <div>
+                <Navigation href={`/products/${line.productSlug}`}>
+                  {line.productName}
+                </Navigation>
+                <div className={s.attributesText}>{attributesText}</div>
+                {discountApplications.length > 0 && (
+                  <div className={s.discountLabelContainer}>
+                    {discountApplications.map((app) => (
+                      <div key={app.label} className={s.discountLabel}>
+                        <DiscountLabelIcon />
+                        {app.label}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className={s.quantityControls}>
+                <EditItemQuantityButton item={line} type="decrease" />
+                <span className={s.quantity}>{line.quantity}</span>
+                <EditItemQuantityButton item={line} type="increase" />
+              </div>
             </div>
             <div className={s.linePrice}>
               {isDiscounted && (
