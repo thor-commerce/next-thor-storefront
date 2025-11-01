@@ -5,8 +5,6 @@ import { ProductDetailProduct, ProductDetailProductVariant } from "../types";
 import s from "./product-block.module.css";
 import { mapEdgesToItems } from "@/utils/maps";
 import ProductAttributesSelector from "./product-attribute-selector";
-import Button from "@/components/button/button";
-import AddToCartForm from "../components/add-to-cart-button";
 import AddToCartButton from "../components/add-to-cart-button";
 import clsx from "clsx";
 import { formatMoney } from "@/utils/money";
@@ -107,7 +105,6 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
             )}
           </div>
         )}
-
 
         <AddToCartButton selectedVariantId={selectedVariant.id} />
       </div>

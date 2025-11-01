@@ -2,15 +2,14 @@
 
 import { removeLineItem } from "@/features/cart/actions";
 import clsx from "clsx";
-import { useFormStatus } from "react-dom";
-import s from "./cart-line-item.module.css";
 import { useActionState } from "react";
-import { CartLineItemType } from "../types";
+import { useFormStatus } from "react-dom";
+import s from "./cart-line-items.module.css";
 
-export function RemoveItemButton({ item }: { item: CartLineItemType }) {
+export function RemoveItemButton({ lineItemId }: { lineItemId: string }) {
   const [, formAction] = useActionState(removeLineItem, null);
 
-  const actionWithVariant = formAction.bind(null, item.id);
+  const actionWithVariant = formAction.bind(null, lineItemId);
 
   return (
     <form action={actionWithVariant} className={s.removeForm}>

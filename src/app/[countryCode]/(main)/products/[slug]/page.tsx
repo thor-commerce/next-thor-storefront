@@ -1,7 +1,9 @@
+
 import {
   ProductDetailQuery,
   ProductDetailQueryVariables,
 } from "@/__generated__/thor/graphql";
+import { CACHE_TAGS } from "@/constants";
 import ProductBlock from "@/features/products/product-block/product-block";
 import { PRODUCT_QUERY } from "@/features/products/queries";
 import { getClient } from "@/lib/thor/apollo-client";
@@ -28,6 +30,11 @@ export default async function ProductPage({
       currency: country.currencies[0],
       channelId: country.channel,
     },
+        context: {
+        fetchOptions: {
+          tags: "prod",
+        },
+      },
   });
   const product = data?.product;
 

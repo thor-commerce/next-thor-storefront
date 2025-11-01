@@ -7,6 +7,7 @@ if (process.env.NODE_ENV === "development") {
   loadDevMessages();
   loadErrorMessages();
 }
+
 disableFragmentWarnings();
 
 import { ApolloLink, disableFragmentWarnings, HttpLink } from "@apollo/client";
@@ -16,6 +17,7 @@ import {
   InMemoryCache,
 } from "@apollo/client-integration-nextjs";
 import { TypedTypePolicies } from "@/__generated__/thor/apollo-helpers";
+import { Suspense } from "react";
 
 // have a function to create a client for you
 function makeClient() {
@@ -50,8 +52,10 @@ function makeClient() {
 // you need to create a component to wrap your app in
 export function ThorApolloProvider({ children }: React.PropsWithChildren) {
   return (
-    <ApolloNextAppProvider makeClient={makeClient}>
-      {children}
-    </ApolloNextAppProvider>
+    <Suspense>
+      <ApolloNextAppProvider makeClient={makeClient}>
+        {children}
+      </ApolloNextAppProvider>
+    </Suspense>
   );
 }

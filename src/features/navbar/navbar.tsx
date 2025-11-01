@@ -1,6 +1,7 @@
 import Navigation from "@/components/navigation/navigation";
 import s from "./navbar.module.css";
 import NavbarCart from "./navbar-cart/navbar-cart";
+import { Suspense } from "react";
 
 export default async function Navbar() {
   return (
@@ -20,7 +21,9 @@ export default async function Navbar() {
           </nav>
         </div>
         <div>
-          <NavbarCart />
+          <Suspense>
+            <NavbarCart />
+          </Suspense>
         </div>
       </div>
     </header>

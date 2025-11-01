@@ -16,7 +16,7 @@ export const config = {
   ],
 };
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { origin, pathname, searchParams, search } = request.nextUrl;
 
   const routeValue = pathname + search;

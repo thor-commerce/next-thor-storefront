@@ -1,5 +1,6 @@
+"use cache";
+
 import {
-  ProductCategorySortKeys,
   ProductsGridQueryVariables,
   ProductSortKeys,
   SortDirection,

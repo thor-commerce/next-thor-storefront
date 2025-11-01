@@ -1,7 +1,7 @@
 "use client";
 import Link, { LinkProps } from "next/link";
 import { useParams } from "next/navigation";
-import { AnchorHTMLAttributes } from "react";
+import { AnchorHTMLAttributes, Suspense } from "react";
 
 type Props = object;
 
@@ -11,7 +11,7 @@ type NativeAttrs = Omit<
 >;
 export type NavigationProps = Props & NativeAttrs;
 
-export default function Navigation({
+export function InternalNavigation({
   href,
   children,
   ...props
@@ -21,5 +21,13 @@ export default function Navigation({
     <Link href={`/${countryCode}${href}`} {...props}>
       {children}
     </Link>
+  );
+}
+
+export default function Navigation({ ...props }: NavigationProps) {
+  return (
+    <Suspense>
+      <InternalNavigation {...props} />
+    </Suspense>
   );
 }

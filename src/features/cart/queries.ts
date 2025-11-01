@@ -24,46 +24,15 @@ export const CART_DETAILS_QUERY = gql(/* GraphQL */ `
         countryCode
       }
       lineItemsQuantity
-      lineItems {
+      lineItems(first: 100) {
         edges {
           node {
             id
-            taxBehavior
-            variantName
-            productName
-            quantity
-            productSlug
-            variant {
-              image {
-                src
-              }
-              selectedAttributes {
-                value
-              }
-              availability {
-                availableForPurchase
-                availableQuantity
-                stockPolicy
-              }
-            }
-            unitPrice {
-              value {
-                centAmount
-                currencyCode
-                fractionDigits
-              }
-              discountedPrice {
-                value {
-                  centAmount
-                  currencyCode
-                  fractionDigits
-                }
-              }
-            }
+            ...CartLineItem
+
             discountApplications {
               edges {
                 node {
-                  label
                   discountedAmount {
                     centAmount
                     currencyCode
@@ -71,11 +40,6 @@ export const CART_DETAILS_QUERY = gql(/* GraphQL */ `
                   }
                 }
               }
-            }
-            total {
-                centAmount
-                currencyCode
-                fractionDigits
             }
           }
         }
