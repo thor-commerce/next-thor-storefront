@@ -51,14 +51,16 @@ export default function ProductsGrid({ variables }: Props) {
   }, [data, fetchMore, hasNextPage]);
 
   return (
-    <ProductGrid>
-      {products?.map((product) => (
-        <ProductGridTile key={product.id} productFragment={product} />
-      ))}
-      <ProductGridLoadMore
-        loadMore={handleLoadMore}
-        hasNextPage={hasNextPage}
-      />
-    </ProductGrid>
+    <>
+      <ProductGrid>
+        {products?.map((product) => (
+          <ProductGridTile key={product.id} productFragment={product} />
+        ))}
+        <ProductGridLoadMore
+          loadMore={handleLoadMore}
+          hasNextPage={hasNextPage}
+        />
+      </ProductGrid>
+    </>
   );
 }

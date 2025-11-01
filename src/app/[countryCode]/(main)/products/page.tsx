@@ -5,11 +5,14 @@ import {
   ProductSortKeys,
   SortDirection,
 } from "@/__generated__/thor/graphql";
+import { ProductGridSkeleton } from "@/components/product-grid/product-grid";
+import ProductGridHeader from "@/components/product-grid/product-grid-header";
 import ProductsGrid from "@/features/products/products-grid/products-grid";
 import { PRODUCTS_GRID_QUERY } from "@/features/products/queries";
 
 import { PreloadQuery } from "@/lib/thor/apollo-client";
 import { getCountryByCountryCode } from "@/utils/countries";
+import { Suspense } from "react";
 
 export default async function AllProductsPage({
   params,
@@ -26,7 +29,10 @@ export default async function AllProductsPage({
 
   return (
     <PreloadQuery query={PRODUCTS_GRID_QUERY} variables={variables}>
-      <ProductsGrid variables={variables} />
+      <ProductGridHeader heading="All products" />
+      <Suspense fallback={<ProductGridSkeleton />}>
+        <ProductsGrid variables={variables} />
+      </Suspense>
     </PreloadQuery>
   );
 }

@@ -1,13 +1,12 @@
 import { gql } from "@/__generated__/thor";
 import { ProductGridTileFragment } from "@/__generated__/thor/graphql";
+import { formatMoney } from "@/utils/money";
 import { FragmentType } from "@apollo/client";
 import { useSuspenseFragment } from "@apollo/client/react";
-import s from "./product-grid.module.css";
-import Link from "next/link";
-import ThorImage from "../thor-image/thor-image";
-import { formatMoney } from "@/utils/money";
-import Navigation from "../navigation/navigation";
 import clsx from "clsx";
+import Navigation from "../navigation/navigation";
+import ThorImage from "../thor-image/thor-image";
+import s from "./product-grid.module.css";
 
 const PRODUCT_GRID_TILE_FRAGMENT = gql(/* GraphQL */ `
   fragment ProductGridTile on Product {

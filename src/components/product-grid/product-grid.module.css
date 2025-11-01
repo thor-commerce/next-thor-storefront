@@ -56,3 +56,12 @@
   font-weight: 600;
   color: var(--text-discount)
 }
+
+.header {
+  padding: 15px 48px 15px;
+
+  .heading {
+    font-size: 24px;
+    font-weight: 600;
+  }
+}
