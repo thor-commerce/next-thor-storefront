@@ -1,5 +1,12 @@
-import { CartDetailsQuery } from "@/__generated__/thor/graphql";
+export interface DiscountCodeFormData {
+  code: string;
+}
 
-export type CartLineItemType = NonNullable<
-  NonNullable<CartDetailsQuery["cart"]>["lineItems"]["edges"]
->[number]["node"];
+export interface DiscountCodeActionResponse {
+  success: boolean;
+  messsage?: string;
+  errors?: {
+    [K in keyof DiscountCodeFormData]?: string[];
+  };
+}
+

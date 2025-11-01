@@ -36,7 +36,7 @@ export default async function NavbarCart() {
         <ShoppingCart />
         {data?.cart?.lineItemsQuantity && data.cart.lineItemsQuantity > 0 ? (
           <span className={clsx(s.cartCount)}>
-            <span className={s.number}>{data.cart.lineItemsQuantity}</span>
+            <span className={s.number}>{data.cart.lineItemsQuantity > 9 ? "+9" : data.cart.lineItemsQuantity}</span>
           </span>
         ) : null}
       </button>

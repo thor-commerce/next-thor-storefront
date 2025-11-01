@@ -1,0 +1,34 @@
+.discountCodeLabel {
+  display: block;
+}
+.label {
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: rgb(245, 245, 245);
+  display: inline-flex;
+  align-items: center;
+}
+.code {
+  font-size: 14px;
+  padding-left: 9px;
+  text-transform: uppercase;
+}
+
+.removeButton {
+    border: none;
+    background: none;
+  display: block;
+  cursor: pointer;
+  padding: 9px;
+  margin: -9px -9px -9px 0;
+}
+.labelIcon {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+.crossIcon {
+  display: block;
+  width: 14px;
+  height: 14px;
+}

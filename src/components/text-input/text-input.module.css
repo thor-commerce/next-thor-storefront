@@ -1,0 +1,71 @@
+.textField {
+  position: relative;
+  width: fit-content;
+  color: var(--text-color);
+  flex-direction: column;
+  display: flex;
+
+  font-size: 14px;
+
+  &:focus-within label,
+  &:has(input:not(:placeholder-shown)) label {
+    transform: translate(0, 0);
+    pointer-events: all;
+    font-size: 12px;
+  }
+
+  &:where([data-block="true"]) {
+    width: 100%;
+
+    .input {
+      width: 100%;
+    }
+  }
+}
+.label {
+  position: absolute;
+  top: 7px;
+  left: 11px;
+  transition: all 0.15s ease;
+  transform: translateY(7px);
+
+  /* pointer-events: none; */
+  z-index: 1;
+  letter-spacing: 0.5px;
+  color: rgba(112, 112, 112, 1);
+  font-size: 14px;
+  display: block;
+  cursor: text;
+  align-self: flex-start;
+}
+
+.inputWrapper {
+  display: flex;
+  position: relative;
+  letter-spacing: 0.2px;
+}
+.input {
+  padding: 21px 11px 6px;
+  border: 1px solid #9E9EA0;
+  border-radius: 8px;
+  background: var(--input-bg-color);
+
+  min-height: 38px;
+  font-family: var(--helvetica);
+  font-size: 14px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--input-focus-border-color);
+  }
+
+  &:invalid {
+    border-color: var(--input-invalid-border-color);
+  }
+}
+
+.error {
+  color: var(--invalid-color);
+  font-size: 12px;
+  margin-top: 4px;
+}

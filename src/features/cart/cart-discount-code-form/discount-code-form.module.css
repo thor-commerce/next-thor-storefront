@@ -1,0 +1,65 @@
+.discountCodeForm {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.applyBtn {
+  white-space: nowrap;
+  height: 44px;
+  width: fit-content;
+}
+
+.disclosure {
+  margin-bottom: 8px;
+  .disclosureButton[slot="trigger"] {
+    cursor: pointer;
+    background: none;
+    border: none;
+    box-shadow: none;
+    font-weight: 600;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+
+    svg {
+      rotate: 0deg;
+      transition: rotate 200ms;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2px;
+    }
+  }
+
+  &[data-expanded] .disclosureButton[slot="trigger"] svg {
+    rotate: -180deg;
+  }
+}
+
+.disclosedContent {
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
+
+.disclosurePanel {
+  height: var(--disclosure-panel-height);
+  transition: height 250ms;
+  overflow: clip;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.appliedDiscountCodesList {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 100%;
+  justify-content: flex-start;
+  align-content: flex-start;
+  gap: 7px;
+  padding-top: 8px;
+}

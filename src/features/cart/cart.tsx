@@ -11,6 +11,7 @@ import CartLineItems, {
 } from "./cart-line-items/cart-line-items";
 import { CACHE_TAGS } from "@/constants";
 import CartSummary, { CartSummarySkeleton } from "./cart-summary/cart-summary";
+import DiscountCodeForm from "./cart-discount-code-form/discount-code-form";
 
 export default async function Cart() {
   const cartId = await getCartIdFromCookies();
@@ -39,6 +40,9 @@ export default async function Cart() {
               <h2 className={clsx(s.cartHeading, s.cartSummaryHeading)}>
                 Summary
               </h2>
+              <Suspense>
+                <DiscountCodeForm queryRef={queryRef} />
+              </Suspense>
               <Suspense fallback={<CartSummarySkeleton />}>
                 <CartSummary queryRef={queryRef} />
               </Suspense>
