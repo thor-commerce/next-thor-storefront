@@ -4,7 +4,7 @@ import { getClient } from "@/lib/thor/apollo-client";
 import { getCartIdFromCookies } from "./utils";
 import { CART_DISCOUNT_CODE_ADD_MUTATION, CART_DISCOUNT_CODE_REMOVE_MUTATION, CART_LINE_ITEMS_REMOVE_MUTATION, CART_LINE_ITEMS_UPDATE_MUTATION } from "./mutations";
 import { CACHE_TAGS } from "@/constants";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { DiscountCodeActionResponse, DiscountCodeFormData } from "./types";
 import { discountCodeSchema } from "./cart-discount-code-form/validation";
 import z from "zod";
@@ -32,7 +32,7 @@ export async function updateItemQuantity(
       },
     },
   });
-  updateTag(CACHE_TAGS.cart);
+  revalidateTag(CACHE_TAGS.cart);
 
   return {
     success: true,
@@ -51,7 +51,7 @@ export async function removeLineItem(prevState: unknown, lineId: string) {
         },
       },
     });
-    updateTag(CACHE_TAGS.cart);
+    revalidateTag(CACHE_TAGS.cart);
     return {
       success: true,
     };
@@ -102,7 +102,7 @@ export async function addDiscountCode(
       };
     }
 
-    updateTag(CACHE_TAGS.cart);
+    revalidateTag(CACHE_TAGS.cart);
     return {
       success: true,
     };
@@ -131,7 +131,7 @@ export async function removeDiscountCode(
         },
       },
     });
-    updateTag(CACHE_TAGS.cart);
+    revalidateTag(CACHE_TAGS.cart);
     return {
       success: true,
     };

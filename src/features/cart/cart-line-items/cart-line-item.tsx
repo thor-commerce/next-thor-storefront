@@ -22,6 +22,7 @@ const CART_LINE_ITEM_FRAGMENT = gql(/* GraphQL */ `
     quantity
     productSlug
     variant {
+      id
       image {
         src
       }
@@ -171,4 +172,3 @@ export default function CartLineItem({
     </li>
   );
 }
-

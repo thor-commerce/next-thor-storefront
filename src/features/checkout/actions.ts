@@ -12,7 +12,7 @@ import {
 import { CACHE_TAGS } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { mapEdgesToItems } from "@/utils/maps";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { CART_UPDATE_MUTATION } from "../cart/mutations";
 import { getCartIdFromCookies, removeCartCookie } from "../cart/utils";
 import {
@@ -39,7 +39,7 @@ export async function cartUpdateAction(input: Omit<CartUpdateInput, "cartId">) {
     },
   });
 
-  updateTag(CACHE_TAGS.cart);
+  revalidateTag(CACHE_TAGS.cart);
 
   return resp.data?.cartUpdate;
 }
@@ -59,7 +59,7 @@ export async function cartSetShippingMethodAction(shippingMethodId: string) {
     },
   });
 
-  updateTag(CACHE_TAGS.cart);
+  revalidateTag(CACHE_TAGS.cart);
   return res.data?.cartShippingLinesSet;
 }
 
@@ -97,7 +97,7 @@ export async function intializePaymentSession() {
       },
     },
   });
-  updateTag(CACHE_TAGS.cart);
+  // revalidateTag(CACHE_TAGS.cart);
 
   return res.data?.cartPaymentSessionInitialize;
 }
@@ -134,7 +134,6 @@ export async function placeOrder({ cartId }: { cartId: string }) {
   if (orderId) {
     await removeCartCookie();
     console.log("Redirecting to order confirmation page");
-
     redirect(`/${context.country.code}/orders/${orderId}`);
   }
 }

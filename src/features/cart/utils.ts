@@ -13,7 +13,7 @@ import {
 } from "@/__generated__/thor/graphql";
 import { getServerContext } from "@/utils/server";
 import { CART_CREATE_MUTATION, CART_REPLICATE_MUTATION } from "./mutations";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { getCurrencyByCountryCode } from "@/utils/countries";
 
 export async function removeCartCookie() {
@@ -86,7 +86,7 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
   }
 
   if (changesCount > 0) {
-    updateTag(CACHE_TAGS.cart);
+    revalidateTag(CACHE_TAGS.cart);
   }
 }
 

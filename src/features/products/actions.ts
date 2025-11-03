@@ -2,7 +2,7 @@
 
 import { gql } from "@/__generated__/thor";
 import { CACHE_TAGS } from "@/constants";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import invariant from "tiny-invariant";
 import {
   findOrCreateCart,
@@ -79,7 +79,7 @@ export async function addItem(prevState: unknown, data: FormData) {
     };
   }
 
-  updateTag(CACHE_TAGS.cart);
+  revalidateTag(CACHE_TAGS.cart);
 
   return {
     success: true,
