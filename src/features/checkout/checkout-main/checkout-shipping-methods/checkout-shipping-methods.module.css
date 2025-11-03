@@ -1,0 +1,73 @@
+.radioGroup {
+  display: grid;
+}
+
+.deliveryMethod {
+  display: grid;
+  grid-template-columns: min-content 1fr minmax(0, max-content);
+  border: 1px solid rgb(229, 229, 229);
+  background-color: rgb(255, 255, 255);
+  padding: 12px;
+  cursor: pointer;
+  position: relative;
+  align-items: center;
+  gap: 11px;
+  font-size: 13px;
+  --field-background: transparent;
+  --border-color: rgb(223, 223, 223);
+  --highlight-background-pressed: rgb(17, 17, 17);
+  ----highlight-background: rgb(17, 17, 17);
+  color: var(--text-color);
+  forced-color-adjust: none;
+
+  &:not(:first-child) {
+    border-top: none;
+  }
+  &:first-child {
+    border-top-left-radius: var(--input-border-radius);
+    border-top-right-radius: var(--input-border-radius);
+  }
+  &:last-child {
+    border-bottom-left-radius: var(--input-border-radius);
+    border-bottom-right-radius: var(--input-border-radius);
+  }
+
+  &:before {
+    content: "";
+    display: block;
+    width: 16px;
+    height: 16px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    background: var(--field-background);
+    border-radius: 50%;
+    transition: all 200ms;
+  }
+
+  &[data-pressed]:before {
+    border-color: var(--border-color-pressed);
+  }
+
+  &[data-selected] {
+    &:before {
+      border-color: var(--highlight-background);
+      border-width: 5px;
+    }
+
+    &[data-pressed]:before {
+      border-color: var(--highlight-background-pressed);
+    }
+  }
+
+  &[data-focus-visible]:before {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+
+.deliveryMethodDescription {
+    margin-top: 2px;
+    font-size: 12px;
+    color: #17171680;
+}

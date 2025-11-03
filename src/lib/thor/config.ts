@@ -9,8 +9,10 @@ export const DEFAULT_COUNTRY = "us";
 
 export enum CHANNEL {
   EUROPE = "ch_01k8tn63mgf9baxksv6exmq2gm",
-  UNITED_KINGDOM = "ch_01k8tp2d7z6q6p6f4q4z3n5y6e",
-  NORTH_AMERICA = "ch_01k8tp2dft6b6p6f4q4z3n5y6e",
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
+  UNITED_KINGDOM = "ch_01k8tn63mgf9baxksv6exmq2gm",
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
+  NORTH_AMERICA = "ch_01k8tn63mgf9baxksv6exmq2gm",
 }
 
 type Country = {

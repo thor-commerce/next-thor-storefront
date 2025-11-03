@@ -13,6 +13,7 @@ import {
   HttpLink,
 } from "@apollo/client";
 import { ErrorLink } from "@apollo/client/link/error";
+import { createQueryPreloader } from "@apollo/client/react";
 
 disableFragmentWarnings();
 
@@ -66,6 +67,8 @@ const errorLink = new ErrorLink(({ error, operation }) => {
     );
   }
 });
+
+
 
 export const { getClient, PreloadQuery } = registerApolloClient(() => {
   // const session = await auth();

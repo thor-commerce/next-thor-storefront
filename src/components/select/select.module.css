@@ -1,0 +1,79 @@
+.selectField {
+  position: relative;
+  &:where([data-block="true"]) {
+    width: 100%;
+
+    .select {
+      width: 100%;
+    }
+  }
+
+  &:where([data-invalid="true"]) {
+    .select {
+      border-color: var(--input-invalid-border-color);
+
+      &:focus {
+        border-color: var(--critical-color);
+      }
+    }
+  }
+}
+
+.label {
+  position: absolute;
+  top: 7px;
+  left: 11px;
+  transition: all 0.15s ease;
+  /* pointer-events: none; */
+  z-index: 1;
+  color: rgba(112, 112, 112, 1);
+  font-size: 12px;
+  display: block;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.select {
+  padding: 21px 30px 6px 11px;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--input-border-radius);
+  outline: none;
+  min-height: 38px;
+  font-family: var(--helvetica);
+  font-size: 14px;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  appearance: none;
+  cursor: pointer;
+  background: var(--input-bg-color);
+
+
+  &:focus {
+    outline: none;
+    border-color: var(--input-focus-border-color);
+  }
+
+  &:invalid {
+    border-color: var(--input-invalid-border-color);
+  }
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  width: 2rem;
+  height: 43%;
+  transform: translateY(-50%);
+}
+
+.errorMessage {
+  color: var(--invalid-color);
+  font-size: 12px;
+  margin-top: 4px;
+}

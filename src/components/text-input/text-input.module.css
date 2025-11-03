@@ -46,8 +46,8 @@
 }
 .input {
   padding: 21px 11px 6px;
-  border: 1px solid #9E9EA0;
-  border-radius: 8px;
+  border: 1px solid var(--input-border-color);
+  border-radius: var(--input-border-radius);
   background: var(--input-bg-color);
 
   min-height: 38px;

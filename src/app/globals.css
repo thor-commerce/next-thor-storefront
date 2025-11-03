@@ -5,6 +5,10 @@
   --text-discount: #007d48;
 
   --product-tile-bg: #f5f5f5;
+
+  --input-border-color: #9e9ea0;
+  --input-border-radius: 8px;
+  --input-bg-color: #ffffff;
 }
 
 html,

@@ -1,0 +1,15 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.title {
+    font-size: 19px;
+    font-weight: 600;
+    line-height: 25.5px;
+}
+.row {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(var(--columns, 1), 1fr);
+}
