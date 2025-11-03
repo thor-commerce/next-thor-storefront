@@ -7,7 +7,7 @@
 .applyBtn {
   white-space: nowrap;
   height: 44px;
-  width: fit-content;
+  width: fit-content !important;
 }
 
 .disclosure {
