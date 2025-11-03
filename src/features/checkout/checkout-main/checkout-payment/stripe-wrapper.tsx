@@ -1,7 +1,7 @@
 "use client";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useMemo } from "react";
 
 export default function StripeWrapper({
   publishableKey,
@@ -15,7 +15,7 @@ export default function StripeWrapper({
     throw new Error("Stripe publishable key is missing");
   }
 
-  const stripePromise = loadStripe(publishableKey);
+  const stripePromise = useMemo(() => loadStripe(publishableKey), [publishableKey]);
 
   return (
     <Elements
