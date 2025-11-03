@@ -41,39 +41,65 @@ export default async function CheckoutPage({
   }
 
   return (
-    <CheckoutContainer
-      mainArea={
-        <Suspense fallback={<SkeletonBox width={200} height={200} />}>
-          <PaymentWrapper>
-            <PreloadQuery
-              query={CHECKOUT_CART_DETAILS_QUERY}
-              variables={{ id: checkout_id }}
-              context={{
-                fetchOptions: {
-                  tags: [CACHE_TAGS.cart],
-                },
-              }}
-            >
-              {(queryRef) => <CheckoutMain queryRef={queryRef} />}
-            </PreloadQuery>
-          </PaymentWrapper>
-        </Suspense>
+    <Suspense
+      fallback={
+        <CheckoutContainer
+          mainArea={<SkeletonBox width={200} height={200} />}
+          summaryArea={<CheckoutSummarySkeleton />}
+        />
       }
-      summaryArea={
-        <Suspense fallback={<CheckoutSummarySkeleton />}>
-          <PreloadQuery
-            query={CHECKOUT_CART_DETAILS_QUERY}
-            variables={{ id: checkout_id }}
-            context={{
-              fetchOptions: {
-                tags: [CACHE_TAGS.cart],
-              },
-            }}
-          >
-            {(queryRef) => <CheckoutSummary queryRef={queryRef} />}
-          </PreloadQuery>
-        </Suspense>
-      }
-    />
+    >
+      <PaymentWrapper>
+        <PreloadQuery
+          query={CHECKOUT_CART_DETAILS_QUERY}
+          variables={{ id: checkout_id }}
+          context={{
+            fetchOptions: {
+              tags: [CACHE_TAGS.cart],
+            },
+          }}
+        >
+          {(queryRef) => (
+            <CheckoutContainer
+              mainArea={<CheckoutMain queryRef={queryRef} />}
+              summaryArea={<CheckoutSummary queryRef={queryRef} />}
+            />
+          )}
+        </PreloadQuery>
+      </PaymentWrapper>
+    </Suspense>
   );
 }
+
+//  <CheckoutContainer
+//           mainArea={
+//             <Suspense fallback={<SkeletonBox width={200} height={200} />}>
+//               <PreloadQuery
+//                 query={CHECKOUT_CART_DETAILS_QUERY}
+//                 variables={{ id: checkout_id }}
+//                 context={{
+//                   fetchOptions: {
+//                     tags: [CACHE_TAGS.cart],
+//                   },
+//                 }}
+//               >
+//                 {(queryRef) => <CheckoutMain queryRef={queryRef} />}
+//               </PreloadQuery>
+//             </Suspense>
+//           }
+//           summaryArea={
+//             <Suspense fallback={<CheckoutSummarySkeleton />}>
+//               <PreloadQuery
+//                 query={CHECKOUT_CART_DETAILS_QUERY}
+//                 variables={{ id: checkout_id }}
+//                 context={{
+//                   fetchOptions: {
+//                     tags: [CACHE_TAGS.cart],
+//                   },
+//                 }}
+//               >
+//                 {(queryRef) => <CheckoutSummary queryRef={queryRef} />}
+//               </PreloadQuery>
+//             </Suspense>
+//           }
+//         />
