@@ -5,7 +5,6 @@ export const CHECKOUT_CART_DETAILS_QUERY = gql(/* GraphQL */ `
     cart(id: $id) {
       id
       ...AvailableShippingMethods
-      ...StripeWrapper
       paymentSession {
         __typename
         ... on StripePaymentSession {
@@ -51,6 +50,7 @@ export const CHECKOUT_CART_DETAILS_QUERY = gql(/* GraphQL */ `
         city
         countryCode
         postalCode
+        state
       }
       lineItems(first: 100) {
         edges {

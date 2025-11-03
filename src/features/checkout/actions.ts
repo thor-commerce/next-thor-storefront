@@ -1,23 +1,28 @@
 "use server";
 
 import {
-    CartUpdateInput,
-    CartUpdateMutation,
-    CartUpdateMutationVariables,
-    CheckoutCartShippingLinesSetMutation,
-    CheckoutCartShippingLinesSetMutationVariables,
+  CartCompleteMutation,
+  CartCompleteMutationVariables,
+  CartUpdateInput,
+  CartUpdateMutation,
+  CartUpdateMutationVariables,
+  CheckoutCartShippingLinesSetMutation,
+  CheckoutCartShippingLinesSetMutationVariables,
 } from "@/__generated__/thor/graphql";
 import { CACHE_TAGS } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { mapEdgesToItems } from "@/utils/maps";
 import { updateTag } from "next/cache";
 import { CART_UPDATE_MUTATION } from "../cart/mutations";
-import { getCartIdFromCookies } from "../cart/utils";
+import { getCartIdFromCookies, removeCartCookie } from "../cart/utils";
 import {
-    CART_PAYMENT_SESSION_INTIALIZE_MUTATION,
-    CHECKOUT_CART_SHIPPING_LINE_SET_MUTATION,
+  CART_COMPLETE_MUTATION,
+  CART_PAYMENT_SESSION_INTIALIZE_MUTATION,
+  CHECKOUT_CART_SHIPPING_LINE_SET_MUTATION,
 } from "./mutations";
 import { CHECKOUT_PAYMENTGATEWAYS_QUERY } from "./queries";
+import { getServerContext } from "@/utils/server";
+import { redirect, RedirectType } from "next/navigation";
 
 export async function cartUpdateAction(input: Omit<CartUpdateInput, "cartId">) {
   const cartId = await getCartIdFromCookies();
@@ -95,4 +100,45 @@ export async function intializePaymentSession() {
   updateTag(CACHE_TAGS.cart);
 
   return res.data?.cartPaymentSessionInitialize;
+}
+
+export async function placeOrder({ cartId }: { cartId: string }) {
+  if (!cartId) throw new Error("No cartId provided");
+  const context = await getServerContext();
+
+  const res = await getClient().mutate<
+    CartCompleteMutation,
+    CartCompleteMutationVariables
+  >({
+    mutation: CART_COMPLETE_MUTATION,
+    variables: { input: { cartId } },
+  });
+
+  let attempts = 0;
+  const maxAttempts = 5;
+  let orderId: string | null = null;
+  while (attempts < maxAttempts) {
+    try {
+      if (res?.error) throw new Error("Failed to complete checkout");
+      if (res.data?.cartComplete.order) {
+        orderId = res.data.cartComplete.order.id;
+        break;
+      }
+    } catch (error) {
+      attempts++;
+      if (attempts >= maxAttempts) throw error;
+      await delay(1000 * attempts);
+    }
+  }
+
+  if (orderId) {
+    await removeCartCookie();
+    console.log("Redirecting to order confirmation page");
+
+    redirect(`/${context.country.code}/orders/${orderId}`);
+  }
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }

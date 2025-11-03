@@ -48,7 +48,7 @@ export default async function Cart() {
               </Suspense>
               <Button
                 as={Navigation}
-                href="/checkout"
+                href={`/checkout?checkout_id=${cartId}`}
                 className={s.checkoutButton}
               >
                 Checkout

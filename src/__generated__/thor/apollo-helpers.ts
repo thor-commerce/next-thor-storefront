@@ -771,9 +771,11 @@ export type PriceFieldPolicy = {
 	validTo?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type ProductKeySpecifier = ('attributeAssignments' | 'description' | 'heroVariant' | 'id' | 'metadata' | 'name' | 'priceRange' | 'slug' | 'tags' | 'variants' | 'variantsCount' | 'vendor' | ProductKeySpecifier)[];
+export type ProductKeySpecifier = ('attributeAssignments' | 'categories' | 'collections' | 'description' | 'heroVariant' | 'id' | 'metadata' | 'name' | 'priceRange' | 'slug' | 'tags' | 'variants' | 'variantsCount' | 'vendor' | ProductKeySpecifier)[];
 export type ProductFieldPolicy = {
 	attributeAssignments?: FieldPolicy<any> | FieldReadFunction<any>,
+	categories?: FieldPolicy<any> | FieldReadFunction<any>,
+	collections?: FieldPolicy<any> | FieldReadFunction<any>,
 	description?: FieldPolicy<any> | FieldReadFunction<any>,
 	heroVariant?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,

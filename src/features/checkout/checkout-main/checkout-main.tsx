@@ -7,14 +7,14 @@ import { QueryRef, useReadQuery } from "@apollo/client/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import invariant from "tiny-invariant";
-import { omitBy, pickBy } from "lodash-es";
+import { pickBy } from "lodash-es";
 import z from "zod";
 import { cartUpdateAction } from "../actions";
 import s from "./checkout-main.module.css";
 import { CheckoutSection } from "./checkout-section/checkout-section";
 import CheckoutShippingMethods from "./checkout-shipping-methods/checkout-shipping-methods";
-import StripeWrapper from "./checkout-payment/stripe-wrapper";
 import CheckoutPayment from "./checkout-payment/checkout-payment";
+import Button from "@/components/button/button";
 import { useElements, useStripe } from "@stripe/react-stripe-js";
 
 const baseAddressFormSchema = z.object({
@@ -124,8 +124,58 @@ export default function CheckoutMain({
     }
   };
 
-  const handleSubmit = form.handleSubmit((data) => {
-    console.log(data);
+  const handleSubmit = form.handleSubmit(async (data) => {
+    // We don't want to let default form submission happen here,
+    // which would refresh the page.
+
+    if (!stripe || !elements) {
+      // Stripe.js hasn't yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+    const { error: submitError } = await elements.submit();
+    if (submitError) {
+      console.error("Error submitting payment element:", submitError);
+      return;
+    }
+    if (!cart.paymentSession?.clientSecret) {
+      console.error("No payment session client secret found");
+      return;
+    }
+
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.set("processing_payment", "true");
+    currentUrl.searchParams.set("checkout_id", cart.id);
+    const returnUrl = currentUrl.toString();
+
+    const result = await stripe.confirmPayment({
+      elements,
+      clientSecret: cart.paymentSession.clientSecret,
+      confirmParams: {
+        return_url: returnUrl,
+        payment_method_data: {
+          billing_details: {
+            name:
+              cart.shippingAddress?.firstName +
+              " " +
+              cart.shippingAddress?.lastName,
+            email: cart.customerEmail,
+            phone: cart.shippingAddress?.phone,
+            address: {
+              line1: cart.shippingAddress?.address1,
+              line2: cart.shippingAddress?.address2 || "",
+              city: cart.shippingAddress?.city,
+              state: cart.shippingAddress?.state || "",
+              postal_code: cart.shippingAddress?.postalCode,
+              country: cart.shippingAddress?.countryCode,
+            },
+          },
+        },
+      },
+    });
+    if (result.error) {
+      console.error("Error confirming payment:", result.error);
+    }
   });
 
   return (
@@ -286,9 +336,15 @@ export default function CheckoutMain({
         <CheckoutSection>
           <CheckoutSection.Header title="Payment" />
           <CheckoutPayment />
+          <Button
+            type="submit"
+            loading={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting}
+          >
+            Pay now
+          </Button>
         </CheckoutSection>
       </form>
     </FormProvider>
   );
 }
-

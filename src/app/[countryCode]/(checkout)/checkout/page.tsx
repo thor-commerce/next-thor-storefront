@@ -21,47 +21,59 @@ export default async function CheckoutPage({
   const {
     processing_payment,
     redirect_status,
+    checkout_id,
   }: {
     processing_payment?: string;
     redirect_status?: "failed" | "success" | string[];
+    checkout_id?: string;
   } = await searchParams;
 
-  const cartId = await getCartIdFromCookies();
+  if (!checkout_id) {
+    redirect(`/${country}/cart`);
+  }
 
   //if redirect_status is failed, redirect back to checkout page, at payment step:
   if (redirect_status === "failed" || Array.isArray(redirect_status)) {
-    redirect(`/${country}/checkout`);
+    redirect(`/${country}/checkout?checkout_id=${checkout_id}`);
   }
   if (processing_payment === "true") {
-    return <PaymentProcessingScreen cartId={cartId} />;
+    return <PaymentProcessingScreen cartId={checkout_id} />;
   }
 
   return (
-    <PreloadQuery
-      query={CHECKOUT_CART_DETAILS_QUERY}
-      variables={{ id: cartId }}
-      context={{
-        fetchOptions: {
-          tags: [CACHE_TAGS.cart],
-        },
-      }}
-    >
-      {(queryRef) => (
-        <CheckoutContainer
-          mainArea={
-            <Suspense fallback={<SkeletonBox width={200} height={200} />}>
-              <PaymentWrapper queryRef={queryRef}>
-                <CheckoutMain queryRef={queryRef} />
-              </PaymentWrapper>
-            </Suspense>
-          }
-          summaryArea={
-            <Suspense fallback={<CheckoutSummarySkeleton />}>
-              <CheckoutSummary queryRef={queryRef} />
-            </Suspense>
-          }
-        />
-      )}
-    </PreloadQuery>
+    <CheckoutContainer
+      mainArea={
+        <Suspense fallback={<SkeletonBox width={200} height={200} />}>
+          <PaymentWrapper>
+            <PreloadQuery
+              query={CHECKOUT_CART_DETAILS_QUERY}
+              variables={{ id: checkout_id }}
+              context={{
+                fetchOptions: {
+                  tags: [CACHE_TAGS.cart],
+                },
+              }}
+            >
+              {(queryRef) => <CheckoutMain queryRef={queryRef} />}
+            </PreloadQuery>
+          </PaymentWrapper>
+        </Suspense>
+      }
+      summaryArea={
+        <Suspense fallback={<CheckoutSummarySkeleton />}>
+          <PreloadQuery
+            query={CHECKOUT_CART_DETAILS_QUERY}
+            variables={{ id: checkout_id }}
+            context={{
+              fetchOptions: {
+                tags: [CACHE_TAGS.cart],
+              },
+            }}
+          >
+            {(queryRef) => <CheckoutSummary queryRef={queryRef} />}
+          </PreloadQuery>
+        </Suspense>
+      }
+    />
   );
 }

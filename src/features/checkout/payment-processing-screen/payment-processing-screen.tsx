@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import s from "./payment-processing-screen.module.css";
 
 import Spinner from "@/components/spinner/spinner";
+import { placeOrder } from "../actions";
 
 interface Props {
   cartId: string;
@@ -10,9 +11,9 @@ interface Props {
 
 export default function PaymentProcessingScreen({ cartId }: Props) {
   const onPaymentComplete = async () => {
-    // await placeOrder({ cartId }).catch(() => {
-    //   //TODO: error handling
-    // });
+    await placeOrder({ cartId }).catch(() => {
+      //TODO: error handling
+    });
   };
 
   useEffect(() => {
