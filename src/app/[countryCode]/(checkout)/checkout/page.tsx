@@ -2,7 +2,7 @@ import { SkeletonBox } from "@/components/skeleton-box/skeleton-box";
 import { CACHE_TAGS } from "@/constants";
 import { getCartIdFromCookies } from "@/features/cart/utils";
 import CheckoutContainer from "@/features/checkout/checkout-container/checkout-container";
-import CheckoutMain from "@/features/checkout/checkout-main/checkout-main";
+import CheckoutMain, { CheckoutMainSkeleton } from "@/features/checkout/checkout-main/checkout-main";
 import PaymentWrapper from "@/features/checkout/checkout-main/checkout-payment/payment-wrapper";
 import CheckoutSummary, {
   CheckoutSummarySkeleton,
@@ -39,12 +39,13 @@ export default async function CheckoutPage({
   if (processing_payment === "true") {
     return <PaymentProcessingScreen cartId={checkout_id} />;
   }
+  
 
   return (
     <Suspense
       fallback={
         <CheckoutContainer
-          mainArea={<SkeletonBox width={200} height={200} />}
+          mainArea={<CheckoutMainSkeleton />}
           summaryArea={<CheckoutSummarySkeleton />}
         />
       }

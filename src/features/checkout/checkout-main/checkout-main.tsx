@@ -16,6 +16,9 @@ import CheckoutShippingMethods from "./checkout-shipping-methods/checkout-shippi
 import CheckoutPayment from "./checkout-payment/checkout-payment";
 import Button from "@/components/button/button";
 import { useElements, useStripe } from "@stripe/react-stripe-js";
+import { SkeletonBox } from "@/components/skeleton-box/skeleton-box";
+import { useEffect, useRef, useCallback, useTransition } from "react";
+import { CheckoutShippingMethodsSkeleton } from "./checkout-shipping-methods/checkout-shipping-methods";
 
 const baseAddressFormSchema = z.object({
   country: z.string().min(2, "Country is required"),
@@ -28,11 +31,11 @@ const baseAddressFormSchema = z.object({
   phone: z.string().min(1, "Phone number is required"),
 });
 const checkoutMainFormSchema = z.object({
-  // Contact
   email: z.email("Invalid email address"),
   shippingAddress: baseAddressFormSchema,
-  // Shipping Method (to be populated after address with country + zipcode)
-  shippingMethodId: z.string().optional(),
+  shippingMethodId: z
+    .string("A shipping method is required")
+    .min(1, "Please select a shipping method"),
 });
 
 export type CheckoutMainFormValues = z.infer<typeof checkoutMainFormSchema>;
@@ -47,12 +50,19 @@ export default function CheckoutMain({
   } = useReadQuery(queryRef);
   const stripe = useStripe();
   const elements = useElements();
+  const [isPending, startTransition] = useTransition();
+  const hasShippingAddress = useRef(false);
 
   invariant(cart, "Cart data is required");
 
+  // Track if we have a complete shipping address
+  if (cart.shippingAddress?.countryCode && cart.shippingAddress?.postalCode) {
+    hasShippingAddress.current = true;
+  }
+
   const form = useForm<CheckoutMainFormValues>({
     resolver: zodResolver(checkoutMainFormSchema),
-    values: {
+    defaultValues: {
       email: cart?.customerEmail || "",
       shippingAddress: {
         country: cart?.shippingAddress?.countryCode || "",
@@ -70,63 +80,121 @@ export default function CheckoutMain({
     },
   });
 
-  const handleBlur = async () => {
-    //get all dirty fields
-    const dirtyFields = form.formState.dirtyFields;
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  /**
+   * Builds cart update payload from dirty form fields
+   */
+  const buildCartUpdateData = useCallback(() => {
+    const { dirtyFields } = form.formState;
     const values = form.getValues();
-    //check if either email or shipping address changed
-    if (dirtyFields.email || dirtyFields.shippingAddress) {
-      console.log(
-        "Updating cart with new email or shipping address",
-        dirtyFields
-      );
+    const updateData: Record<string, unknown> = {};
 
-      // Build the update object with only non-empty values
-      const updateData: Record<string, unknown> = {};
+    // Include email if changed and valid
+    if (dirtyFields.email && values.email) {
+      updateData.customerEmail = values.email;
+    }
 
-      // Only include email if it's dirty and has a value
-      if (dirtyFields.email && values.email) {
-        updateData.customerEmail = values.email;
-      }
+    // Include shipping address if changed and complete
+    if (dirtyFields.shippingAddress && values.shippingAddress) {
+      const { address, city, postalCode, country } = values.shippingAddress;
+      const hasRequiredFields = address && city && postalCode && country;
 
-      // Only include shipping address fields that have values
-      if (dirtyFields.shippingAddress && values.shippingAddress) {
-        // Check if all required fields are present
-        const hasRequiredFields =
-          values.shippingAddress.address &&
-          values.shippingAddress.city &&
-          values.shippingAddress.postalCode &&
-          values.shippingAddress.country;
-
-        if (hasRequiredFields) {
-          const cleanedAddress = pickBy(
-            {
-              countryCode: values.shippingAddress.country,
-              firstName: values.shippingAddress.firstName,
-              lastName: values.shippingAddress.lastName,
-              address1: values.shippingAddress.address,
-              address2: values.shippingAddress.apartment,
-              city: values.shippingAddress.city,
-              postalCode: values.shippingAddress.postalCode,
-              phone: values.shippingAddress.phone,
-            },
-            (value) => value !== "" && value != null
-          );
-
-          updateData.shippingAddress = cleanedAddress;
-        }
-      }
-
-      // Only call the action if there's something to update
-      if (Object.keys(updateData).length > 0) {
-        await cartUpdateAction(updateData);
+      if (hasRequiredFields) {
+        updateData.shippingAddress = pickBy(
+          {
+            countryCode: country,
+            firstName: values.shippingAddress.firstName,
+            lastName: values.shippingAddress.lastName,
+            address1: address,
+            address2: values.shippingAddress.apartment,
+            city,
+            postalCode,
+            phone: values.shippingAddress.phone,
+          },
+          (value) => value !== "" && value != null
+        );
       }
     }
-  };
 
-  const handleSubmit = form.handleSubmit(async (data) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
+    return updateData;
+  }, [form]);
+
+  /**
+   * Updates cart with current form data using transition for loading state
+   */
+  const updateCart = useCallback(async () => {
+    const updateData = buildCartUpdateData();
+
+    if (Object.keys(updateData).length > 0) {
+      startTransition(async () => {
+        await cartUpdateAction(updateData);
+      });
+    }
+  }, [buildCartUpdateData, startTransition]);
+
+  /**
+   * Debounced cart update - only debounces critical fields (country, city, postalCode)
+   * Non-critical fields (firstName, lastName, etc.) only update on blur
+   */
+  const debouncedUpdateCart = useCallback(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    const { dirtyFields } = form.formState;
+    const values = form.getValues();
+
+    // Critical fields that affect shipping: country, city, postalCode
+    const isCriticalField =
+      dirtyFields.shippingAddress?.country ||
+      dirtyFields.shippingAddress?.city ||
+      dirtyFields.shippingAddress?.postalCode ||
+      dirtyFields.shippingAddress?.address ||
+      dirtyFields.email;
+
+    // Only debounce critical fields, ignore non-critical fields (they update on blur)
+    if (!isCriticalField) {
+      return;
+    }
+
+    // Check if required shipping address fields are filled out
+    const hasRequiredAddressFields =
+      values.shippingAddress.country &&
+      values.shippingAddress.city &&
+      values.shippingAddress.postalCode &&
+      values.shippingAddress.address;
+
+    // Don't trigger update if required fields aren't complete
+    if (!hasRequiredAddressFields) {
+      return;
+    }
+
+    debounceTimerRef.current = setTimeout(() => {
+      updateCart();
+    }, 200);
+  }, [updateCart, form]);
+
+  useEffect(() => {
+    const subscription = form.watch(debouncedUpdateCart);
+
+    return () => {
+      subscription.unsubscribe();
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [form, debouncedUpdateCart]);
+
+  const handleBlur = useCallback(async () => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = null;
+    }
+    await updateCart();
+  }, [updateCart]);
+
+  const handleSubmit = form.handleSubmit(async () => {
 
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
@@ -331,7 +399,29 @@ export default function CheckoutMain({
         </CheckoutSection>
         <CheckoutSection>
           <CheckoutSection.Header title="Shipping Method" />
-          <CheckoutShippingMethods cartFragment={cart} />
+          {isPending && !hasShippingAddress.current ? (
+            <CheckoutShippingMethodsSkeleton />
+          ) : (
+            <Controller
+              control={form.control}
+              name="shippingMethodId"
+              render={({ fieldState }) => (
+                <>
+                  <CheckoutShippingMethods cartFragment={cart} />
+                  {fieldState.error && (
+                    <p
+                      style={{
+                        color: "rgb(207, 34, 46)",
+                        fontSize: "13px",
+                      }}
+                    >
+                      {fieldState.error.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+          )}
         </CheckoutSection>
         <CheckoutSection>
           <CheckoutSection.Header title="Payment" />
@@ -346,5 +436,50 @@ export default function CheckoutMain({
         </CheckoutSection>
       </form>
     </FormProvider>
+  );
+}
+
+export function CheckoutMainSkeleton() {
+  return (
+    <div className={s.main}>
+      <CheckoutSection>
+        <CheckoutSection.Header title="Contact" />
+        <CheckoutSection.Row>
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+      </CheckoutSection>
+      <CheckoutSection>
+        <CheckoutSection.Header title="Delivery" />
+        <CheckoutSection.Row>
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+        <CheckoutSection.Row columns={2}>
+          <SkeletonBox width={"100%"} height={44} />
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+        <CheckoutSection.Row>
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+        <CheckoutSection.Row>
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+        <CheckoutSection.Row columns={2}>
+          <SkeletonBox width={"100%"} height={44} />
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+        <CheckoutSection.Row>
+          <SkeletonBox width={"100%"} height={44} />
+        </CheckoutSection.Row>
+      </CheckoutSection>
+      <CheckoutSection>
+        <CheckoutSection.Header title="Shipping Method" />
+        <CheckoutShippingMethodsSkeleton />
+      </CheckoutSection>
+      <CheckoutSection>
+        <CheckoutSection.Header title="Payment" />
+        <SkeletonBox width={"100%"} height={200} />
+        <SkeletonBox width={"100%"} height={44} style={{ marginTop: "16px" }} />
+      </CheckoutSection>
+    </div>
   );
 }

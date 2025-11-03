@@ -9,6 +9,9 @@
   --input-border-color: #9e9ea0;
   --input-border-radius: 8px;
   --input-bg-color: #ffffff;
+
+  --input-invalid-border-color: rgb(207, 34, 46);
+  --invalid-color: rgb(207, 34, 46);
 }
 
 html,
