@@ -12,6 +12,7 @@
 
   --input-invalid-border-color: rgb(207, 34, 46);
   --invalid-color: rgb(207, 34, 46);
+  --container-max-width: 1920px;
 }
 
 html,
