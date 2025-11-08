@@ -27,36 +27,48 @@ export default async function Cart() {
       }}
     >
       {(queryRef) => (
-        <div className={s.cartView}>
-          <div className={s.container}>
-            <div className={s.cartItemsContainer}>
-              <h1 className={s.cartHeading}>Cart</h1>
-
-              <Suspense fallback={<CartLineItemsSkeleton />}>
+        <Suspense fallback={<CartSkeleton />}>
+          <div className={s.cartView}>
+            <div className={s.container}>
+              <div className={s.cartItemsContainer}>
+                <h1 className={s.cartHeading}>Cart</h1>
                 <CartLineItems queryRef={queryRef} />
-              </Suspense>
-            </div>
-            <div className={s.cartSummaryContainer}>
-              <h2 className={clsx(s.cartHeading, s.cartSummaryHeading)}>
-                Summary
-              </h2>
-              <Suspense>
+              </div>
+              <div className={s.cartSummaryContainer}>
+                <h2 className={clsx(s.cartHeading, s.cartSummaryHeading)}>
+                  Summary
+                </h2>
                 <DiscountCodeForm queryRef={queryRef} />
-              </Suspense>
-              <Suspense fallback={<CartSummarySkeleton />}>
                 <CartSummary queryRef={queryRef} />
-              </Suspense>
-              <Button
-                as={Navigation}
-                href={`/checkout?checkout_id=${cartId}`}
-                className={s.checkoutButton}
-              >
-                Checkout
-              </Button>
+                <Button
+                  as={Navigation}
+                  href={`/checkout?checkout_id=${cartId}`}
+                  className={s.checkoutButton}
+                >
+                  Checkout
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
+        </Suspense>
       )}
     </PreloadQuery>
+  );
+}
+
+export function CartSkeleton() {
+  return (
+    <div className={s.cartView}>
+      <div className={s.container}>
+        <div className={s.cartItemsContainer}>
+          <h1 className={s.cartHeading}>Cart</h1>
+          <CartLineItemsSkeleton />
+        </div>
+        <div className={s.cartSummaryContainer}>
+          <h2 className={clsx(s.cartHeading, s.cartSummaryHeading)}>Summary</h2>
+          <CartSummarySkeleton />
+        </div>
+      </div>
+    </div>
   );
 }
