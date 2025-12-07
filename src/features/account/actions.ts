@@ -1,27 +1,30 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { authClient } from "@/lib/auth-client";
+import { APIError } from "better-auth/api";
+
+export type LoginState = { error?: string; success?: boolean } | null;
 
 export async function login(_currentState: unknown, formData: FormData) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+  const email = String(formData.get("email") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
 
-  try {
-    // await sdk.auth
-    //   .login("customer", "emailpass", { email, password })
-    //   .then(async (token) => {
-    //     await setAuthToken(token as string)
-    //     const customerCacheTag = await getCacheTag("customers")
-    //     revalidateTag(customerCacheTag)
-    //   })
-  } catch (error: any) {
-    return error.toString();
+  if (!email || !password) {
+    return { error: "Email and password are required" };
   }
 
   try {
-    // await transferCart()
-  } catch (error: any) {
-    return error.toString();
+    await auth.api.customerSignIn({
+      body: { email, password },
+    });
+
+    return { success: true }
+  } catch (err) {
+    if (err instanceof APIError) {
+      return { error: err.message ?? "Invalid email or password" };
+    }
+
+    console.error(err);
+    return { error: "Something went wrong, please try again." };
   }
 }
