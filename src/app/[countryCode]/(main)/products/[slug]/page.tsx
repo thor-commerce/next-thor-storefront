@@ -20,7 +20,7 @@ export default async function ProductPage({
 
   const country = getCountryByCountryCode(countryCode);
 
-  const { data } = await getClient().query<
+  const { data } = await (await getClient()).query<
     ProductDetailQuery,
     ProductDetailQueryVariables
   >({
