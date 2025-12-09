@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import s from "./navbar-profile.module.css";
 import Navigation from "@/components/navigation/navigation";
-import NavbarSignOutButton from "./navbar-sign-out";
+import NavbarProfileDropdown from "./navbar-profile-dropdown";
 
 export const dynamic = "force-dynamic";
 
@@ -20,10 +20,5 @@ export default async function NavbarProfile() {
       </Navigation>
     );
 
-  return (
-    <div>
-      <span className={s.user}>{user.email}</span>
-      <NavbarSignOutButton />
-    </div>
-  );
+  return <NavbarProfileDropdown email={user.email || ""} />;
 }

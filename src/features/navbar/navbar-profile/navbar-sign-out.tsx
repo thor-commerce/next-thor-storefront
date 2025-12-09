@@ -3,6 +3,7 @@
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
+import s from "./navbar-profile.module.css";
 
 type NavbarSignOutButtonProps = object;
 
@@ -20,7 +21,11 @@ const NavbarSignOutButton: FC<NavbarSignOutButtonProps> = ({}) => {
     });
   }
 
-  return <button onClick={logout}>Sign out</button>;
+  return (
+    <button onClick={logout} className={s.signOutButton}>
+      Sign out
+    </button>
+  );
 };
 
 export default NavbarSignOutButton;
