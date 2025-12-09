@@ -153,6 +153,19 @@ type Cart implements Node {
   customerEmail: String
   """Gets the customer ID associated with the cart, if any."""
   customerId: ID
+  """Retrieves a paginated list of discount applications for the order"""
+  discountApplications(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): DiscountApplicationConnection!
   """Gets the discount codes applied to the cart."""
   discountCodes: [DiscountCodeDto!]!
   """The unique identifier of the cart"""
@@ -327,7 +340,54 @@ type CartCreatePayload {
   errors: [CartCreateError!]
 }
 
-union CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartNotFoundError | DiscountCodeMaxApplicationCountReachedError
+"""Discounted price details for a custom line item."""
+input CartCustomLineItemDiscountedPriceInput {
+  centAmount: Long!
+  currencyCode: String!
+}
+
+"""This is the input type for defining a custom line item."""
+input CartCustomLineItemInput {
+  price: CartCustomLineItemPriceInput!
+  product: CartCustomLineItemProductInput!
+  quantity: Int!
+}
+
+"""Price details for a custom line item."""
+input CartCustomLineItemPriceInput {
+  centAmount: Long!
+  currencyCode: String!
+  discountedPrice: CartCustomLineItemDiscountedPriceInput
+  taxBehavior: TaxBehavior!
+}
+
+"""Product details for a custom line item."""
+input CartCustomLineItemProductInput {
+  categories: [TypeIdDecodedInput!]
+  collections: [TypeIdDecodedInput!]
+  productId: ID
+  productName: String
+  productSlug: String
+  sku: String
+  tags: [String!]
+  variantId: ID
+  variantName: String
+}
+
+union CartCustomLineItemsAddError = CartNotFoundError
+
+"""This is the input type for adding custom line items to a cart."""
+input CartCustomLineItemsAddInput {
+  cartId: ID!
+  lineItems: [CartCustomLineItemInput!]!
+}
+
+type CartCustomLineItemsAddPayload {
+  cart: Cart
+  errors: [CartCustomLineItemsAddError!]
+}
+
+union CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartDiscountCodeMaxApplicationsReachedError | CartNotFoundError
 
 """This is the input type for adding a discount code to a cart."""
 input CartDiscountCodeAddInput {
@@ -344,6 +404,13 @@ input CartDiscountCodeAddInput {
 type CartDiscountCodeAddPayload {
   cart: Cart
   errors: [CartDiscountCodeAddError!]
+}
+
+"""
+The exception is thrown when the maximum number of applications for a discount code has been reached.
+"""
+type CartDiscountCodeMaxApplicationsReachedError implements UserError {
+  message: String!
 }
 
 union CartDiscountCodeRemoveError = CartNotFoundError
@@ -1330,13 +1397,6 @@ type DiscountCodeDto {
   code: String!
 }
 
-"""
-This exception is thrown when a discount code's max application count has been reached.
-"""
-type DiscountCodeMaxApplicationCountReachedError implements UserError {
-  message: String!
-}
-
 """Represents a discounted price for a product variant."""
 type DiscountedPrice {
   """The product discount associated with this discounted price."""
@@ -1387,6 +1447,8 @@ input KeyValuePairOfStringAndStringInput {
 type LineShippingMethod {
   """The unique identifier of the shipping method."""
   id: ID!
+  """Gets the metadata associated with the shipping method."""
+  metadata: [KeyValuePairOfStringAndString!]!
   """The display name of the shipping method."""
   name: String!
   """The SKU of the shipping method, if any."""
@@ -1454,6 +1516,8 @@ type Mutation {
   cartComplete(input: CartCompleteInput!): CartCompletePayload!
   """Creates a new cart using the provided currency."""
   cartCreate(input: CartCreateInput!): CartCreatePayload!
+  """Adds a custom line item to an existing cart."""
+  cartCustomLineItemsAdd(input: CartCustomLineItemsAddInput!): CartCustomLineItemsAddPayload!
   """
   Applies a discount code to an existing cart using the given discount code.
   """
@@ -1578,6 +1642,19 @@ type Order implements Node {
   createdAt: DateTime!
   """Retrieves the customer associated with the order."""
   customer: Customer
+  """Retrieves a paginated list of discount applications for the order"""
+  discountApplications(
+    """Returns the elements in the list that come after the specified cursor."""
+    after: String
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    """Returns the first _n_ elements from the list."""
+    first: Int
+    """Returns the last _n_ elements from the list."""
+    last: Int
+  ): DiscountApplicationConnection!
   """The external reference for the order."""
   externalReference: String
   """The unique identifier for the order."""
@@ -2466,6 +2543,11 @@ type TypeIdDecoded {
   hasType(type: String!): Boolean!
   id: UUID!
   suffix: String!
+  type: String!
+}
+
+input TypeIdDecodedInput {
+  id: UUID!
   type: String!
 }
 

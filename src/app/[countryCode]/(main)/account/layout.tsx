@@ -1,9 +1,23 @@
-import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export default async function AccountPageLayout({
   login,
-}: LayoutProps<"/[countryCode]/account">) {
-  const { data } = await authClient.getSession();
-  console.log(data)
+}: {
+  login: React.ReactNode;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session?.user) {
+    return (
+      <div>
+        Your account dashboard
+        <div>{session.user.name}</div>
+      </div>
+    );
+  }
+
   return <div>{login}</div>;
 }

@@ -8,16 +8,28 @@ import ProductAttributesSelector from "./product-attribute-selector";
 import AddToCartButton from "../components/add-to-cart-button";
 import clsx from "clsx";
 import { formatMoney } from "@/utils/money";
+import { TaxBehavior } from "@/__generated__/thor/graphql";
 type Props = {
   product: ProductDetailProduct;
   selectedVariant: ProductDetailProductVariant;
+};
+
+const getTaxType = ({
+  currencyCode,
+}: {
+  currencyCode: string;
+}): "VAT" | "TAX" => {
+  const taxCurrencies = ["USD", "CAD", "AUD"];
+  if (taxCurrencies.includes(currencyCode)) {
+    return "TAX";
+  }
+  return "VAT";
 };
 
 export default function ProductBlock({ product, selectedVariant }: Props) {
   const media = mapEdgesToItems(selectedVariant.media);
 
   const heroMedia = media.find(Boolean);
-
   const price = selectedVariant.price;
 
   const discountedPrice = price?.discountedPrice;
@@ -103,6 +115,13 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
             {discountLabel && (
               <div className={s.discountLabel}>{discountLabel}</div>
             )}
+          </div>
+        )}
+
+        {price && (
+          <div className={s.taxLabel}>
+            {getTaxType({ currencyCode: price.value.currencyCode })}{" "}
+           {price.taxBehavior == TaxBehavior.Inclusive ? "included in price" : "excluded from price"}
           </div>
         )}
 

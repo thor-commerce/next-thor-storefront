@@ -1,18 +1,24 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthPlugin } from "better-auth";
+import { nextCookies } from "better-auth/next-js";
+import { thorAuthPlugin } from "@thor-commerce/better-auth-thor";
+
 export const auth = betterAuth({
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 7 * 24 * 60 * 60, // 7 days cache duration
-      strategy: "jwe", // can be "jwt" or "compact"
-      refreshCache: true, // Enable stateless refresh
-    },
-  },
   account: {
+    storeAccountCookie: true,
     storeStateStrategy: "cookie",
-    storeAccountCookie: true, // Store account data after OAuth flow in a cookie (useful for database-less flows)
   },
-  emailAndPassword: {
-    enabled: true,
-  }
+
+  session: {
+    expiresIn: 60 * 60 * 8
+  },
+
+  plugins: [
+    thorAuthPlugin({
+      apiEndpoint: `https://api.thorcommerce.io/${process.env.NEXT_PUBLIC_THOR_COMMERCE_ORGANIZATION}/storefront/graphql`,
+      refreshThresholdMinutes: 5
+    }),
+    nextCookies() // must be last, per docs
+  ]
 });
+
+export type AuthSession = typeof auth.$Infer.Session;

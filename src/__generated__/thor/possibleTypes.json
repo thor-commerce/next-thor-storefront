@@ -26,10 +26,13 @@
       "CreateCartChannelNotFoundError",
       "CreateCartFailedNotAllLineItemsCouldBeAddedError"
     ],
+    "CartCustomLineItemsAddError": [
+      "CartNotFoundError"
+    ],
     "CartDiscountCodeAddError": [
       "CartAddDiscountCodeNotFoundError",
-      "CartNotFoundError",
-      "DiscountCodeMaxApplicationCountReachedError"
+      "CartDiscountCodeMaxApplicationsReachedError",
+      "CartNotFoundError"
     ],
     "CartDiscountCodeRemoveError": [
       "CartNotFoundError"
@@ -136,6 +139,7 @@
       "CartAuthenticationFailedError",
       "CartAuthorizationFailedError",
       "CartCompletionDiscrepancyError",
+      "CartDiscountCodeMaxApplicationsReachedError",
       "CartLineItemNotFoundError",
       "CartNotFoundError",
       "CartReplicateStrictValidationFailedError",
@@ -153,7 +157,6 @@
       "CustomerInvalidPasswordError",
       "CustomerNotFoundError",
       "CustomerRegisterFailedError",
-      "DiscountCodeMaxApplicationCountReachedError",
       "InvalidCredentialsError",
       "InvalidPasswordError",
       "InvalidRefreshTokenError",
