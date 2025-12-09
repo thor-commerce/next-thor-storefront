@@ -179,6 +179,8 @@ export type Cart = Node & {
   customerEmail?: Maybe<Scalars['String']['output']>;
   /** Gets the customer ID associated with the cart, if any. */
   customerId?: Maybe<Scalars['ID']['output']>;
+  /** Retrieves a paginated list of discount applications for the order */
+  discountApplications: DiscountApplicationConnection;
   /** Gets the discount codes applied to the cart. */
   discountCodes: Array<DiscountCodeDto>;
   /** The unique identifier of the cart */
@@ -203,6 +205,19 @@ export type Cart = Node & {
   taxedPrice?: Maybe<TaxedPrice>;
   /** Gets the total price of the cart after discounts and taxes. */
   total: Money;
+};
+
+
+/**
+ * Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
+ *
+ * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
+ */
+export type CartDiscountApplicationsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -351,7 +366,55 @@ export type CartCreatePayload = {
   errors?: Maybe<Array<CartCreateError>>;
 };
 
-export type CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartNotFoundError | DiscountCodeMaxApplicationCountReachedError;
+/** Discounted price details for a custom line item. */
+export type CartCustomLineItemDiscountedPriceInput = {
+  centAmount: Scalars['Long']['input'];
+  currencyCode: Scalars['String']['input'];
+};
+
+/** This is the input type for defining a custom line item. */
+export type CartCustomLineItemInput = {
+  price: CartCustomLineItemPriceInput;
+  product: CartCustomLineItemProductInput;
+  quantity: Scalars['Int']['input'];
+};
+
+/** Price details for a custom line item. */
+export type CartCustomLineItemPriceInput = {
+  centAmount: Scalars['Long']['input'];
+  currencyCode: Scalars['String']['input'];
+  discountedPrice?: InputMaybe<CartCustomLineItemDiscountedPriceInput>;
+  taxBehavior: TaxBehavior;
+};
+
+/** Product details for a custom line item. */
+export type CartCustomLineItemProductInput = {
+  categories?: InputMaybe<Array<TypeIdDecodedInput>>;
+  collections?: InputMaybe<Array<TypeIdDecodedInput>>;
+  productId?: InputMaybe<Scalars['ID']['input']>;
+  productName?: InputMaybe<Scalars['String']['input']>;
+  productSlug?: InputMaybe<Scalars['String']['input']>;
+  sku?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
+  variantId?: InputMaybe<Scalars['ID']['input']>;
+  variantName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CartCustomLineItemsAddError = CartNotFoundError;
+
+/** This is the input type for adding custom line items to a cart. */
+export type CartCustomLineItemsAddInput = {
+  cartId: Scalars['ID']['input'];
+  lineItems: Array<CartCustomLineItemInput>;
+};
+
+export type CartCustomLineItemsAddPayload = {
+  __typename?: 'CartCustomLineItemsAddPayload';
+  cart?: Maybe<Cart>;
+  errors?: Maybe<Array<CartCustomLineItemsAddError>>;
+};
+
+export type CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartDiscountCodeMaxApplicationsReachedError | CartNotFoundError;
 
 /** This is the input type for adding a discount code to a cart. */
 export type CartDiscountCodeAddInput = {
@@ -365,6 +428,12 @@ export type CartDiscountCodeAddPayload = {
   __typename?: 'CartDiscountCodeAddPayload';
   cart?: Maybe<Cart>;
   errors?: Maybe<Array<CartDiscountCodeAddError>>;
+};
+
+/** The exception is thrown when the maximum number of applications for a discount code has been reached. */
+export type CartDiscountCodeMaxApplicationsReachedError = UserError & {
+  __typename?: 'CartDiscountCodeMaxApplicationsReachedError';
+  message: Scalars['String']['output'];
 };
 
 export type CartDiscountCodeRemoveError = CartNotFoundError;
@@ -1299,12 +1368,6 @@ export type DiscountCodeDto = {
   code: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a discount code's max application count has been reached. */
-export type DiscountCodeMaxApplicationCountReachedError = UserError & {
-  __typename?: 'DiscountCodeMaxApplicationCountReachedError';
-  message: Scalars['String']['output'];
-};
-
 /** Represents a discounted price for a product variant. */
 export type DiscountedPrice = {
   __typename?: 'DiscountedPrice';
@@ -1354,6 +1417,8 @@ export type LineShippingMethod = {
   __typename?: 'LineShippingMethod';
   /** The unique identifier of the shipping method. */
   id: Scalars['ID']['output'];
+  /** Gets the metadata associated with the shipping method. */
+  metadata: Array<KeyValuePairOfStringAndString>;
   /** The display name of the shipping method. */
   name: Scalars['String']['output'];
   /** The SKU of the shipping method, if any. */
@@ -1413,6 +1478,8 @@ export type Mutation = {
   cartComplete: CartCompletePayload;
   /** Creates a new cart using the provided currency. */
   cartCreate: CartCreatePayload;
+  /** Adds a custom line item to an existing cart. */
+  cartCustomLineItemsAdd: CartCustomLineItemsAddPayload;
   /** Applies a discount code to an existing cart using the given discount code. */
   cartDiscountCodeAdd: CartDiscountCodeAddPayload;
   /** Removes a discount code from an existing cart using the given discount code. */
@@ -1484,6 +1551,12 @@ export type MutationCartCompleteArgs = {
 /** This class contains the mutations for managing carts. */
 export type MutationCartCreateArgs = {
   input: CartCreateInput;
+};
+
+
+/** This class contains the mutations for managing carts. */
+export type MutationCartCustomLineItemsAddArgs = {
+  input: CartCustomLineItemsAddInput;
 };
 
 
@@ -1626,6 +1699,8 @@ export type Order = Node & {
   createdAt: Scalars['DateTime']['output'];
   /** Retrieves the customer associated with the order. */
   customer?: Maybe<Customer>;
+  /** Retrieves a paginated list of discount applications for the order */
+  discountApplications: DiscountApplicationConnection;
   /** The external reference for the order. */
   externalReference?: Maybe<Scalars['String']['output']>;
   /** The unique identifier for the order. */
@@ -1656,6 +1731,14 @@ export type Order = Node & {
   taxedPrice?: Maybe<TaxedPrice>;
   /** Gets the total price of the order after discounts and taxes. */
   total: Money;
+};
+
+
+export type OrderDiscountApplicationsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  before?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  last?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -2522,6 +2605,11 @@ export type TypeIdDecodedHasTypeArgs = {
   type: Scalars['String']['input'];
 };
 
+export type TypeIdDecodedInput = {
+  id: Scalars['UUID']['input'];
+  type: Scalars['String']['input'];
+};
+
 /**
  * Represents the unit price of a product or variant in a cart or order, including the monetary value and currency and potentially discounted price.
  *
@@ -2558,6 +2646,20 @@ export type ProductGridTileFragment = { __typename?: 'Product', id: string, name
             | { __typename?: 'ProductDiscountRelativeValue', factor: any }
            } | null } | null } } | null } & { ' $fragmentName'?: 'ProductGridTileFragment' };
 
+export type CustomerAccessTokenCreateMutationVariables = Exact<{
+  input: CustomerAccessTokenCreateInput;
+}>;
+
+
+export type CustomerAccessTokenCreateMutation = { __typename?: 'Mutation', customerAccessTokenCreate: { __typename?: 'CustomerAccessTokenCreatePayload', customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, refreshToken: string, expiresIn: any } | null, errors?: Array<{ __typename: 'InvalidCredentialsError' }> | null } };
+
+export type CustomerAccessTokenRefreshMutationVariables = Exact<{
+  input: CustomerAccessTokenRefreshInput;
+}>;
+
+
+export type CustomerAccessTokenRefreshMutation = { __typename?: 'Mutation', customerAccessTokenRefresh: { __typename?: 'CustomerAccessTokenRefreshPayload', customerAccessToken?: { __typename?: 'CustomerAccessToken', accessToken: string, refreshToken: string, expiresIn: any } | null, errors?: Array<{ __typename: 'InvalidRefreshTokenError' }> | null } };
+
 export type CartLineItemFragment = (
   { __typename?: 'CartLineItem', id: string, taxBehavior: TaxBehavior, variantName: string, productName: string, quantity: number, productSlug: string, variant?: { __typename?: 'ProductVariant', id: string, image?: { __typename?: 'Media', src: string } | null, selectedAttributes: Array<{ __typename?: 'SelectedAttribute', value: string }>, availability?: { __typename?: 'ProductVariantAvailability', availableForPurchase: boolean, availableQuantity: number, stockPolicy: StockPolicy } | null } | null, unitPrice: { __typename?: 'UnitPrice', value: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number }, discountedPrice?: { __typename?: 'DiscountedPrice', value: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } | null }, discountApplications: { __typename?: 'DiscountApplicationConnection', edges?: Array<{ __typename?: 'DiscountApplicationEdge', node: { __typename?: 'DiscountApplication', label: string, discountedAmount: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } }> | null }, total: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } }
   & { ' $fragmentRefs'?: { 'EditItemQuantityButtonFragment': EditItemQuantityButtonFragment } }
@@ -2593,8 +2695,8 @@ export type CartDiscountCodeAddMutationVariables = Exact<{
 
 export type CartDiscountCodeAddMutation = { __typename?: 'Mutation', cartDiscountCodeAdd: { __typename?: 'CartDiscountCodeAddPayload', cart?: { __typename?: 'Cart', id: string } | null, errors?: Array<
       | { __typename?: 'CartAddDiscountCodeNotFoundError', code: 'CartAddDiscountCodeNotFoundError' }
+      | { __typename?: 'CartDiscountCodeMaxApplicationsReachedError', code: 'CartDiscountCodeMaxApplicationsReachedError' }
       | { __typename?: 'CartNotFoundError', code: 'CartNotFoundError' }
-      | { __typename?: 'DiscountCodeMaxApplicationCountReachedError', code: 'DiscountCodeMaxApplicationCountReachedError' }
     > | null } };
 
 export type CartDiscountCodeRemoveMutationVariables = Exact<{
@@ -2773,6 +2875,8 @@ export const EditItemQuantityButtonFragmentDoc = {"kind":"Document","definitions
 export const CartLineItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CartLineItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CartLineItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"EditItemQuantityButton"}},{"kind":"Field","name":{"kind":"Name","value":"taxBehavior"}},{"kind":"Field","name":{"kind":"Name","value":"variantName"}},{"kind":"Field","name":{"kind":"Name","value":"productName"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"productSlug"}},{"kind":"Field","name":{"kind":"Name","value":"variant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"src"}}]}},{"kind":"Field","name":{"kind":"Name","value":"selectedAttributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"availability"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"availableForPurchase"}},{"kind":"Field","name":{"kind":"Name","value":"availableQuantity"}},{"kind":"Field","name":{"kind":"Name","value":"stockPolicy"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitPrice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}},{"kind":"Field","name":{"kind":"Name","value":"discountedPrice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"discountApplications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"discountedAmount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"EditItemQuantityButton"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CartLineItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"variant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"availability"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"availableForPurchase"}},{"kind":"Field","name":{"kind":"Name","value":"availableQuantity"}},{"kind":"Field","name":{"kind":"Name","value":"stockPolicy"}}]}}]}}]}}]} as unknown as DocumentNode<CartLineItemFragment, unknown>;
 export const AvailableShippingMethodsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AvailableShippingMethods"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Cart"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"availableShippingMethods"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"rate"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"AbsoluteShippingMethodRate"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"price"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}},{"kind":"InlineFragment","typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"RelativeShippingMethodRate"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rate"}}]}}]}}]}}]}}]} as unknown as DocumentNode<AvailableShippingMethodsFragment, unknown>;
 export const CheckoutSummaryCartLineItemFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CheckoutSummaryCartLineItem"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CartLineItem"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"productName"}},{"kind":"Field","name":{"kind":"Name","value":"variantName"}},{"kind":"Field","name":{"kind":"Name","value":"quantity"}},{"kind":"Field","name":{"kind":"Name","value":"variant"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"image"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"src"}}]}},{"kind":"Field","name":{"kind":"Name","value":"selectedAttributes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"discountApplications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"discountedAmount"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"unitPrice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}},{"kind":"Field","name":{"kind":"Name","value":"discountedPrice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"taxBehavior"}},{"kind":"Field","name":{"kind":"Name","value":"taxedPrice"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"net"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}},{"kind":"Field","name":{"kind":"Name","value":"gross"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"total"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"centAmount"}},{"kind":"Field","name":{"kind":"Name","value":"currencyCode"}},{"kind":"Field","name":{"kind":"Name","value":"fractionDigits"}}]}}]}}]} as unknown as DocumentNode<CheckoutSummaryCartLineItemFragment, unknown>;
+export const CustomerAccessTokenCreateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CustomerAccessTokenCreate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CustomerAccessTokenCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"customerAccessTokenCreate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"customerAccessToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}},{"kind":"Field","name":{"kind":"Name","value":"expiresIn"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}}]}}]}}]} as unknown as DocumentNode<CustomerAccessTokenCreateMutation, CustomerAccessTokenCreateMutationVariables>;
+export const CustomerAccessTokenRefreshDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CustomerAccessTokenRefresh"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CustomerAccessTokenRefreshInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"customerAccessTokenRefresh"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"customerAccessToken"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"refreshToken"}},{"kind":"Field","name":{"kind":"Name","value":"expiresIn"}}]}},{"kind":"Field","name":{"kind":"Name","value":"errors"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}}]}}]}}]} as unknown as DocumentNode<CustomerAccessTokenRefreshMutation, CustomerAccessTokenRefreshMutationVariables>;
 export const CartCreateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CartCreate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CartCreateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cartCreate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<CartCreateMutation, CartCreateMutationVariables>;
 export const CartUpdateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CartUpdate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CartUpdateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cartUpdate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<CartUpdateMutation, CartUpdateMutationVariables>;
 export const CartReplicateDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CartReplicate"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CartReplicateInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cartReplicate"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"cart"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<CartReplicateMutation, CartReplicateMutationVariables>;

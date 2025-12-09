@@ -7,11 +7,16 @@ export default async function AccountPageLayout({
   login: React.ReactNode;
 }) {
   const session = await auth.api.getSession({
-    headers: await headers()
+    headers: await headers(),
   });
 
   if (session?.user) {
-    return <div>Your account dashboard</div>;
+    return (
+      <div>
+        Your account dashboard
+        <div>{session.user.name}</div>
+      </div>
+    );
   }
 
   return <div>{login}</div>;

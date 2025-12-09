@@ -71,7 +71,7 @@ export type BaseAddressFieldPolicy = {
 	postalCode?: FieldPolicy<any> | FieldReadFunction<any>,
 	state?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CartKeySpecifier = ('availableShippingMethods' | 'billingAddress' | 'channel' | 'channelId' | 'currency' | 'customerEmail' | 'customerId' | 'discountCodes' | 'id' | 'lineItems' | 'lineItemsQuantity' | 'metadata' | 'paymentSession' | 'shippingAddress' | 'shippingLines' | 'state' | 'subtotal' | 'taxedPrice' | 'total' | CartKeySpecifier)[];
+export type CartKeySpecifier = ('availableShippingMethods' | 'billingAddress' | 'channel' | 'channelId' | 'currency' | 'customerEmail' | 'customerId' | 'discountApplications' | 'discountCodes' | 'id' | 'lineItems' | 'lineItemsQuantity' | 'metadata' | 'paymentSession' | 'shippingAddress' | 'shippingLines' | 'state' | 'subtotal' | 'taxedPrice' | 'total' | CartKeySpecifier)[];
 export type CartFieldPolicy = {
 	availableShippingMethods?: FieldPolicy<any> | FieldReadFunction<any>,
 	billingAddress?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -80,6 +80,7 @@ export type CartFieldPolicy = {
 	currency?: FieldPolicy<any> | FieldReadFunction<any>,
 	customerEmail?: FieldPolicy<any> | FieldReadFunction<any>,
 	customerId?: FieldPolicy<any> | FieldReadFunction<any>,
+	discountApplications?: FieldPolicy<any> | FieldReadFunction<any>,
 	discountCodes?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	lineItems?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -149,10 +150,19 @@ export type CartCreatePayloadFieldPolicy = {
 	cart?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type CartCustomLineItemsAddPayloadKeySpecifier = ('cart' | 'errors' | CartCustomLineItemsAddPayloadKeySpecifier)[];
+export type CartCustomLineItemsAddPayloadFieldPolicy = {
+	cart?: FieldPolicy<any> | FieldReadFunction<any>,
+	errors?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type CartDiscountCodeAddPayloadKeySpecifier = ('cart' | 'errors' | CartDiscountCodeAddPayloadKeySpecifier)[];
 export type CartDiscountCodeAddPayloadFieldPolicy = {
 	cart?: FieldPolicy<any> | FieldReadFunction<any>,
 	errors?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CartDiscountCodeMaxApplicationsReachedErrorKeySpecifier = ('message' | CartDiscountCodeMaxApplicationsReachedErrorKeySpecifier)[];
+export type CartDiscountCodeMaxApplicationsReachedErrorFieldPolicy = {
+	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CartDiscountCodeRemovePayloadKeySpecifier = ('cart' | 'errors' | CartDiscountCodeRemovePayloadKeySpecifier)[];
 export type CartDiscountCodeRemovePayloadFieldPolicy = {
@@ -514,10 +524,6 @@ export type DiscountCodeDtoFieldPolicy = {
 	cartId?: FieldPolicy<any> | FieldReadFunction<any>,
 	code?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DiscountCodeMaxApplicationCountReachedErrorKeySpecifier = ('message' | DiscountCodeMaxApplicationCountReachedErrorKeySpecifier)[];
-export type DiscountCodeMaxApplicationCountReachedErrorFieldPolicy = {
-	message?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type DiscountedPriceKeySpecifier = ('discount' | 'value' | DiscountedPriceKeySpecifier)[];
 export type DiscountedPriceFieldPolicy = {
 	discount?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -544,9 +550,10 @@ export type KeyValuePairOfStringAndStringFieldPolicy = {
 	key?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type LineShippingMethodKeySpecifier = ('id' | 'name' | 'sku' | LineShippingMethodKeySpecifier)[];
+export type LineShippingMethodKeySpecifier = ('id' | 'metadata' | 'name' | 'sku' | LineShippingMethodKeySpecifier)[];
 export type LineShippingMethodFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	metadata?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	sku?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -576,10 +583,11 @@ export type MoneyFieldPolicy = {
 	currencyCode?: FieldPolicy<any> | FieldReadFunction<any>,
 	fractionDigits?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type MutationKeySpecifier = ('cartComplete' | 'cartCreate' | 'cartDiscountCodeAdd' | 'cartDiscountCodeRemove' | 'cartLineItemsAdd' | 'cartLineItemsRemove' | 'cartLineItemsUpdate' | 'cartPaymentSessionInitialize' | 'cartReplicate' | 'cartShippingLineAdd' | 'cartShippingLineRemove' | 'cartShippingLinesSet' | 'cartUpdate' | 'customerAccessTokenCreate' | 'customerAccessTokenRefresh' | 'customerActivate' | 'customerAddressCreate' | 'customerAddressDelete' | 'customerAddressUpdate' | 'customerPasswordReset' | 'customerPasswordResetToken' | 'customerRegister' | 'customerUpdate' | MutationKeySpecifier)[];
+export type MutationKeySpecifier = ('cartComplete' | 'cartCreate' | 'cartCustomLineItemsAdd' | 'cartDiscountCodeAdd' | 'cartDiscountCodeRemove' | 'cartLineItemsAdd' | 'cartLineItemsRemove' | 'cartLineItemsUpdate' | 'cartPaymentSessionInitialize' | 'cartReplicate' | 'cartShippingLineAdd' | 'cartShippingLineRemove' | 'cartShippingLinesSet' | 'cartUpdate' | 'customerAccessTokenCreate' | 'customerAccessTokenRefresh' | 'customerActivate' | 'customerAddressCreate' | 'customerAddressDelete' | 'customerAddressUpdate' | 'customerPasswordReset' | 'customerPasswordResetToken' | 'customerRegister' | 'customerUpdate' | MutationKeySpecifier)[];
 export type MutationFieldPolicy = {
 	cartComplete?: FieldPolicy<any> | FieldReadFunction<any>,
 	cartCreate?: FieldPolicy<any> | FieldReadFunction<any>,
+	cartCustomLineItemsAdd?: FieldPolicy<any> | FieldReadFunction<any>,
 	cartDiscountCodeAdd?: FieldPolicy<any> | FieldReadFunction<any>,
 	cartDiscountCodeRemove?: FieldPolicy<any> | FieldReadFunction<any>,
 	cartLineItemsAdd?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -606,12 +614,13 @@ export type NodeKeySpecifier = ('id' | NodeKeySpecifier)[];
 export type NodeFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type OrderKeySpecifier = ('billingAddress' | 'channel' | 'createdAt' | 'customer' | 'externalReference' | 'id' | 'lineItems' | 'lineItemsQuantity' | 'metadata' | 'orderNumber' | 'orderState' | 'paymentState' | 'payments' | 'shipmentState' | 'shippingAddress' | 'shippingLines' | 'subtotal' | 'taxedPrice' | 'total' | OrderKeySpecifier)[];
+export type OrderKeySpecifier = ('billingAddress' | 'channel' | 'createdAt' | 'customer' | 'discountApplications' | 'externalReference' | 'id' | 'lineItems' | 'lineItemsQuantity' | 'metadata' | 'orderNumber' | 'orderState' | 'paymentState' | 'payments' | 'shipmentState' | 'shippingAddress' | 'shippingLines' | 'subtotal' | 'taxedPrice' | 'total' | OrderKeySpecifier)[];
 export type OrderFieldPolicy = {
 	billingAddress?: FieldPolicy<any> | FieldReadFunction<any>,
 	channel?: FieldPolicy<any> | FieldReadFunction<any>,
 	createdAt?: FieldPolicy<any> | FieldReadFunction<any>,
 	customer?: FieldPolicy<any> | FieldReadFunction<any>,
+	discountApplications?: FieldPolicy<any> | FieldReadFunction<any>,
 	externalReference?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	lineItems?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1069,9 +1078,17 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | CartCreatePayloadKeySpecifier | (() => undefined | CartCreatePayloadKeySpecifier),
 		fields?: CartCreatePayloadFieldPolicy,
 	},
+	CartCustomLineItemsAddPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CartCustomLineItemsAddPayloadKeySpecifier | (() => undefined | CartCustomLineItemsAddPayloadKeySpecifier),
+		fields?: CartCustomLineItemsAddPayloadFieldPolicy,
+	},
 	CartDiscountCodeAddPayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CartDiscountCodeAddPayloadKeySpecifier | (() => undefined | CartDiscountCodeAddPayloadKeySpecifier),
 		fields?: CartDiscountCodeAddPayloadFieldPolicy,
+	},
+	CartDiscountCodeMaxApplicationsReachedError?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CartDiscountCodeMaxApplicationsReachedErrorKeySpecifier | (() => undefined | CartDiscountCodeMaxApplicationsReachedErrorKeySpecifier),
+		fields?: CartDiscountCodeMaxApplicationsReachedErrorFieldPolicy,
 	},
 	CartDiscountCodeRemovePayload?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CartDiscountCodeRemovePayloadKeySpecifier | (() => undefined | CartDiscountCodeRemovePayloadKeySpecifier),
@@ -1316,10 +1333,6 @@ export type StrictTypedTypePolicies = {
 	DiscountCodeDto?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DiscountCodeDtoKeySpecifier | (() => undefined | DiscountCodeDtoKeySpecifier),
 		fields?: DiscountCodeDtoFieldPolicy,
-	},
-	DiscountCodeMaxApplicationCountReachedError?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | DiscountCodeMaxApplicationCountReachedErrorKeySpecifier | (() => undefined | DiscountCodeMaxApplicationCountReachedErrorKeySpecifier),
-		fields?: DiscountCodeMaxApplicationCountReachedErrorFieldPolicy,
 	},
 	DiscountedPrice?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DiscountedPriceKeySpecifier | (() => undefined | DiscountedPriceKeySpecifier),
