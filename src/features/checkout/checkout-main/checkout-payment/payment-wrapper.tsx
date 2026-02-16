@@ -18,8 +18,11 @@ export default async function PaymentWrapper({ children }: PropsWithChildren) {
   });
   const cart = data?.cart;
 
+  const existingPaymentGateway = cart?.paymentSession?.paymentGateway;
   let publishableKey: string | null =
-    cart?.paymentSession?.paymentGateway.publishableKey || null;
+    existingPaymentGateway?.__typename === "StripePaymentGateway"
+      ? existingPaymentGateway.publishableKey
+      : null;
   let clientSecret: string | null = cart?.paymentSession?.clientSecret || null;
   // Show loading state while payment session doesn't exist
   if (cart?.paymentSession == null) {
@@ -59,9 +62,13 @@ export default async function PaymentWrapper({ children }: PropsWithChildren) {
         },
       },
     });
-    publishableKey =
+    const initializedPaymentGateway =
       res.data?.cartPaymentSessionInitialize.cart?.paymentSession
-        ?.paymentGateway.publishableKey || null;
+        ?.paymentGateway;
+    publishableKey =
+      initializedPaymentGateway?.__typename === "StripePaymentGateway"
+        ? initializedPaymentGateway.publishableKey
+        : null;
     clientSecret =
       res.data?.cartPaymentSessionInitialize?.cart?.paymentSession
         ?.clientSecret || null;

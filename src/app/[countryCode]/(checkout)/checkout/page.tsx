@@ -55,8 +55,11 @@ export default async function CheckoutPage({
         },
       },
     });
+    const paymentGateway = tt.data?.cart?.paymentSession?.paymentGateway;
     const publishableKey =
-      tt.data?.cart?.paymentSession?.paymentGateway.publishableKey;
+      paymentGateway?.__typename === "StripePaymentGateway"
+        ? paymentGateway.publishableKey
+        : null;
     if (!publishableKey || !payment_intent_client_secret) {
       return <div> no publishableKey or payment_intent_client_secret </div>;
     }

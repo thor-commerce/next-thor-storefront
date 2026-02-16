@@ -25,7 +25,12 @@ export default function PaymentProcessingScreen({ queryRef }: Props) {
     throw new Error("No payment session found");
   }
 
-  const publishableKey = paymentSession.paymentGateway.publishableKey;
+  const paymentGateway = paymentSession.paymentGateway;
+  if (paymentGateway.__typename !== "StripePaymentGateway") {
+    throw new Error("Unsupported payment gateway");
+  }
+
+  const publishableKey = paymentGateway.publishableKey;
   const clientSecret = paymentSession.clientSecret;
 
   if (!publishableKey) {

@@ -6,6 +6,12 @@ export const CART_CREATE_MUTATION = gql(/* GraphQL */ `
       cart {
         id
       }
+      errors {
+        __typename
+        ... on UserError {
+          message
+        }
+      }
     }
   }
 `);
@@ -25,6 +31,12 @@ export const CART_REPLICATE_MUTATION = gql(/* GraphQL */ `
     cartReplicate(input: $input) {
       cart {
         id
+      }
+      errors {
+        __typename
+        ... on UserError {
+          message
+        }
       }
     }
   }

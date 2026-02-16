@@ -9,6 +9,7 @@ import ProductsGrid from "@/features/products/products-grid/products-grid";
 import { PRODUCTS_GRID_QUERY } from "@/features/products/queries";
 
 import { PreloadQuery } from "@/lib/thor/apollo-client";
+import { STORE } from "@/lib/thor/config";
 import { getCountryByCountryCode } from "@/utils/countries";
 import { Suspense } from "react";
 
@@ -19,8 +20,9 @@ export default async function AllProductsPage({
 
   const country = getCountryByCountryCode(countryCode);
   const variables: ProductsGridQueryVariables = {
-    currency: country.currencies[0],
-    channelId: country.channel,
+    storeId: STORE.DEFAULT,
+    priceCurrency: country.currencies[0],
+    priceChannelId: country.channel,
     sortKey: ProductSortKeys.Id,
     sortDirection: SortDirection.Asc,
   };

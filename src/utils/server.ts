@@ -5,6 +5,7 @@
 import { headers } from "next/headers";
 import { match } from "path-to-regexp";
 import { getCountryByCountryCode } from "./countries";
+import { STORE } from "@/lib/thor/config";
 
 export async function getServerContext() {
   const heads = await headers();
@@ -45,6 +46,8 @@ export async function getServerContext() {
 
   return {
     channelId: country.channel,
+    priceChannelId: country.channel,
+    storeId: STORE.DEFAULT,
     lang: params.lang,
     country: country,
     pathname,

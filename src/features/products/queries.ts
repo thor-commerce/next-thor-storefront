@@ -2,8 +2,9 @@ import { gql } from "@/__generated__/thor";
 
 export const PRODUCTS_GRID_QUERY = gql(/* GraphQL */ `
   query ProductsGrid(
-    $channelId: ID!
-    $currency: String!
+    $storeId: ID!
+    $priceChannelId: ID!
+    $priceCurrency: String!
     $after: String
     $sortDirection: SortDirection!
     $sortKey: ProductSortKeys!
@@ -13,8 +14,9 @@ export const PRODUCTS_GRID_QUERY = gql(/* GraphQL */ `
       after: $after
       sortDirection: $sortDirection
       sortKey: $sortKey
-      channelId: $channelId
-      currency: $currency
+      storeId: $storeId
+      priceChannelId: $priceChannelId
+      priceCurrency: $priceCurrency
     ) {
       edges {
         node {
@@ -31,8 +33,18 @@ export const PRODUCTS_GRID_QUERY = gql(/* GraphQL */ `
 `);
 
 export const PRODUCT_QUERY = gql(/* GraphQL */ `
-  query ProductDetail($slug: String, $currency: String!, $channelId: ID!) {
-    product(slug: $slug, channelId: $channelId, currency: $currency) {
+  query ProductDetail(
+    $slug: String
+    $storeId: ID!
+    $priceChannelId: ID!
+    $priceCurrency: String!
+  ) {
+    product(
+      slug: $slug
+      storeId: $storeId
+      priceChannelId: $priceChannelId
+      priceCurrency: $priceCurrency
+    ) {
       id
       name
       description

@@ -8,7 +8,7 @@ export const NAVBAR_CART_QUERY = gql(/* GraphQL */ `
       state
       currency
       customerId
-      channel {
+      store {
         id
       }
     }

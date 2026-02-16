@@ -24,6 +24,9 @@ const CART_ADD_ITEMS_MUTATION = gql(/* GraphQL */ `
       }
       errors {
         __typename
+        ... on UserError {
+          message
+        }
       }
     }
   }
@@ -37,11 +40,11 @@ export async function addItem(prevState: unknown, data: FormData) {
   //can i acccess the url from inside here?
 
   const cartId = await getCartIdFromCookies();
-  const { channelId, country } = await getServerContext();
+  const { storeId, country } = await getServerContext();
 
   const cart = await findOrCreateCart({
     cartId,
-    channelId: channelId,
+    storeId,
     country: country.code.toUpperCase(),
   });
 
@@ -77,6 +80,18 @@ export async function addItem(prevState: unknown, data: FormData) {
     return {
       success: false,
     };
+  }
+
+  const addErrors = cartLineItemsAddResponse.data.cartLineItemsAdd.errors;
+  if (addErrors && addErrors.length > 0) {
+    const errorMessage = addErrors
+      .map((error) =>
+        "message" in error && error.message
+          ? `${error.__typename}: ${error.message}`
+          : error.__typename
+      )
+      .join(", ");
+    throw new Error(errorMessage);
   }
 
   revalidateTag(CACHE_TAGS.cart);

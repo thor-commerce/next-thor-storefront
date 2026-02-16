@@ -1,7 +1,7 @@
 "use server";
 
 import { getClient } from "@/lib/thor/apollo-client";
-import { THOR_CART_COOKIE_NAME } from "@/lib/thor/config";
+import { STORE, THOR_CART_COOKIE_NAME } from "@/lib/thor/config";
 import { cookies } from "next/headers";
 import { NAVBAR_CART_QUERY } from "./queries";
 import { CACHE_TAGS } from "@/constants";
@@ -61,8 +61,8 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
   const { country } = await getServerContext();
   let changesCount = 0;
   if (
-    cart.channel?.id != country.channel ||
-    country.currencies[0] != cart.currency
+    cart.store?.id !== STORE.DEFAULT ||
+    country.currencies[0] !== cart.currency
   ) {
     const { data } = await getClient().mutate<
       CartReplicateMutation,
@@ -72,8 +72,8 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
       variables: {
         input: {
           cartId: cart.id,
-          channelId: country.channel,
           currency: country.currencies[0],
+          storeId: STORE.DEFAULT,
           strategy: ReplicationStrategy.SkipUnavailable,
         },
       },
@@ -91,29 +91,32 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
 }
 
 const createCart = ({
-  channelId,
   currency,
+  storeId,
+  countryCode,
 }: {
-  channelId: string;
   currency: string;
+  storeId: string;
+  countryCode: string;
 }) =>
   getClient().mutate({
     mutation: CART_CREATE_MUTATION,
     variables: {
       input: {
-        channelId,
         currency,
+        storeId,
+        countryCode,
       },
     },
   });
 
 export async function findOrCreateCart({
-  channelId,
+  storeId,
   cartId,
   country,
 }: {
   cartId?: string;
-  channelId: string;
+  storeId: string;
   country: string;
 }) {
   const currency = getCurrencyByCountryCode(country);
@@ -121,8 +124,9 @@ export async function findOrCreateCart({
   if (!cartId) {
     return (
       await createCart({
-        channelId,
         currency,
+        storeId,
+        countryCode: country,
       })
     ).data?.cartCreate?.cart;
   }
@@ -136,7 +140,28 @@ export async function findOrCreateCart({
 
   const cart = data?.cart;
 
-  return (
-    cart || (await createCart({ channelId, currency })).data?.cartCreate?.cart
-  );
+  if (cart) {
+    return cart;
+  }
+
+  const createResponse = await createCart({
+    currency,
+    storeId,
+    countryCode: country,
+  });
+
+  const createdCart = createResponse.data?.cartCreate?.cart;
+  if (createdCart) {
+    return createdCart;
+  }
+
+  const createErrors = createResponse.data?.cartCreate?.errors
+    ?.map((error) =>
+      "message" in error && error.message
+        ? `${error.__typename}: ${error.message}`
+        : error.__typename
+    )
+    .join(", ");
+
+  throw new Error(createErrors || "Cart creation failed");
 }

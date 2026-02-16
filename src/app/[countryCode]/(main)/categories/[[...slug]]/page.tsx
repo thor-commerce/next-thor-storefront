@@ -7,6 +7,7 @@ import CategoryGrid from "@/features/categories/category-grid/category-grid";
 import { CATEGORY_GRID_QUERY } from "@/features/categories/queries";
 
 import { PreloadQuery } from "@/lib/thor/apollo-client";
+import { STORE } from "@/lib/thor/config";
 import { getCountryByCountryCode } from "@/utils/countries";
 
 export default async function CategoryPage({
@@ -23,8 +24,9 @@ export default async function CategoryPage({
   const country = getCountryByCountryCode(countryCode);
   const variables: CategoryGridQueryVariables = {
     slug: categorySlug.toLowerCase(),
-    currency: country.currencies[0],
-    channelId: country.channel,
+    storeId: STORE.DEFAULT,
+    priceCurrency: country.currencies[0],
+    priceChannelId: country.channel,
     sortKey: ProductCategorySortKeys.Manual,
     sortDirection: SortDirection.Asc,
   };
