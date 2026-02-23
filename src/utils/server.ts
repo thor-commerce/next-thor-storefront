@@ -44,7 +44,7 @@ export async function getServerContext() {
   const pathname = url.pathname.replace(`/${params.country}`, "");
 
   return {
-    channelId: country.channel,
+    store: country.store,
     lang: params.lang,
     country: country,
     pathname,

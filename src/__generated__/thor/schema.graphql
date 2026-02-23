@@ -4,9 +4,19 @@ schema {
 }
 
 type AbsoluteShippingMethodRate implements CartAvailableShippingMethodRate {
-  """The unique identifier for the shipping method rate."""
+  """
+  The unique identifier for the shipping method rate.
+   
+  
+  **Returns:**
+  """
   id: ID!
-  """The price of the shipping method rate."""
+  """
+  The price of the shipping method rate.
+  
+  
+  **Returns:**
+  """
   price: Money!
 }
 
@@ -18,16 +28,6 @@ type AddressAlreadyExistsError implements UserError {
 """The address with the specified ID was not found."""
 type AddressNotFoundError implements UserError {
   message: String!
-}
-
-type AggregateDto {
-  name: String!
-  values: [AggregateValueDto!]!
-}
-
-type AggregateValueDto {
-  count: Long!
-  name: String!
 }
 
 type Attribute {
@@ -143,10 +143,6 @@ type Cart implements Node {
   Gets the billing address associated with the cart. This may be the same as the shipping address.
   """
   billingAddress: CartAddress
-  """Gets the `Channel` that the cart belongs to."""
-  channel: Channel
-  """Used internally to resolve the channel"""
-  channelId: ID!
   """Gets the currency of the cart."""
   currency: String!
   """Gets the customer email associated with the cart, if any."""
@@ -197,6 +193,8 @@ type Cart implements Node {
   shippingLines: [CartShippingLine!]!
   """Gets the current state of the cart."""
   state: CartState!
+  """Gets the store associated with the cart."""
+  store: Store
   """Gets the total price of the cart before discounts and taxes."""
   subtotal: Money!
   """
@@ -235,7 +233,7 @@ type CartAddress implements BaseAddress {
   firstName: String
   """The formatted address."""
   formatted: String
-  """/// The unique identifier of the address."""
+  """The unique identifier of the address."""
   id: ID!
   """Family name (last name) of the contact."""
   lastName: String
@@ -275,7 +273,12 @@ type CartAuthorizationFailedError implements UserError {
 }
 
 type CartAvailableShippingMethod {
-  """The description of the shipping method."""
+  """
+  The description of the shipping method.
+   
+  
+  **Returns:**
+  """
   description: String
   """The unique identifier of the shipping method."""
   id: ID!
@@ -290,11 +293,16 @@ type CartAvailableShippingMethod {
 }
 
 interface CartAvailableShippingMethodRate {
-  """The unique identifier for the shipping method rate."""
+  """
+  The unique identifier for the shipping method rate.
+   
+  
+  **Returns:**
+  """
   id: ID!
 }
 
-union CartCompleteError = CartCompletionDiscrepancyError | CartNotFoundError
+union CartCompleteError = CartCompletionDiscountCodeAlreadyUsedError | CartCompletionDiscrepancyError | CartNotFoundError
 
 """This is the input type for completing a cart."""
 input CartCompleteInput {
@@ -307,20 +315,25 @@ type CartCompletePayload {
 }
 
 """
+This exception is thrown when completing a cart fails because a discount code was already used.
+"""
+type CartCompletionDiscountCodeAlreadyUsedError implements UserError {
+  message: String!
+}
+
+"""
 This exception is thrown when the cart completion detects a discrepancy between cart and order totals.
 """
 type CartCompletionDiscrepancyError implements UserError {
   message: String!
 }
 
-union CartCreateError = CreateCartAddressDoesNotHaveCountryCodeError | CreateCartAuthenticationFailedError | CreateCartAuthorizationFailedError | CreateCartChannelDoesNotSupportCountryError | CreateCartChannelDoesNotSupportCurrencyError | CreateCartChannelHasNoCountriesError | CreateCartChannelNotFoundError | CreateCartFailedNotAllLineItemsCouldBeAddedError
+union CartCreateError = CreateCartAddressDoesNotHaveCountryCodeError | CreateCartAuthenticationFailedError | CreateCartAuthorizationFailedError | CreateCartChannelDoesNotSupportCountryError | CreateCartChannelDoesNotSupportCurrencyError | CreateCartChannelHasNoCountriesError | CreateCartChannelNotFoundError | CreateCartFailedNotAllLineItemsCouldBeAddedError | CreateCartPriceChannelNotFoundError | CreateCartShippingAddressDoesNotHaveShippingZonesError
 
 """This is the input type for creating a cart."""
 input CartCreateInput {
   """Optional billing address for the cart."""
   billingAddress: CartAddressInput
-  """The unique identifier of the channel."""
-  channelId: ID!
   """Two-digit country code as per ISO 3166-1 alpha-2"""
   countryCode: String
   """ISO 4217 currency code."""
@@ -331,60 +344,17 @@ input CartCreateInput {
   customerId: ID
   """Optional list of line items to be added to the cart."""
   lineItems: [CartLineItemInput!]
+  """Optional unique identifier of the price channel."""
+  priceChannelId: ID
   """Optional shipping address for the cart."""
   shippingAddress: CartAddressInput
+  """The unique identifier of the store."""
+  storeId: ID!
 }
 
 type CartCreatePayload {
   cart: Cart
   errors: [CartCreateError!]
-}
-
-"""Discounted price details for a custom line item."""
-input CartCustomLineItemDiscountedPriceInput {
-  centAmount: Long!
-  currencyCode: String!
-}
-
-"""This is the input type for defining a custom line item."""
-input CartCustomLineItemInput {
-  price: CartCustomLineItemPriceInput!
-  product: CartCustomLineItemProductInput!
-  quantity: Int!
-}
-
-"""Price details for a custom line item."""
-input CartCustomLineItemPriceInput {
-  centAmount: Long!
-  currencyCode: String!
-  discountedPrice: CartCustomLineItemDiscountedPriceInput
-  taxBehavior: TaxBehavior!
-}
-
-"""Product details for a custom line item."""
-input CartCustomLineItemProductInput {
-  categories: [TypeIdDecodedInput!]
-  collections: [TypeIdDecodedInput!]
-  productId: ID
-  productName: String
-  productSlug: String
-  sku: String
-  tags: [String!]
-  variantId: ID
-  variantName: String
-}
-
-union CartCustomLineItemsAddError = CartNotFoundError
-
-"""This is the input type for adding custom line items to a cart."""
-input CartCustomLineItemsAddInput {
-  cartId: ID!
-  lineItems: [CartCustomLineItemInput!]!
-}
-
-type CartCustomLineItemsAddPayload {
-  cart: Cart
-  errors: [CartCustomLineItemsAddError!]
 }
 
 union CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartDiscountCodeMaxApplicationsReachedError | CartNotFoundError
@@ -436,10 +406,6 @@ Represents a line item in a cart, which includes details about the product, vari
 Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
 """
 type CartLineItem {
-  """used in fusion"""
-  channelId: ID!
-  """used in fusion"""
-  currency: String!
   """Retrieves a paginated list of payments for a specific order."""
   discountApplications(
     """Returns the elements in the list that come after the specified cursor."""
@@ -461,7 +427,7 @@ type CartLineItem {
   metadata: [KeyValuePairOfStringAndString!]!
   """
   This retrieves the product associated with a cart line item. If the product no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
-  In such cases, you can still use other properties like `productName` and `productSlug` to display information about the product.
+  In such cases, you can still use other properties like productName and productSlug to display information about the product.
   These fields are not directly tied to the product reference and remain available for display, even if the product itself is missing.
   Note that these properties are eventually consistent and may not always reflect the latest product state.
   """
@@ -470,19 +436,40 @@ type CartLineItem {
   The unique identifier of the product associated with the cart line item.
   """
   productId: ID!
-  """The name of the product."""
+  """
+  The name of the product.
+   
+  
+  **Returns:**
+  """
   productName: String!
   """
   Retrieves the slug of the product associated with a cart line item. This is useful for generating URLs or displaying product information.
+   
+  
+  **Returns:**
   """
   productSlug: String!
-  """Retrieves the quantity of the cart line item."""
+  """
+  Retrieves the quantity of the cart line item.
+   
+  
+  **Returns:**
+  """
   quantity: Int!
   """
   Retrieves the SKU (Stock Keeping Unit) of the variant associated with a cart line item. The SKU is a unique identifier for the variant, often used for inventory management.
+   
+  
+  **Returns:**
   """
   sku: String!
-  """The line items total excluding discounts and taxes."""
+  """
+  The line items total excluding discounts and taxes.
+   
+  
+  **Returns:**
+  """
   subtotal: Money!
   """
   Gets the tax behavior of the cart line item, which indicates how taxes are applied to the item.
@@ -513,6 +500,9 @@ type CartLineItem {
   variantId: ID!
   """
   Retrieves the name of the variant associated with a cart line item. This is useful for displaying the specific variant details to the user.
+   
+  
+  **Returns:**
   """
   variantName: String!
 }
@@ -549,9 +539,9 @@ input CartLineItemInput {
 }
 
 """
-This exception is thrown when a cart line item with the specified ID cannot be found.
+This exception is thrown when price lookup fails for a line item variant.
 """
-type CartLineItemNotFoundError implements UserError {
+type CartLineItemPriceNotFoundError implements UserError {
   message: String!
 }
 
@@ -569,7 +559,7 @@ input CartLineItemUpdateInput {
   quantity: Int!
 }
 
-union CartLineItemsAddError = CartNotFoundError | ProductVariantNotFoundError
+union CartLineItemsAddError = CartLineItemPriceNotFoundError | CartLineItemsInsufficientStockError | CartNotFoundError | ProductVariantNotFoundError
 
 """This is the input type for adding line items to a cart."""
 input CartLineItemsAddInput {
@@ -582,6 +572,20 @@ input CartLineItemsAddInput {
 type CartLineItemsAddPayload {
   cart: Cart
   errors: [CartLineItemsAddError!]
+}
+
+"""
+This exception is thrown when one or more requested line items do not have enough stock.
+"""
+type CartLineItemsInsufficientStockError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when updating line items fails due to missing line items.
+"""
+type CartLineItemsNotFoundError implements UserError {
+  message: String!
 }
 
 union CartLineItemsRemoveError = CartNotFoundError
@@ -599,7 +603,7 @@ type CartLineItemsRemovePayload {
   errors: [CartLineItemsRemoveError!]
 }
 
-union CartLineItemsUpdateError = CartLineItemNotFoundError | CartNotFoundError
+union CartLineItemsUpdateError = CartLineItemsNotFoundError | CartNotFoundError | UpdateCartLineItemsInsufficientStockError
 
 """
 This is the input type for updating the quantity of a line item in a cart.
@@ -652,12 +656,16 @@ union CartReplicateError = CartNotFoundError | CartReplicateStrictValidationFail
 input CartReplicateInput {
   """The unique identifier of the cart to be replicated."""
   cartId: ID!
-  """
-  The unique identifier of the channel to which the cart will be replicated.
-  """
-  channelId: ID!
   """The ISO 4217 currency code for the cart to be replicated."""
   currency: String!
+  """
+  The unique identifier of the price channel to be used for the replicated cart. If not provided, it will keep the same price channel as the original cart.
+  """
+  priceChannelId: TypeIdDecodedInput
+  """
+  The unique identifier of the store to which the cart will be replicated.
+  """
+  storeId: ID!
   """The replication strategy to be used when replicating the cart."""
   strategy: ReplicationStrategy!
 }
@@ -667,11 +675,29 @@ type CartReplicatePayload {
   errors: [CartReplicateError!]
 }
 
+"""Stock mismatch for a replicated line item in strict mode."""
+type CartReplicateStockChangeError {
+  lineItemId: TypeIdDecoded!
+  newStock: Int!
+  variantId: TypeIdDecoded!
+  wantedStock: Int!
+}
+
 """
 This exception is thrown when a cart cannot be replicated due to strict validation failures.
 """
 type CartReplicateStrictValidationFailedError implements UserError {
   message: String!
+  """Line items whose available stock changed in the target channel."""
+  stockChanges: [CartReplicateStockChangeError!]!
+  """Variants that were not found in the target channel."""
+  variantsNotFound: [CartReplicateVariantNotFoundError!]!
+}
+
+"""Variant missing in the target channel when replicating a cart."""
+type CartReplicateVariantNotFoundError {
+  lineItemId: TypeIdDecoded!
+  variantId: TypeIdDecoded!
 }
 
 """Represents a shipping line on a cart, including method and totals."""
@@ -746,7 +772,7 @@ enum CartState {
   ORDERED
 }
 
-union CartUpdateError = CartAuthenticationFailedError | CartAuthorizationFailedError | CartNotFoundError
+union CartUpdateError = CartAuthenticationFailedError | CartAuthorizationFailedError | CartNotFoundError | CartUpdatePriceChannelNotFoundError
 
 """This is the input type for updating a cart."""
 input CartUpdateInput {
@@ -769,6 +795,10 @@ input CartUpdateInput {
   """
   metadata: [KeyValuePairOfStringAndStringInput!]
   """
+  Optional unique identifier of the price channel. If provided, the cart will be updated to use the specified price channel.
+  """
+  priceChannelId: ID
+  """
   Optional shipping address for the cart. If not provided, the existing shipping address will remain unchanged.
   """
   shippingAddress: CartAddressInput
@@ -780,28 +810,80 @@ type CartUpdatePayload {
 }
 
 """
+This exception is thrown when a price channel with the specified ID cannot be found or is not a valid price channel during cart update.
+"""
+type CartUpdatePriceChannelNotFoundError implements UserError {
+  message: String!
+}
+
+"""
 Represents a category, encapsulating all information required to display and manage categories across storefronts and sales channels.
 
 Each category includes core details such as title, description, and associated products. Categories can be organized hierarchically to create a structured navigation experience for customers.
 """
 type Category {
-  """The ancestors of the category."""
+  """
+  The ancestors of the category.
+   
+  
+  **Returns:**
+  """
   ancestors: [Category!]!
-  """The direct children of the category."""
+  """
+  The direct children of the category.
+   
+  
+  **Returns:**
+  """
   children: [Category!]!
-  """The number of direct children of the category."""
+  """
+  The number of direct children of the category.
+   
+  
+  **Returns:**
+  """
   childrenCount: Long!
-  """The descendants of the category."""
+  """
+  The descendants of the category.
+   
+  
+  **Returns:**
+  """
   descendants: [Category!]!
-  """The number of descendants of the category."""
+  """
+  The number of descendants of the category.
+   
+  
+  **Returns:**
+  """
   descendantsCount: Long!
-  """The ID of the category."""
+  """
+  The ID of the category.
+   
+  
+  **Returns:**
+  """
   id: ID!
-  """The name of the category."""
+  """
+  The name of the category.
+   
+  
+  **Returns:**
+  """
   name: String!
-  """The parent category of the category."""
+  """
+  The parent category of the category.
+   
+  
+  **Returns:**
+  """
   parent: Category
-  """List of products in the collection."""
+  """
+  List of products in the collection.
+   
+  
+  **Returns:**
+  """
   products(
     """Returns the elements in the list that come after the specified cursor."""
     after: String
@@ -813,12 +895,28 @@ type Category {
     first: Int
     """Returns the last _n_ elements from the list."""
     last: Int
+    priceChannelId: ID
+    priceCountry: String
+    priceCurrency: String
+    """An optional search query to filter products within the category."""
+    query: String
     sortDirection: SortDirection! = ASC
     sortKey: ProductCategorySortKeys! = ID
-  ): ProductConnection!
-  """The number of products that are associated with the category."""
+    storeId: ID
+  ): ProductsConnection!
+  """
+  The number of products that are associated with the category.
+   
+  
+  **Returns:**
+  """
   productsCount: Long!
-  """The slug of the category."""
+  """
+  The slug of the category.
+   
+  
+  **Returns:**
+  """
   slug: String!
 }
 
@@ -841,26 +939,32 @@ type CategoryEdge {
   node: Category!
 }
 
-type Channel {
-  """The unique identifier of the Channel."""
-  id: ID!
-  """The name of the Channel."""
-  name: String!
-  """The slug of the Channel."""
-  slug: String!
-}
-
 """
 Represents a collection, encapsulating all information required to display and manage collections across storefronts and sales channels.
 
  Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
 """
 type Collections {
-  """The ID of the collection."""
+  """
+  The ID of the collection.
+   
+  
+  **Returns:**
+  """
   id: ID!
-  """The name of the collection."""
+  """
+  The name of the collection.
+   
+  
+  **Returns:**
+  """
   name: String!
-  """List of products in the collection."""
+  """
+  List of products in the collection.
+   
+  
+  **Returns:**
+  """
   products(
     """Returns the elements in the list that come after the specified cursor."""
     after: String
@@ -872,8 +976,21 @@ type Collections {
     first: Int
     """Returns the last _n_ elements from the list."""
     last: Int
-  ): ProductConnection!
-  """The slug of the collection."""
+    priceChannelId: ID
+    priceCountry: String
+    priceCurrency: String
+    """An optional search query to filter products within the collection."""
+    query: String
+    sortDirection: SortDirection! = ASC
+    sortKey: ProductCollectionSortKeys! = ID
+    storeId: ID
+  ): ProductsConnection!
+  """
+  The slug of the collection.
+   
+  
+  **Returns:**
+  """
   slug: String!
 }
 
@@ -950,6 +1067,20 @@ type CreateCartChannelNotFoundError implements UserError {
 This exception is thrown when not all line items could be added to the cart.
 """
 type CreateCartFailedNotAllLineItemsCouldBeAddedError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when a price channel with the specified ID cannot be found or is not a valid price channel.
+"""
+type CreateCartPriceChannelNotFoundError implements UserError {
+  message: String!
+}
+
+"""
+This exception is thrown when a shipping address country has no configured shipping zones.
+"""
+type CreateCartShippingAddressDoesNotHaveShippingZonesError implements UserError {
   message: String!
 }
 
@@ -1350,10 +1481,14 @@ type CustomerUpdatePayload {
   customer: Customer
 }
 
-"""The `DateTime` scalar represents an ISO-8601 compliant date time type."""
+"""
+The `DateTime` scalar type represents a date and time with time zone offset information.
+"""
 scalar DateTime
 
-"""The `Decimal` scalar type represents a decimal floating-point number."""
+"""
+The `Decimal` scalar type represents a decimal floating-point number with high precision.
+"""
 scalar Decimal
 
 type DiscountApplication {
@@ -1403,6 +1538,30 @@ type DiscountedPrice {
   discount: ProductDiscount
   """Money value of the discounted price."""
   value: Money!
+}
+
+type Facet {
+  """The field of the facet."""
+  field: FacetField!
+  """The name of the facet."""
+  name: String!
+  """The values of the facet."""
+  values: [FacetValue!]!
+}
+
+enum FacetField {
+  PRICE
+  TAG
+  VENDOR
+}
+
+type FacetValue {
+  """
+  The count of the facet value, representing how many products are associated with this facet value.
+  """
+  count: Long!
+  """The name of the facet value."""
+  name: String!
 }
 
 """
@@ -1455,10 +1614,17 @@ type LineShippingMethod {
   sku: String
 }
 
-"""
-The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1.
-"""
+"""The `Long` scalar type represents a signed 64-bit integer."""
 scalar Long
+
+type ManualPaymentGateway implements PaymentGateway {
+  """The channel IDs associated with the payment gateway."""
+  channelIds: [ID!]!
+  """The unique identifier of the payment gateway."""
+  id: ID!
+  """The name of the payment gateway."""
+  name: String!
+}
 
 type Media {
   """The content type of the media."""
@@ -1467,7 +1633,12 @@ type Media {
   fileExtension: String!
   """The file name of the media."""
   fileName: String!
-  """The unique identifier of the media."""
+  """
+  The unique identifier of the media.
+  
+  
+  **Returns:**
+  """
   id: ID!
   """The full source URL of the media."""
   src: String!
@@ -1516,8 +1687,6 @@ type Mutation {
   cartComplete(input: CartCompleteInput!): CartCompletePayload!
   """Creates a new cart using the provided currency."""
   cartCreate(input: CartCreateInput!): CartCreatePayload!
-  """Adds a custom line item to an existing cart."""
-  cartCustomLineItemsAdd(input: CartCustomLineItemsAddInput!): CartCustomLineItemsAddPayload!
   """
   Applies a discount code to an existing cart using the given discount code.
   """
@@ -1637,7 +1806,6 @@ type Order implements Node {
   Gets the billing address associated with the order. This may be the same as the shipping address.
   """
   billingAddress: CartAddress
-  channel: Channel
   """The date and time when the order was created."""
   createdAt: DateTime!
   """Retrieves the customer associated with the order."""
@@ -1736,10 +1904,6 @@ Represents a line item in a order, which includes details about the product, var
 Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
 """
 type OrderLineItem {
-  """used in fusion"""
-  channelId: ID!
-  """used in fusion"""
-  currency: String!
   """
   Retrieves a paginated list of discount applications for a specific line item.
   """
@@ -1922,8 +2086,6 @@ type PaymentDtoEdge {
 }
 
 interface PaymentGateway {
-  """The channel IDs associated with the payment gateway."""
-  channelIds: [ID!]!
   """The unique identifier of the payment gateway."""
   id: ID!
   """The name of the payment gateway."""
@@ -2022,9 +2184,19 @@ Represents a product in Thor Commerce, encapsulating all information required to
 Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
 """
 type Product implements Node {
-  """A list of attributes associated with the product."""
+  """
+  A list of attributes associated with the product.
+  
+  
+  **Returns:**
+  """
   attributeAssignments: [AttributeAssignment!]!
-  """A list of categories associated with the product."""
+  """
+  A list of categories associated with the product.
+  
+  
+  **Returns:**
+  """
   categories(
     """Returns the elements in the list that come after the specified cursor."""
     after: String
@@ -2037,7 +2209,12 @@ type Product implements Node {
     """Returns the last _n_ elements from the list."""
     last: Int
   ): CategoryConnection!
-  """A list of collections associated with the product."""
+  """
+  A list of collections associated with the product.
+   
+  
+  **Returns:**
+  """
   collections(
     """Returns the elements in the list that come after the specified cursor."""
     after: String
@@ -2050,25 +2227,58 @@ type Product implements Node {
     """Returns the last _n_ elements from the list."""
     last: Int
   ): CollectionsConnection!
-  """The rich description of the product."""
+  """
+  The rich description of the product.
+   
+  
+  **Returns:**
+  """
   description: String
   """
   Gets the hero variant for the product, the hero variant is the first variant of the product, or the specific variant chosen for the channel
   """
   heroVariant: ProductVariant
-  """The unique identifier of the product."""
+  """
+  The unique identifier of the product.
+   
+  
+  **Returns:**
+  """
   id: ID!
-  """The metadata associated with the product."""
+  """
+  The metadata associated with the product.
+   
+  
+  **Returns:**
+  """
   metadata: [KeyValuePairOfStringAndString!]!
-  """The name of the product."""
+  """
+  The name of the product.
+   
+  
+  **Returns:**
+  """
   name: String!
   """
   The price range of the product, which includes the minimum and maximum prices across all variants.
+   
+  
+  **Returns:**
   """
   priceRange: ProductPriceRange
-  """The slug of the product, which is a URL-friendly identifier."""
+  """
+  The slug of the product, which is a URL-friendly identifier.
+   
+  
+  **Returns:**
+  """
   slug: String!
-  """The tags associated with the product."""
+  """
+  The tags associated with the product.
+   
+  
+  **Returns:**
+  """
   tags: [String!]!
   """The variants of the product."""
   variants(
@@ -2087,7 +2297,12 @@ type Product implements Node {
   The number of variants that are associated with the product and published in the current channel.
   """
   variantsCount: Long!
-  """The vendor of the product."""
+  """
+  The vendor of the product.
+   
+  
+  **Returns:**
+  """
   vendor: String
 }
 
@@ -2109,23 +2324,26 @@ enum ProductCategorySortKeys {
   If DESC is specified, it will sort by the highest price of the variants.
   """
   PRICE
+  """Sort by the vendor value."""
+  VENDOR
 }
 
-"""A connection to a list of items."""
-type ProductConnection {
-  """A list of edges."""
-  edges: [ProductEdge!]
-  """A flattened list of the nodes"""
-  nodes: [Product!]
-  """Information to aid in pagination."""
-  pageInfo: PageInfoV2!
-  """Identifies the total count of items in the connection."""
-  totalCount: Int!
+enum ProductCollectionSortKeys {
+  ID
+  MANUAL
+  NAME
+  PRICE
+  VENDOR
 }
 
 """Represents a discounted price for a product variant."""
 type ProductDiscount implements Node {
-  """Gets the ID of the product discount."""
+  """
+  Gets the ID of the product discount.
+   
+  
+  **Returns:**
+  """
   id: ID!
   """The name of the product discount."""
   name: String!
@@ -2151,17 +2369,20 @@ type ProductDiscountRelativeValue {
 
 union ProductDiscountValue = ProductDiscountAbsoluteValue | ProductDiscountRelativeValue
 
-type ProductEdge {
-  """A cursor for use in pagination."""
-  cursor: String!
-  """The item at the end of the edge."""
-  node: Product!
-}
-
 type ProductPriceRange {
-  """Gets the maximum price of the product in the specified currency."""
+  """
+  Gets the maximum price of the product in the specified currency.
+   
+  
+  **Returns:**
+  """
   maxPrice: Price!
-  """Gets the minimum price of the product in the specified currency."""
+  """
+  Gets the minimum price of the product in the specified currency.
+   
+  
+  **Returns:**
+  """
   minPrice: Price!
 }
 
@@ -2176,6 +2397,8 @@ enum ProductSortKeys {
   If DESC is specified, it will sort by the highest price of the variants.
   """
   PRICE
+  """Sort by the vendor value."""
+  VENDOR
 }
 
 type ProductVariant {
@@ -2263,9 +2486,13 @@ type ProductVariantNotFoundError implements UserError {
 
 type ProductsConnection {
   """Gets the aggregates for the products in the current connection."""
-  aggregates: [AggregateDto!]!
+  aggregates: [Facet!]!
   """A list of edges."""
   edges: [ProductsEdge!]
+  """
+  Gets the facets for the products in the current connection. Facets provide a way to retrieve aggregated information about the products, such as counts of products by certain attributes (e.g., color, size, brand) that can be used for filtering and navigation in the storefront.
+  """
+  facets: [Facet!]!
   """A flattened list of the nodes"""
   nodes: [Product!]
   """Information to aid in pagination."""
@@ -2283,7 +2510,12 @@ type ProductsEdge {
 
 """The customer queries."""
 type Query {
-  """Retrieves a cart by its ID."""
+  """
+  Retrieves a cart by its ID.
+   
+  
+  **Returns:**
+  """
   cart(id: ID!): Cart
   """Returns a list of categories."""
   categories(
@@ -2293,17 +2525,29 @@ type Query {
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
-    channelId: ID
-    currency: String
     """Returns the first _n_ elements from the list."""
     first: Int
     """Returns the last _n_ elements from the list."""
     last: Int
+    priceChannelId: ID
+    priceCountry: String
+    priceCurrency: String
+    storeId: ID
   ): CategoryConnection!
-  """Gets a single `Category` by its ID or slug."""
-  category(channelId: ID, currency: String, id: ID, slug: String): Category
-  """Gets a single `Collection` by its ID or slug."""
-  collection(id: ID, slug: String): Collections
+  """
+  Gets a single `Category` by its ID or slug.
+  
+  
+  **Returns:**
+  """
+  category(id: ID, priceChannelId: ID, priceCountry: String, priceCurrency: String, slug: String, storeId: ID): Category
+  """
+  Gets a single `Collection` by its ID or slug.
+  
+  
+  **Returns:**
+  """
+  collection(id: ID, priceChannelId: ID, priceCountry: String, priceCurrency: String, slug: String, storeId: ID): Collections
   """Returns a list of collections."""
   collections(
     """Returns the elements in the list that come after the specified cursor."""
@@ -2343,9 +2587,19 @@ type Query {
     """Returns the last _n_ elements from the list."""
     last: Int
   ): PaymentGatewayConnection!
-  """Gets a single `Product` by its ID or slug."""
-  product(channelId: ID, currency: String, id: ID, slug: String): Product
-  """Returns a list of products."""
+  """
+  Gets a single `Product` by its ID or slug.
+  
+  
+  **Returns:**
+  """
+  product(id: ID, priceChannelId: ID, priceCountry: String, priceCurrency: String, slug: String, storeId: ID): Product
+  """
+  Returns a list of products.
+  
+  
+  **Returns:**
+  """
   products(
     """Returns the elements in the list that come after the specified cursor."""
     after: String
@@ -2353,20 +2607,27 @@ type Query {
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
-    channelId: ID
-    currency: String
     """Returns the first _n_ elements from the list."""
     first: Int
     """Returns the last _n_ elements from the list."""
     last: Int
+    priceChannelId: ID
+    priceCountry: String
+    priceCurrency: String
     query: String
     sortDirection: SortDirection! = ASC
     sortKey: ProductSortKeys! = ID
+    storeId: ID
   ): ProductsConnection!
 }
 
 type RelativeShippingMethodRate implements CartAvailableShippingMethodRate {
-  """The unique identifier for the shipping method rate."""
+  """
+  The unique identifier for the shipping method rate.
+   
+  
+  **Returns:**
+  """
   id: ID!
   """
   The rate of the shipping method rate, expressed as a percentage of the total cost.
@@ -2433,9 +2694,11 @@ enum StockPolicy {
   TRACKED
 }
 
+type Store {
+  id: ID!
+}
+
 type StripePaymentGateway implements PaymentGateway {
-  """The channel IDs associated with the payment gateway."""
-  channelIds: [ID!]!
   """The unique identifier of the payment gateway."""
   id: ID!
   """Is true if the payment gateway is in test mode."""
@@ -2551,6 +2814,9 @@ input TypeIdDecodedInput {
   type: String!
 }
 
+"""
+The `UUID` scalar type represents a Universally Unique Identifier (UUID) as defined by RFC 9562.
+"""
 scalar UUID
 
 """
@@ -2565,8 +2831,20 @@ type UnitPrice {
   discountedPrice: DiscountedPrice
   """Retrieves the tax behavior of the unit price."""
   taxBehavior: TaxBehavior!
-  """The monetary value in the smallest unit of the currency."""
+  """
+  The monetary value in the smallest unit of the currency.
+   
+  
+  **Returns:**
+  """
   value: Money!
+}
+
+"""
+This exception is thrown when line item updates exceed available stock.
+"""
+type UpdateCartLineItemsInsufficientStockError implements UserError {
+  message: String!
 }
 
 interface UserError {

@@ -37,11 +37,11 @@ export async function addItem(prevState: unknown, data: FormData) {
   //can i acccess the url from inside here?
 
   const cartId = await getCartIdFromCookies();
-  const { channelId, country } = await getServerContext();
+  const { store, country } = await getServerContext();
 
   const cart = await findOrCreateCart({
     cartId,
-    channelId: channelId,
+    storeId: store,
     country: country.code.toUpperCase(),
   });
 

@@ -24,7 +24,7 @@ export default async function CategoryPage({
   const variables: CategoryGridQueryVariables = {
     slug: categorySlug.toLowerCase(),
     currency: country.currencies[0],
-    channelId: country.channel,
+    storeId: country.store,
     sortKey: ProductCategorySortKeys.Manual,
     sortDirection: SortDirection.Asc,
   };

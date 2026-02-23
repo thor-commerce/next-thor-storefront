@@ -1,26 +1,26 @@
 "use client";
+import useCheckout from "@/features/checkout/hooks/use-checkout";
+import { CheckoutCart } from "@/features/checkout/types";
 import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren } from "react";
 
+interface Props {
+  cart: CheckoutCart;
+}
 export default function StripeWrapper({
-  publishableKey,
-  clientSecret,
+  cart,
   children,
-}: PropsWithChildren<{
-  publishableKey: string;
-  clientSecret: string;
-}>) {
-  if (!publishableKey) {
-    throw new Error("Stripe publishable key is missing");
-  }
+}: PropsWithChildren<Props>) {
+  const { stripePromise } = useCheckout();
 
-  const stripePromise = useMemo(() => loadStripe(publishableKey), [publishableKey]);
+  if (!stripePromise) {
+    throw new Error("No Stripe instance available");
+  }
 
   return (
     <Elements
       options={{
-        clientSecret: clientSecret,
+        clientSecret: cart.paymentSession?.clientSecret,
         loader: "always",
         appearance: { theme: "stripe" },
       }}

@@ -20,7 +20,7 @@ export default async function AllProductsPage({
   const country = getCountryByCountryCode(countryCode);
   const variables: ProductsGridQueryVariables = {
     currency: country.currencies[0],
-    channelId: country.channel,
+    storeId: country.store,
     sortKey: ProductSortKeys.Id,
     sortDirection: SortDirection.Asc,
   };

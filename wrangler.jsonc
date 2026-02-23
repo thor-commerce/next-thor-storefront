@@ -16,6 +16,9 @@
     "binding": "ASSETS",
     "run_worker_first": false
   },
+  "vars": {
+    
+  },
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",

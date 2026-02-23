@@ -4,6 +4,7 @@ export const CHECKOUT_CART_DETAILS_QUERY = gql(/* GraphQL */ `
   query CheckoutCartDetails($id: ID!) {
     cart(id: $id) {
       id
+      state
       ...AvailableShippingMethods
       paymentSession {
         __typename
@@ -149,6 +150,9 @@ export const CHECKOUT_PAYMENTGATEWAYS_QUERY = gql(/* GraphQL */ `
           id
           name
           __typename
+          ... on StripePaymentGateway {
+            publishableKey
+          }
         }
       }
     }

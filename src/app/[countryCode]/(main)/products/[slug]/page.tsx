@@ -1,4 +1,3 @@
-
 import {
   ProductDetailQuery,
   ProductDetailQueryVariables,
@@ -28,13 +27,8 @@ export default async function ProductPage({
     variables: {
       slug,
       currency: country.currencies[0],
-      channelId: country.channel,
+      storeId: country.store,
     },
-        context: {
-        fetchOptions: {
-          tags: "prod",
-        },
-      },
   });
   const product = data?.product;
 

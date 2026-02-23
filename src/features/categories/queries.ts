@@ -4,17 +4,19 @@ export const CATEGORY_GRID_QUERY = gql(/* GraphQL */ `
   query CategoryGrid(
     $slug: String!
     $currency: String!
-    $channelId: ID!
+    $storeId: ID!
     $after: String
     $sortDirection: SortDirection!
     $sortKey: ProductCategorySortKeys!
   ) {
-    category(slug: $slug, currency: $currency, channelId: $channelId) {
+    category(slug: $slug) {
       products(
         first: 15
         after: $after
         sortDirection: $sortDirection
         sortKey: $sortKey
+        priceCurrency: $currency
+        storeId: $storeId
       ) {
         edges {
           node {

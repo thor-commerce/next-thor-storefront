@@ -13,6 +13,7 @@
       "RelativeShippingMethodRate"
     ],
     "CartCompleteError": [
+      "CartCompletionDiscountCodeAlreadyUsedError",
       "CartCompletionDiscrepancyError",
       "CartNotFoundError"
     ],
@@ -24,10 +25,9 @@
       "CreateCartChannelDoesNotSupportCurrencyError",
       "CreateCartChannelHasNoCountriesError",
       "CreateCartChannelNotFoundError",
-      "CreateCartFailedNotAllLineItemsCouldBeAddedError"
-    ],
-    "CartCustomLineItemsAddError": [
-      "CartNotFoundError"
+      "CreateCartFailedNotAllLineItemsCouldBeAddedError",
+      "CreateCartPriceChannelNotFoundError",
+      "CreateCartShippingAddressDoesNotHaveShippingZonesError"
     ],
     "CartDiscountCodeAddError": [
       "CartAddDiscountCodeNotFoundError",
@@ -38,6 +38,8 @@
       "CartNotFoundError"
     ],
     "CartLineItemsAddError": [
+      "CartLineItemPriceNotFoundError",
+      "CartLineItemsInsufficientStockError",
       "CartNotFoundError",
       "ProductVariantNotFoundError"
     ],
@@ -45,8 +47,9 @@
       "CartNotFoundError"
     ],
     "CartLineItemsUpdateError": [
-      "CartLineItemNotFoundError",
-      "CartNotFoundError"
+      "CartLineItemsNotFoundError",
+      "CartNotFoundError",
+      "UpdateCartLineItemsInsufficientStockError"
     ],
     "CartPaymentSessionInitializeError": [
       "CartNotFoundError",
@@ -73,7 +76,8 @@
     "CartUpdateError": [
       "CartAuthenticationFailedError",
       "CartAuthorizationFailedError",
-      "CartNotFoundError"
+      "CartNotFoundError",
+      "CartUpdatePriceChannelNotFoundError"
     ],
     "CustomerAccessTokenCreateError": [
       "InvalidCredentialsError"
@@ -123,6 +127,7 @@
       "ProductDiscount"
     ],
     "PaymentGateway": [
+      "ManualPaymentGateway",
       "StripePaymentGateway"
     ],
     "PaymentSession": [
@@ -138,12 +143,16 @@
       "CartAddDiscountCodeNotFoundError",
       "CartAuthenticationFailedError",
       "CartAuthorizationFailedError",
+      "CartCompletionDiscountCodeAlreadyUsedError",
       "CartCompletionDiscrepancyError",
       "CartDiscountCodeMaxApplicationsReachedError",
-      "CartLineItemNotFoundError",
+      "CartLineItemPriceNotFoundError",
+      "CartLineItemsInsufficientStockError",
+      "CartLineItemsNotFoundError",
       "CartNotFoundError",
       "CartReplicateStrictValidationFailedError",
       "CartShippingLineNotFoundError",
+      "CartUpdatePriceChannelNotFoundError",
       "CreateCartAddressDoesNotHaveCountryCodeError",
       "CreateCartAuthenticationFailedError",
       "CreateCartAuthorizationFailedError",
@@ -152,6 +161,8 @@
       "CreateCartChannelHasNoCountriesError",
       "CreateCartChannelNotFoundError",
       "CreateCartFailedNotAllLineItemsCouldBeAddedError",
+      "CreateCartPriceChannelNotFoundError",
+      "CreateCartShippingAddressDoesNotHaveShippingZonesError",
       "CustomerEmailAlreadyConfirmedError",
       "CustomerInvalidActivationTokenError",
       "CustomerInvalidPasswordError",
@@ -165,7 +176,8 @@
       "PaymentGatewayNotFoundError",
       "PaymentGatewaySessionInitializeFailedError",
       "ProductVariantNotFoundError",
-      "ShippingMethodNotFoundError"
+      "ShippingMethodNotFoundError",
+      "UpdateCartLineItemsInsufficientStockError"
     ]
   }
 }

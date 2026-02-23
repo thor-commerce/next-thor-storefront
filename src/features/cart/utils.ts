@@ -61,7 +61,7 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
   const { country } = await getServerContext();
   let changesCount = 0;
   if (
-    cart.channel?.id != country.channel ||
+    cart.store?.id != country.store ||
     country.currencies[0] != cart.currency
   ) {
     const { data } = await getClient().mutate<
@@ -72,7 +72,7 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
       variables: {
         input: {
           cartId: cart.id,
-          channelId: country.channel,
+          storeId: country.store,
           currency: country.currencies[0],
           strategy: ReplicationStrategy.SkipUnavailable,
         },
@@ -91,29 +91,29 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
 }
 
 const createCart = ({
-  channelId,
+  storeId,
   currency,
 }: {
-  channelId: string;
+  storeId: string;
   currency: string;
 }) =>
   getClient().mutate({
     mutation: CART_CREATE_MUTATION,
     variables: {
       input: {
-        channelId,
+        storeId: storeId,
         currency,
       },
     },
   });
 
 export async function findOrCreateCart({
-  channelId,
+  storeId,
   cartId,
   country,
 }: {
   cartId?: string;
-  channelId: string;
+  storeId: string;
   country: string;
 }) {
   const currency = getCurrencyByCountryCode(country);
@@ -121,7 +121,7 @@ export async function findOrCreateCart({
   if (!cartId) {
     return (
       await createCart({
-        channelId,
+        storeId,
         currency,
       })
     ).data?.cartCreate?.cart;
@@ -137,6 +137,6 @@ export async function findOrCreateCart({
   const cart = data?.cart;
 
   return (
-    cart || (await createCart({ channelId, currency })).data?.cartCreate?.cart
+    cart || (await createCart({ storeId, currency })).data?.cartCreate?.cart
   );
 }
