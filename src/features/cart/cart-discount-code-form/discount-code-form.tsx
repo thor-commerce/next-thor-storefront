@@ -1,24 +1,23 @@
 "use client";
 
-import TextInput from "@/components/text-input/text-input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
-import { Controller, Path, useForm } from "react-hook-form";
-import z from "zod";
-import { addDiscountCode } from "../actions";
-import { DiscountCodeActionResponse } from "../types";
-import s from "./discount-code-form.module.css";
-import { discountCodeSchema } from "./validation";
+import { CartDetailsQuery } from "@/__generated__/thor/graphql";
 import Button from "@/components/button/button";
+import TextInput from "@/components/text-input/text-input";
+import { QueryRef, useReadQuery } from "@apollo/client/react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ChevronDown } from "lucide-react";
+import { startTransition, useActionState, useEffect } from "react";
 import {
   Disclosure,
   DisclosurePanel,
   Button as ReactAriaButton,
 } from "react-aria-components";
-import { ChevronDown } from "lucide-react";
-import { QueryRef, useReadQuery } from "@apollo/client/react";
-import { CartDetailsQuery } from "@/__generated__/thor/graphql";
+import { Controller, Path, useForm } from "react-hook-form";
+import z from "zod";
+import { addDiscountCode } from "../actions";
+import s from "./discount-code-form.module.css";
 import DiscountCodeLabel from "./discount-code-label";
+import { discountCodeSchema } from "./validation";
 
 export type DiscountCodeFormValues = z.infer<typeof discountCodeSchema>;
 
@@ -30,15 +29,13 @@ export default function DiscountCodeForm({
   const {
     data: { cart },
   } = useReadQuery(queryRef);
-  const initialState: DiscountCodeActionResponse = {
-    success: false,
-    errors: {},
-  };
 
   const form = useForm<DiscountCodeFormValues>({
     resolver: zodResolver(discountCodeSchema),
     defaultValues: { code: "" },
   });
+
+  console.log(cart?.discountCodes)
 
   const [state, formAction, pendingAdd] = useActionState(addDiscountCode, null);
 
@@ -55,7 +52,7 @@ export default function DiscountCodeForm({
       // Ensure controlled field fully clears
       form.reset({ code: "" });
     }
-  }, [state]);
+  }, [form, state]);
 
   const onSubmit = form.handleSubmit((_, e) => {
     const formEl = e?.target as HTMLFormElement | null;

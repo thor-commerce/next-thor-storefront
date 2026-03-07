@@ -1,17 +1,18 @@
-import s from "./cart.module.css";
-import clsx from "clsx";
 import Button from "@/components/button/button";
 import Navigation from "@/components/navigation/navigation";
+import { CACHE_TAGS } from "@/constants";
 import { PreloadQuery } from "@/lib/thor/apollo-client";
-import { CART_DETAILS_QUERY } from "./queries";
+import clsx from "clsx";
 import { Suspense } from "react";
-import { getCartIdFromCookies } from "./utils";
+import { CheckoutStepEnum } from "../checkout/types";
+import DiscountCodeForm from "./cart-discount-code-form/discount-code-form";
 import CartLineItems, {
   CartLineItemsSkeleton,
 } from "./cart-line-items/cart-line-items";
-import { CACHE_TAGS } from "@/constants";
 import CartSummary, { CartSummarySkeleton } from "./cart-summary/cart-summary";
-import DiscountCodeForm from "./cart-discount-code-form/discount-code-form";
+import s from "./cart.module.css";
+import { CART_DETAILS_QUERY } from "./queries";
+import { getCartIdFromCookies } from "./utils";
 
 export default async function Cart() {
   const cartId = await getCartIdFromCookies();
@@ -42,7 +43,7 @@ export default async function Cart() {
                 <CartSummary queryRef={queryRef} />
                 <Button
                   as={Navigation}
-                  href={`/checkout?checkout_id=${cartId}`}
+                  href={`/checkout?checkout_id=${cartId}&step=${CheckoutStepEnum.Customer}`}
                   className={s.checkoutButton}
                 >
                   Checkout

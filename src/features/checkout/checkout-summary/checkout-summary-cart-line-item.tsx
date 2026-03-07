@@ -1,91 +1,20 @@
-import { gql } from "@/__generated__/thor";
 import {
-  CheckoutSummaryCartLineItemFragment,
-  TaxBehavior,
+  TaxBehavior
 } from "@/__generated__/thor/graphql";
 import ThorImage from "@/components/thor-image/thor-image";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
-import { FragmentType } from "@apollo/client";
-import { useFragment } from "@apollo/client/react";
 import clsx from "clsx";
+import { CheckoutCartLineItem } from "../types";
 import s from "./checkout-summary.module.css";
 
-const CHECKOUT_SUMMARY_CART_LINE_ITEM_FRAGMENT = gql(/* GraphQL */ `
-  fragment CheckoutSummaryCartLineItem on CartLineItem {
-    id
-    productName
-    variantName
-    quantity
-    variant {
-      id
-      image {
-        src
-      }
-      selectedAttributes {
-        value
-      }
-    }
-    discountApplications {
-      edges {
-        node {
-          discountedAmount {
-            centAmount
-            fractionDigits
-            currencyCode
-          }
-        }
-      }
-    }
-    unitPrice {
-      value {
-        centAmount
-        currencyCode
-        fractionDigits
-      }
-      discountedPrice {
-        value {
-          centAmount
-          currencyCode
-          fractionDigits
-        }
-      }
-    }
-    taxBehavior
-    taxedPrice {
-      net {
-        centAmount
-        currencyCode
-        fractionDigits
-      }
-      gross {
-        centAmount
-        currencyCode
-        fractionDigits
-      }
-    }
-    total {
-      centAmount
-      currencyCode
-      fractionDigits
-    }
-  }
-`);
 
 export default function CheckoutSummaryCartLineItem({
-  lineFragment,
+  line,
 }: {
-  lineFragment: FragmentType<CheckoutSummaryCartLineItemFragment>;
+  line: CheckoutCartLineItem;
 }) {
-  const { data: line, complete } = useFragment({
-    from: lineFragment,
-    fragmentName: "CheckoutSummaryCartLineItem",
-    fragment: CHECKOUT_SUMMARY_CART_LINE_ITEM_FRAGMENT,
-  });
 
-  if (!complete) {
-    return null;
-  }
   const attributesText = line.variant?.selectedAttributes
     .map((selectedAttr) => selectedAttr.value)
     .filter(Boolean)

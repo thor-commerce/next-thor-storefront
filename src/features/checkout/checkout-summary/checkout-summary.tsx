@@ -1,30 +1,23 @@
 "use client";
 
 import {
-  CheckoutCartDetailsQuery,
-  TaxBehavior,
+  TaxBehavior
 } from "@/__generated__/thor/graphql";
 import { SkeletonBox } from "@/components/skeleton-box/skeleton-box";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
-import { QueryRef, useReadQuery } from "@apollo/client/react";
 import clsx from "clsx";
+import { CheckoutCart } from "../types";
 import CheckoutSummaryCartLineItem from "./checkout-summary-cart-line-item";
 import s from "./checkout-summary.module.css";
 
 export default function CheckoutSummary({
-  queryRef,
+  cart
 }: {
-  queryRef: QueryRef<CheckoutCartDetailsQuery>;
+  cart: CheckoutCart
 }) {
-  const {
-    data: { cart },
-  } = useReadQuery(queryRef);
 
-  if (!cart) {
-    return null;
-  }
-  const lineItems = mapEdgesToItems(cart?.lineItems);
+  const lineItems = mapEdgesToItems(cart.lineItems);
 
   //here we assume all line items have the same tax behavior, which is usually the case, but not a limitation in thor commerce.
   const taxBehavior = lineItems.find(Boolean)?.taxBehavior;
@@ -44,7 +37,7 @@ export default function CheckoutSummary({
       <div className={s.container}>
         <div className={s.details}>
           {lineItems.map((item) => (
-            <CheckoutSummaryCartLineItem key={item.id} lineFragment={item} />
+            <CheckoutSummaryCartLineItem key={item.id} line={item} />
           ))}
           <div className={s.pricingContainer}>
             <div className={s.pricingDetails}>
@@ -61,21 +54,21 @@ export default function CheckoutSummary({
                 </div>
               </div>
               {shippingLine && (
-              <div className={s.priceRow}>
-                <div>Shipping</div>
-                <div className={s.price}>
-                  <span>
-                    {shippingLine.total
-                      ? shippingLine.total.centAmount > 0 ? formatMoney({
+                <div className={s.priceRow}>
+                  <div>Shipping</div>
+                  <div className={s.price}>
+                    <span>
+                      {shippingLine.total
+                        ? shippingLine.total.centAmount > 0 ? formatMoney({
                           money: shippingLine.taxedPrice ? (taxBehavior === TaxBehavior.Exclusive ? shippingLine.taxedPrice.net : shippingLine.taxedPrice.gross) : shippingLine.total,
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         }) : "Free"
-                      : "calculated later"}
-                  </span>
+                        : "calculated later"}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
               {totalDiscount > 0 && (
                 <div className={s.priceRow}>

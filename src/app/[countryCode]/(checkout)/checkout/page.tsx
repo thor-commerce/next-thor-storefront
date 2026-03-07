@@ -1,30 +1,26 @@
-import { SkeletonBox } from "@/components/skeleton-box/skeleton-box";
 import { CACHE_TAGS } from "@/constants";
-import Stripe from "stripe";
 
-import { getCartIdFromCookies } from "@/features/cart/utils";
 import CheckoutContainer from "@/features/checkout/checkout-container/checkout-container";
-import CheckoutMain, {
+import {
   CheckoutMainSkeleton,
 } from "@/features/checkout/checkout-main/checkout-main";
 import CheckoutSummary, {
   CheckoutSummarySkeleton,
 } from "@/features/checkout/checkout-summary/checkout-summary";
 
+import { CartState } from "@/__generated__/thor/graphql";
+import CheckoutPaymentProcessing from "@/features/checkout/checkout-payment-processing/checkout-payment-processing";
+import CheckoutContextProvider from "@/features/checkout/context";
+import { CART_PAYMENT_SESSION_INTIALIZE_MUTATION } from "@/features/checkout/mutations";
 import {
   CHECKOUT_CART_DETAILS_QUERY,
   CHECKOUT_PAYMENTGATEWAYS_QUERY,
 } from "@/features/checkout/queries";
-import { getClient, PreloadQuery } from "@/lib/thor/apollo-client";
-import { loadStripe } from "@stripe/stripe-js";
+import { CheckoutStepEnum } from "@/features/checkout/types";
+import { getClient } from "@/lib/thor/apollo-client";
+import { mapEdgesToItems } from "@/utils/maps";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import CheckoutContextProvider from "@/features/checkout/context";
-import { CartState } from "@/__generated__/thor/graphql";
-import { mapEdgesToItems } from "@/utils/maps";
-import { CheckoutStepEnum } from "@/features/checkout/types";
-import { CART_PAYMENT_SESSION_INTIALIZE_MUTATION } from "@/features/checkout/mutations";
-import CheckoutPaymentProcessing from "@/features/checkout/checkout-payment-processing/checkout-payment-processing";
 
 export default async function CheckoutPage({
   params,
@@ -178,19 +174,18 @@ export default async function CheckoutPage({
           />
         }
       >
-        {/* <CheckoutContainer
+        <CheckoutContainer
           mainArea={
-            <CheckoutMain
-              cartId={checkout_id}
-              step={step ?? CheckoutStepEnum.Customer}
-            />
+            // <CheckoutMain
+            //   cartId={checkout_id}
+            //   step={step ?? CheckoutStepEnum.Customer}
+            // />
+            null
           }
           summaryArea={
-            <Suspense>
-              <CheckoutSummary cart={cart} />
-            </Suspense>
+            <CheckoutSummary cart={cart} />
           }
-        /> */}
+        />
       </Suspense>
     </CheckoutContextProvider>
   );

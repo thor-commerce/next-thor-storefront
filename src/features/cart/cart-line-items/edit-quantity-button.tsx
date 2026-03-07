@@ -3,6 +3,7 @@ import { gql } from "@/__generated__/thor";
 import { EditItemQuantityButtonFragment } from "@/__generated__/thor/graphql";
 import PlusIcon from "@/components/icons/plus";
 import SubtractIcon from "@/components/icons/subtract";
+import Spinner from "@/components/spinner/spinner";
 import { FragmentType } from "@apollo/client";
 import { useSuspenseFragment } from "@apollo/client/react";
 import clsx from "clsx";
@@ -37,7 +38,7 @@ export default function EditItemQuantityButton({
     fragment: EDIT_ITEM_QUANTITY_BUTTON_FRAGMENT,
     fragmentName: "EditItemQuantityButton",
   });
-  const [_, formAction] = useActionState(updateItemQuantity, null);
+  const [, formAction] = useActionState(updateItemQuantity, null);
   const payload = {
     lineId: item.id,
     quantity: type === "increase" ? item.quantity + 1 : item.quantity - 1,
@@ -85,7 +86,7 @@ function SubmitButton({
       disabled={pending || disabled}
       className={clsx(s.quantityButton)}
     >
-      {type === "increase" ? <PlusIcon /> : <SubtractIcon />}
+      {!pending ? type === "increase" ? <PlusIcon /> : <SubtractIcon /> : <Spinner size="small" />}
     </button>
   );
 }
