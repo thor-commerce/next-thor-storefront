@@ -20,50 +20,41 @@ export type Scalars = {
   Decimal: { input: any; output: any; }
   /** The `Long` scalar type represents a signed 64-bit integer. */
   Long: { input: any; output: any; }
-  /** The `UUID` scalar type represents a Universally Unique Identifier (UUID) as defined by RFC 9562. */
-  UUID: { input: any; output: any; }
 };
 
 export type AbsoluteShippingMethodRate = CartAvailableShippingMethodRate & {
   __typename?: 'AbsoluteShippingMethodRate';
-  /**
-   * The unique identifier for the shipping method rate.
-   *
-   *
-   * **Returns:**
-   */
+  /** The unique identifier for the shipping method rate. */
   id: Scalars['ID']['output'];
-  /**
-   * The price of the shipping method rate.
-   *
-   *
-   * **Returns:**
-   */
+  /** The price of the shipping method rate. */
   price: Money;
 };
 
-/** An identical address already exists for this customer. */
 export type AddressAlreadyExistsError = UserError & {
   __typename?: 'AddressAlreadyExistsError';
   message: Scalars['String']['output'];
 };
 
-/** The address with the specified ID was not found. */
 export type AddressNotFoundError = UserError & {
   __typename?: 'AddressNotFoundError';
   message: Scalars['String']['output'];
 };
 
-export type Attribute = {
+export type Attribute = Node & {
   __typename?: 'Attribute';
   /** The unique identifier of the attribute. */
   id: Scalars['ID']['output'];
-  /** The metadata associated with the attribute. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Gets the metadata associated with the attribute. */
+  metadata: Array<MetadataItem>;
   /** The name of the attribute. */
   name: Scalars['String']['output'];
   /** The type of the attribute. */
   type: ProductAttributeType;
+};
+
+
+export type AttributeMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /**
@@ -75,7 +66,7 @@ export type AttributeAssignment = {
   __typename?: 'AttributeAssignment';
   /** The attribute assigned to the product. */
   attribute: Attribute;
-  /** Gets the unique identifier of the attribute assignment. */
+  /** Gets the unique identifier of the attribute. */
   id: Scalars['ID']['output'];
   /** Gets the name of the attribute. */
   name: Scalars['String']['output'];
@@ -99,10 +90,15 @@ export type AttributeAssignmentValuesArgs = {
 export type AttributeValue = {
   /** The unique identifier of the attribute value. */
   id: Scalars['ID']['output'];
-  /** The metadata associated with the attribute value. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Custom metadata key/value pairs for the attribute value. */
+  metadata: Array<MetadataItem>;
   /** The value of the attribute. */
   value: Scalars['String']['output'];
+};
+
+
+export type AttributeValueMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** A connection to a list of items. */
@@ -113,7 +109,7 @@ export type AttributeValueConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<AttributeValue>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -127,39 +123,43 @@ export type AttributeValueEdge = {
 };
 
 export type BaseAddress = {
-  /** The first line of the address. */
+  /** The first line of the address. Typically the street address or PO Box number. */
   address1?: Maybe<Scalars['String']['output']>;
-  /** The second line of the address. */
+  /** The second line of the address. Typically the number of the apartment, suite, or unit. */
   address2?: Maybe<Scalars['String']['output']>;
-  /** The name of the city, district, village, or town. */
+  /** Name of the city. */
   city?: Maybe<Scalars['String']['output']>;
-  /** The name of the customer's company or organization. */
+  /** Name of the company. */
   company?: Maybe<Scalars['String']['output']>;
-  /** The two-letter code for the country of the address. */
+  /** Two-digit country code as per  ISO 3166-1 alpha-2 */
   countryCode?: Maybe<Scalars['String']['output']>;
-  /** The email address of the address. */
+  /** Email address of the contact. */
   email?: Maybe<Scalars['String']['output']>;
-  /** THe first name of the address. */
+  /** Given name (first name) of the contact. */
   firstName?: Maybe<Scalars['String']['output']>;
-  /** The formatted address. */
+  /** Formatted address. */
   formatted?: Maybe<Scalars['String']['output']>;
   /** The unique identifier of the address. */
   id: Scalars['ID']['output'];
-  /** The last name of the address. */
+  /** Family name (last name) of the contact. */
   lastName?: Maybe<Scalars['String']['output']>;
-  /** The metadata of the address, which can be used to store additional information about the address. */
-  metadata?: Maybe<Array<KeyValuePairOfStringAndString>>;
-  /** The phone number of the address. */
+  /** Gets the metadata associated with the address. */
+  metadata: Array<MetadataItem>;
+  /** Phone number of the contact. */
   phone?: Maybe<Scalars['String']['output']>;
-  /** The zip or postal code of the address. */
+  /** Postal code. */
   postalCode?: Maybe<Scalars['String']['output']>;
-  /** The region of the address, such as the province, state, or district. */
+  /** Name of the state, for example, Colorado. */
   state?: Maybe<Scalars['String']['output']>;
+};
+
+
+export type BaseAddressMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /**
  * Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
  * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
  */
 export type Cart = Node & {
@@ -177,7 +177,7 @@ export type Cart = Node & {
   /** Retrieves a paginated list of discount applications for the order */
   discountApplications: DiscountApplicationConnection;
   /** Gets the discount codes applied to the cart. */
-  discountCodes: Array<DiscountCodeDto>;
+  discountCodes: Array<DiscountCode>;
   /** The unique identifier of the cart */
   id: Scalars['ID']['output'];
   /** Retrieves a paginated list of line items for a specific cart. */
@@ -185,7 +185,7 @@ export type Cart = Node & {
   /** Sum of all LineItem quantities. */
   lineItemsQuantity: Scalars['Long']['output'];
   /** Gets the metadata associated with the cart. Once the cart is ordered, this metadata is transferred to the order. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  metadata: Array<MetadataItem>;
   /** Gets the payment session associated with the cart, if any. */
   paymentSession?: Maybe<PaymentSession>;
   /** Gets the shipping address associated with the cart. */
@@ -207,7 +207,6 @@ export type Cart = Node & {
 
 /**
  * Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
  * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
  */
 export type CartDiscountApplicationsArgs = {
@@ -220,7 +219,6 @@ export type CartDiscountApplicationsArgs = {
 
 /**
  * Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
  * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
  */
 export type CartLineItemsArgs = {
@@ -230,7 +228,15 @@ export type CartLineItemsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
-/** This exception is thrown when adding a discount code fails because it was not found. */
+
+/**
+ * Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
+ * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
+ */
+export type CartMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type CartAddDiscountCodeNotFoundError = UserError & {
   __typename?: 'CartAddDiscountCodeNotFoundError';
   message: Scalars['String']['output'];
@@ -252,14 +258,14 @@ export type CartAddress = BaseAddress & {
   email?: Maybe<Scalars['String']['output']>;
   /** Given name (first name) of the contact. */
   firstName?: Maybe<Scalars['String']['output']>;
-  /** The formatted address. */
+  /** Formatted address. */
   formatted?: Maybe<Scalars['String']['output']>;
   /** The unique identifier of the address. */
   id: Scalars['ID']['output'];
   /** Family name (last name) of the contact. */
   lastName?: Maybe<Scalars['String']['output']>;
-  /** Metadata */
-  metadata?: Maybe<Array<KeyValuePairOfStringAndString>>;
+  /** Gets the metadata associated with the address. */
+  metadata: Array<MetadataItem>;
   /** Phone number of the contact. */
   phone?: Maybe<Scalars['String']['output']>;
   /** Postal code. */
@@ -268,7 +274,11 @@ export type CartAddress = BaseAddress & {
   state?: Maybe<Scalars['String']['output']>;
 };
 
-/** Input type for creating or updating an address in a cart. */
+
+export type CartAddressMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type CartAddressInput = {
   address1?: InputMaybe<Scalars['String']['input']>;
   address2?: InputMaybe<Scalars['String']['input']>;
@@ -283,13 +293,11 @@ export type CartAddressInput = {
   state?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** This exception is thrown when cart authentication fails. */
 export type CartAuthenticationFailedError = UserError & {
   __typename?: 'CartAuthenticationFailedError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when cart authorization fails. */
 export type CartAuthorizationFailedError = UserError & {
   __typename?: 'CartAuthorizationFailedError';
   message: Scalars['String']['output'];
@@ -297,17 +305,12 @@ export type CartAuthorizationFailedError = UserError & {
 
 export type CartAvailableShippingMethod = {
   __typename?: 'CartAvailableShippingMethod';
-  /**
-   * The description of the shipping method.
-   *
-   *
-   * **Returns:**
-   */
+  /** The description of the shipping method. */
   description?: Maybe<Scalars['String']['output']>;
   /** The unique identifier of the shipping method. */
   id: Scalars['ID']['output'];
-  /** Gets the metadata associated with the shipping method. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Gets the metadata associated with the cart's available shipping method. */
+  metadata: Array<MetadataItem>;
   /** The name of the shipping method. */
   name: Scalars['String']['output'];
   /** Gets the rate associated with the shipping method. */
@@ -316,19 +319,18 @@ export type CartAvailableShippingMethod = {
   sku?: Maybe<Scalars['String']['output']>;
 };
 
+
+export type CartAvailableShippingMethodMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type CartAvailableShippingMethodRate = {
-  /**
-   * The unique identifier for the shipping method rate.
-   *
-   *
-   * **Returns:**
-   */
+  /** The unique identifier for the shipping method rate. */
   id: Scalars['ID']['output'];
 };
 
 export type CartCompleteError = CartCompletionDiscountCodeAlreadyUsedError | CartCompletionDiscrepancyError | CartNotFoundError;
 
-/** This is the input type for completing a cart. */
 export type CartCompleteInput = {
   cartId: Scalars['ID']['input'];
 };
@@ -339,39 +341,27 @@ export type CartCompletePayload = {
   order?: Maybe<Order>;
 };
 
-/** This exception is thrown when completing a cart fails because a discount code was already used. */
 export type CartCompletionDiscountCodeAlreadyUsedError = UserError & {
   __typename?: 'CartCompletionDiscountCodeAlreadyUsedError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when the cart completion detects a discrepancy between cart and order totals. */
 export type CartCompletionDiscrepancyError = UserError & {
   __typename?: 'CartCompletionDiscrepancyError';
   message: Scalars['String']['output'];
 };
 
-export type CartCreateError = CreateCartAddressDoesNotHaveCountryCodeError | CreateCartAuthenticationFailedError | CreateCartAuthorizationFailedError | CreateCartChannelDoesNotSupportCountryError | CreateCartChannelDoesNotSupportCurrencyError | CreateCartChannelHasNoCountriesError | CreateCartChannelNotFoundError | CreateCartFailedNotAllLineItemsCouldBeAddedError | CreateCartPriceChannelNotFoundError | CreateCartShippingAddressDoesNotHaveShippingZonesError;
+export type CartCreateError = CreateCartAddressDoesNotHaveCountryCodeError | CreateCartAuthenticationFailedError | CreateCartAuthorizationFailedError | CreateCartChannelDoesNotSupportCountryError | CreateCartChannelDoesNotSupportCurrencyError | CreateCartChannelHasNoCountriesError | CreateCartChannelNotFoundError | CreateCartFailedNotAllLineItemsCouldBeAddedError | CreateCartPriceChannelNotFoundError | CreateCartShippingAddressDoesNotHaveShippingZonesError | CreateCartStoreNotFoundError;
 
-/** This is the input type for creating a cart. */
 export type CartCreateInput = {
-  /** Optional billing address for the cart. */
   billingAddress?: InputMaybe<CartAddressInput>;
-  /** Two-digit country code as per ISO 3166-1 alpha-2 */
   countryCode?: InputMaybe<Scalars['String']['input']>;
-  /** ISO 4217 currency code. */
   currency: Scalars['String']['input'];
-  /** Email address of the customer associated with the cart. */
   customerEmail?: InputMaybe<Scalars['String']['input']>;
-  /** The unique identifier of the customer associated with the cart. */
   customerId?: InputMaybe<Scalars['ID']['input']>;
-  /** Optional list of line items to be added to the cart. */
   lineItems?: InputMaybe<Array<CartLineItemInput>>;
-  /** Optional unique identifier of the price channel. */
   priceChannelId?: InputMaybe<Scalars['ID']['input']>;
-  /** Optional shipping address for the cart. */
   shippingAddress?: InputMaybe<CartAddressInput>;
-  /** The unique identifier of the store. */
   storeId: Scalars['ID']['input'];
 };
 
@@ -383,11 +373,8 @@ export type CartCreatePayload = {
 
 export type CartDiscountCodeAddError = CartAddDiscountCodeNotFoundError | CartDiscountCodeMaxApplicationsReachedError | CartNotFoundError;
 
-/** This is the input type for adding a discount code to a cart. */
 export type CartDiscountCodeAddInput = {
-  /** The unique identifier of the cart to which the discount code will be added. */
   cartId: Scalars['ID']['input'];
-  /** The discount code to be applied to the cart. This code is typically provided by the store or promotion. */
   discountCode: Scalars['String']['input'];
 };
 
@@ -397,7 +384,6 @@ export type CartDiscountCodeAddPayload = {
   errors?: Maybe<Array<CartDiscountCodeAddError>>;
 };
 
-/** The exception is thrown when the maximum number of applications for a discount code has been reached. */
 export type CartDiscountCodeMaxApplicationsReachedError = UserError & {
   __typename?: 'CartDiscountCodeMaxApplicationsReachedError';
   message: Scalars['String']['output'];
@@ -405,11 +391,8 @@ export type CartDiscountCodeMaxApplicationsReachedError = UserError & {
 
 export type CartDiscountCodeRemoveError = CartNotFoundError;
 
-/** This is the input type for removing a discount code from a cart. */
 export type CartDiscountCodeRemoveInput = {
-  /** The unique identifier of the cart from which the discount code will be removed. */
   cartId: Scalars['ID']['input'];
-  /** The discount codes to be removed from the cart. */
   discountCodes: Array<Scalars['String']['input']>;
 };
 
@@ -424,14 +407,14 @@ export type CartDiscountCodeRemovePayload = {
  *
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
-export type CartLineItem = {
+export type CartLineItem = Node & {
   __typename?: 'CartLineItem';
   /** Retrieves a paginated list of payments for a specific order. */
   discountApplications: DiscountApplicationConnection;
   /** The unique identifier of the line item */
   id: Scalars['ID']['output'];
-  /** The metadata associated with the cart line item. This can include additional information such as custom attributes or tags. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Gets the metadata associated with the cart line item. */
+  metadata: Array<MetadataItem>;
   /**
    * This retrieves the product associated with a cart line item. If the product no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
    * In such cases, you can still use other properties like productName and productSlug to display information about the product.
@@ -441,48 +424,23 @@ export type CartLineItem = {
   product?: Maybe<Product>;
   /** The unique identifier of the product associated with the cart line item. */
   productId: Scalars['ID']['output'];
-  /**
-   * The name of the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** The name of the product */
   productName: Scalars['String']['output'];
-  /**
-   * Retrieves the slug of the product associated with a cart line item. This is useful for generating URLs or displaying product information.
-   *
-   *
-   * **Returns:**
-   */
+  /** Retrieves the slug of the product associated with a cart line item. This is useful for generating URLs or displaying product information. */
   productSlug: Scalars['String']['output'];
-  /**
-   * Retrieves the quantity of the cart line item.
-   *
-   *
-   * **Returns:**
-   */
+  /** Retrieves the quantity of the cart line item. */
   quantity: Scalars['Int']['output'];
-  /**
-   * Retrieves the SKU (Stock Keeping Unit) of the variant associated with a cart line item. The SKU is a unique identifier for the variant, often used for inventory management.
-   *
-   *
-   * **Returns:**
-   */
+  /** Retrieves the SKU (Stock Keeping Unit) of the variant associated with a cart line item. The SKU is a unique identifier for the variant, often used for inventory management. */
   sku: Scalars['String']['output'];
-  /**
-   * The line items total excluding discounts and taxes.
-   *
-   *
-   * **Returns:**
-   */
+  /** The line items total excluding discounts and taxes. */
   subtotal: Money;
   /** Gets the tax behavior of the cart line item, which indicates how taxes are applied to the item. */
   taxBehavior: TaxBehavior;
   /** Retrieves the tax rate applied to the cart line item. This may be null if the line item does not have a tax rate defined. */
   taxRate?: Maybe<TaxRate>;
-  /** Gets the taxed price of the `LineItem`. This may be null if the `LineItem` does not yet have a taxed price. */
+  /** Gets the taxed price of the cart line item. This may be null if the cart does not yet have a taxed price. */
   taxedPrice?: Maybe<TaxedPrice>;
-  /** Retrieves the total amount for the cart line item. */
+  /** Gets the total price of the cart line item after discounts and taxes. */
   total: Money;
   /** Retrieves the unit price of the cart line item. */
   unitPrice: UnitPrice;
@@ -495,12 +453,7 @@ export type CartLineItem = {
   variant?: Maybe<ProductVariant>;
   /** The unique identifier of the variant associated with the cart line item. */
   variantId: Scalars['ID']['output'];
-  /**
-   * Retrieves the name of the variant associated with a cart line item. This is useful for displaying the specific variant details to the user.
-   *
-   *
-   * **Returns:**
-   */
+  /** Retrieves the name of the variant associated with a cart line item. This is useful for displaying the specific variant details to the user. */
   variantName: Scalars['String']['output'];
 };
 
@@ -517,6 +470,16 @@ export type CartLineItemDiscountApplicationsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
+/**
+ * Represents a line item in a cart, which includes details about the product, variant, and any associated discounts.
+ *
+ * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
+ */
+export type CartLineItemMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 /** A connection to a list of items. */
 export type CartLineItemConnection = {
   __typename?: 'CartLineItemConnection';
@@ -525,7 +488,7 @@ export type CartLineItemConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<CartLineItem>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -538,39 +501,27 @@ export type CartLineItemEdge = {
   node: CartLineItem;
 };
 
-/** This is the input type for adding a line item to a cart. */
 export type CartLineItemInput = {
-  /** Optional metadata for the line item. This can be used to store additional information about the line item. */
   metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
-  /** The number of line items of the given variant present in the cart. */
   quantity: Scalars['Int']['input'];
-  /** The unique identifier of the product variant. */
   variantId: Scalars['ID']['input'];
 };
 
-/** This exception is thrown when price lookup fails for a line item variant. */
 export type CartLineItemPriceNotFoundError = UserError & {
   __typename?: 'CartLineItemPriceNotFoundError';
   message: Scalars['String']['output'];
 };
 
-/** This is the input type for updating the line item in a cart. */
 export type CartLineItemUpdateInput = {
-  /** The unique identifier of the line item to be updated. */
   lineItemId: Scalars['ID']['input'];
-  /** Optional metadata for the line item. This can be used to store additional information about the line item. */
   metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
-  /** The new quantity for the line item. If set to 0, the line item will be removed from the cart. */
   quantity: Scalars['Int']['input'];
 };
 
 export type CartLineItemsAddError = CartLineItemPriceNotFoundError | CartLineItemsInsufficientStockError | CartNotFoundError | ProductVariantNotFoundError;
 
-/** This is the input type for adding line items to a cart. */
 export type CartLineItemsAddInput = {
-  /** The unique identifier of the cart. */
   cartId: Scalars['ID']['input'];
-  /** The list of line items to be added to the cart. */
   lineItems: Array<CartLineItemInput>;
 };
 
@@ -580,13 +531,11 @@ export type CartLineItemsAddPayload = {
   errors?: Maybe<Array<CartLineItemsAddError>>;
 };
 
-/** This exception is thrown when one or more requested line items do not have enough stock. */
 export type CartLineItemsInsufficientStockError = UserError & {
   __typename?: 'CartLineItemsInsufficientStockError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when updating line items fails due to missing line items. */
 export type CartLineItemsNotFoundError = UserError & {
   __typename?: 'CartLineItemsNotFoundError';
   message: Scalars['String']['output'];
@@ -594,11 +543,8 @@ export type CartLineItemsNotFoundError = UserError & {
 
 export type CartLineItemsRemoveError = CartNotFoundError;
 
-/** This is the input type for removing line items from a cart. */
 export type CartLineItemsRemoveInput = {
-  /** The unique identifier of the cart. */
   cartId: Scalars['ID']['input'];
-  /** The unique identifiers of the line items to be removed. */
   lineItemIds: Array<Scalars['ID']['input']>;
 };
 
@@ -610,11 +556,8 @@ export type CartLineItemsRemovePayload = {
 
 export type CartLineItemsUpdateError = CartLineItemsNotFoundError | CartNotFoundError | UpdateCartLineItemsInsufficientStockError;
 
-/** This is the input type for updating the quantity of a line item in a cart. */
 export type CartLineItemsUpdateInput = {
-  /** The unique identifier of the cart to be updated. */
   cartId: Scalars['ID']['input'];
-  /** The list of line items to be updated in the cart. Each line item must have a valid LineItemId. */
   lineItems: Array<CartLineItemUpdateInput>;
 };
 
@@ -624,7 +567,6 @@ export type CartLineItemsUpdatePayload = {
   errors?: Maybe<Array<CartLineItemsUpdateError>>;
 };
 
-/** This exception is thrown when a cart with the specified ID cannot be found. */
 export type CartNotFoundError = UserError & {
   __typename?: 'CartNotFoundError';
   message: Scalars['String']['output'];
@@ -632,11 +574,8 @@ export type CartNotFoundError = UserError & {
 
 export type CartPaymentSessionInitializeError = CartNotFoundError | PaymentGatewayChannelMismatchError | PaymentGatewayNotFoundError | PaymentGatewaySessionInitializeFailedError;
 
-/** This is the input type for initializing a payment gateway session for a cart. */
 export type CartPaymentSessionInitializeInput = {
-  /** The unique identifier of the cart for which the payment gateway session is being initialized. */
   cartId: Scalars['ID']['input'];
-  /** The unique identifier of the payment gateway to be used for the session. */
   gatewayId: Scalars['ID']['input'];
 };
 
@@ -648,17 +587,11 @@ export type CartPaymentSessionInitializePayload = {
 
 export type CartReplicateError = CartNotFoundError | CartReplicateStrictValidationFailedError;
 
-/** This is the input type for replicating a cart. */
 export type CartReplicateInput = {
-  /** The unique identifier of the cart to be replicated. */
   cartId: Scalars['ID']['input'];
-  /** The ISO 4217 currency code for the cart to be replicated. */
   currency: Scalars['String']['input'];
-  /** The unique identifier of the price channel to be used for the replicated cart. If not provided, it will keep the same price channel as the original cart. */
-  priceChannelId?: InputMaybe<TypeIdDecodedInput>;
-  /** The unique identifier of the store to which the cart will be replicated. */
+  priceChannelId?: InputMaybe<Scalars['ID']['input']>;
   storeId: Scalars['ID']['input'];
-  /** The replication strategy to be used when replicating the cart. */
   strategy: ReplicationStrategy;
 };
 
@@ -668,52 +601,46 @@ export type CartReplicatePayload = {
   errors?: Maybe<Array<CartReplicateError>>;
 };
 
-/** Stock mismatch for a replicated line item in strict mode. */
 export type CartReplicateStockChangeError = {
   __typename?: 'CartReplicateStockChangeError';
-  lineItemId: TypeIdDecoded;
+  lineItemId: Scalars['ID']['output'];
   newStock: Scalars['Int']['output'];
-  variantId: TypeIdDecoded;
+  variantId: Scalars['ID']['output'];
   wantedStock: Scalars['Int']['output'];
 };
 
-/** This exception is thrown when a cart cannot be replicated due to strict validation failures. */
 export type CartReplicateStrictValidationFailedError = UserError & {
   __typename?: 'CartReplicateStrictValidationFailedError';
   message: Scalars['String']['output'];
-  /** Line items whose available stock changed in the target channel. */
   stockChanges: Array<CartReplicateStockChangeError>;
-  /** Variants that were not found in the target channel. */
   variantsNotFound: Array<CartReplicateVariantNotFoundError>;
 };
 
-/** Variant missing in the target channel when replicating a cart. */
 export type CartReplicateVariantNotFoundError = {
   __typename?: 'CartReplicateVariantNotFoundError';
-  lineItemId: TypeIdDecoded;
-  variantId: TypeIdDecoded;
+  lineItemId: Scalars['ID']['output'];
+  variantId: Scalars['ID']['output'];
 };
 
 /** Represents a shipping line on a cart, including method and totals. */
-export type CartShippingLine = {
+export type CartShippingLine = Node & {
   __typename?: 'CartShippingLine';
   /** The unique identifier of the cart shipping line. */
   id: Scalars['ID']['output'];
   /** The shipping method selected for this shipping line. */
   shippingMethod: LineShippingMethod;
-  /** The subtotal of the shipping line before discounts and taxes. */
+  /** The total amount for the shipping line before discounts and taxes. */
   subtotal: Money;
   /** The tax behavior used to calculate this shipping line. */
   taxBehavior: TaxBehavior;
   /** The taxed price (net, gross, tax) of this shipping line, if available. */
   taxedPrice?: Maybe<TaxedPrice>;
-  /** The total amount for the shipping line after discounts and taxes. */
+  /** The total amount for the shipping line after discounts and taxes */
   total: Money;
 };
 
 export type CartShippingLineAddError = CartNotFoundError | ShippingMethodNotFoundError;
 
-/** This is the input type for adding a shipping line to a cart. */
 export type CartShippingLineAddInput = {
   cartId: Scalars['ID']['input'];
   shippingMethodId: Scalars['ID']['input'];
@@ -725,7 +652,6 @@ export type CartShippingLineAddPayload = {
   errors?: Maybe<Array<CartShippingLineAddError>>;
 };
 
-/** This exception is thrown when a cart shipping line with the specified ID cannot be found. */
 export type CartShippingLineNotFoundError = UserError & {
   __typename?: 'CartShippingLineNotFoundError';
   message: Scalars['String']['output'];
@@ -733,7 +659,6 @@ export type CartShippingLineNotFoundError = UserError & {
 
 export type CartShippingLineRemoveError = CartNotFoundError | CartShippingLineNotFoundError;
 
-/** This is the input type for removing a shipping line from a cart. */
 export type CartShippingLineRemoveInput = {
   cartId: Scalars['ID']['input'];
   shippingLineId: Scalars['ID']['input'];
@@ -747,10 +672,6 @@ export type CartShippingLineRemovePayload = {
 
 export type CartShippingLinesSetError = CartNotFoundError | ShippingMethodNotFoundError;
 
-/**
- * This is the input type for setting the shipping lines on a cart.
- * Providing the list will replace any existing shipping lines.
- */
 export type CartShippingLinesSetInput = {
   cartId: Scalars['ID']['input'];
   shippingMethodIds: Array<Scalars['ID']['input']>;
@@ -763,29 +684,19 @@ export type CartShippingLinesSetPayload = {
 };
 
 export enum CartState {
-  /** The default state where a Cart can be updated and ordered. */
   Active = 'ACTIVE',
-  /** A Cart was ordered, and no further operations are allowed on the Cart. */
   Ordered = 'ORDERED'
 }
 
 export type CartUpdateError = CartAuthenticationFailedError | CartAuthorizationFailedError | CartNotFoundError | CartUpdatePriceChannelNotFoundError;
 
-/** This is the input type for updating a cart. */
 export type CartUpdateInput = {
-  /** Optional billing address for the cart. If not provided, the existing billing address will remain unchanged. */
   billingAddress?: InputMaybe<CartAddressInput>;
-  /** The unique identifier of the cart to be updated. */
   cartId: Scalars['ID']['input'];
-  /** Email address of the customer associated with the cart. If not provided, the existing email will remain unchanged. */
   customerEmail?: InputMaybe<Scalars['String']['input']>;
-  /** The unique identifier of the customer associated with the cart. If not provided, the existing customer will remain unchanged. */
   customerId?: InputMaybe<Scalars['ID']['input']>;
-  /** Optional metadata for the cart. This can be used to store additional information about the cart. */
   metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
-  /** Optional unique identifier of the price channel. If provided, the cart will be updated to use the specified price channel. */
   priceChannelId?: InputMaybe<Scalars['ID']['input']>;
-  /** Optional shipping address for the cart. If not provided, the existing shipping address will remain unchanged. */
   shippingAddress?: InputMaybe<CartAddressInput>;
 };
 
@@ -795,7 +706,6 @@ export type CartUpdatePayload = {
   errors?: Maybe<Array<CartUpdateError>>;
 };
 
-/** This exception is thrown when a price channel with the specified ID cannot be found or is not a valid price channel during cart update. */
 export type CartUpdatePriceChannelNotFoundError = UserError & {
   __typename?: 'CartUpdatePriceChannelNotFoundError';
   message: Scalars['String']['output'];
@@ -806,84 +716,29 @@ export type CartUpdatePriceChannelNotFoundError = UserError & {
  *
  * Each category includes core details such as title, description, and associated products. Categories can be organized hierarchically to create a structured navigation experience for customers.
  */
-export type Category = {
+export type Category = Node & {
   __typename?: 'Category';
-  /**
-   * The ancestors of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The ancestors of the category. */
   ancestors: Array<Category>;
-  /**
-   * The direct children of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The direct children of the category. */
   children: Array<Category>;
-  /**
-   * The number of direct children of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The number of direct children of the category. */
   childrenCount: Scalars['Long']['output'];
-  /**
-   * The descendants of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The descendants of the category. */
   descendants: Array<Category>;
-  /**
-   * The number of descendants of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The number of descendants of the category. */
   descendantsCount: Scalars['Long']['output'];
-  /**
-   * The ID of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The ID of the category. */
   id: Scalars['ID']['output'];
-  /**
-   * The name of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The name of the category. */
   name: Scalars['String']['output'];
-  /**
-   * The parent category of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The parent category of the category. */
   parent?: Maybe<Category>;
-  /**
-   * List of products in the collection.
-   *
-   *
-   * **Returns:**
-   */
+  /** List of products in the collection. */
   products: ProductsConnection;
-  /**
-   * The number of products that are associated with the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The number of products that are associated with the category. */
   productsCount: Scalars['Long']['output'];
-  /**
-   * The slug of the category.
-   *
-   *
-   * **Returns:**
-   */
+  /** The slug of the category. */
   slug: Scalars['String']['output'];
 };
 
@@ -915,7 +770,7 @@ export type CategoryConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<Category>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -933,35 +788,15 @@ export type CategoryEdge = {
  *
  *  Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
  */
-export type Collections = {
-  __typename?: 'Collections';
-  /**
-   * The ID of the collection.
-   *
-   *
-   * **Returns:**
-   */
+export type Collection = Node & {
+  __typename?: 'Collection';
+  /** The ID of the collection. */
   id: Scalars['ID']['output'];
-  /**
-   * The name of the collection.
-   *
-   *
-   * **Returns:**
-   */
+  /** The name of the collection. */
   name: Scalars['String']['output'];
-  /**
-   * List of products in the collection.
-   *
-   *
-   * **Returns:**
-   */
+  /** List of products in the collection. */
   products: ProductsConnection;
-  /**
-   * The slug of the collection.
-   *
-   *
-   * **Returns:**
-   */
+  /** The slug of the collection. */
   slug: Scalars['String']['output'];
 };
 
@@ -971,7 +806,7 @@ export type Collections = {
  *
  *  Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
  */
-export type CollectionsProductsArgs = {
+export type CollectionProductsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
@@ -986,24 +821,24 @@ export type CollectionsProductsArgs = {
 };
 
 /** A connection to a list of items. */
-export type CollectionsConnection = {
-  __typename?: 'CollectionsConnection';
+export type CollectionConnection = {
+  __typename?: 'CollectionConnection';
   /** A list of edges. */
-  edges?: Maybe<Array<CollectionsEdge>>;
+  edges?: Maybe<Array<CollectionEdge>>;
   /** A flattened list of the nodes */
-  nodes?: Maybe<Array<Collections>>;
+  nodes?: Maybe<Array<Collection>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
 
-export type CollectionsEdge = {
-  __typename?: 'CollectionsEdge';
+export type CollectionEdge = {
+  __typename?: 'CollectionEdge';
   /** A cursor for use in pagination. */
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
-  node: Collections;
+  node: Collection;
 };
 
 export type CountryInfo = {
@@ -1014,63 +849,58 @@ export type CountryInfo = {
   zones: Array<ZoneInfo>;
 };
 
-/** This exception is thrown when an address is not null, but does not have a country code. */
 export type CreateCartAddressDoesNotHaveCountryCodeError = UserError & {
   __typename?: 'CreateCartAddressDoesNotHaveCountryCodeError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when cart authentication fails. */
 export type CreateCartAuthenticationFailedError = UserError & {
   __typename?: 'CreateCartAuthenticationFailedError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when cart authorization fails. */
 export type CreateCartAuthorizationFailedError = UserError & {
   __typename?: 'CreateCartAuthorizationFailedError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a channel does not support the specified country. */
 export type CreateCartChannelDoesNotSupportCountryError = UserError & {
   __typename?: 'CreateCartChannelDoesNotSupportCountryError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a channel does not support the specified currency. */
 export type CreateCartChannelDoesNotSupportCurrencyError = UserError & {
   __typename?: 'CreateCartChannelDoesNotSupportCurrencyError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a channel has no countries defined. */
 export type CreateCartChannelHasNoCountriesError = UserError & {
   __typename?: 'CreateCartChannelHasNoCountriesError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a channel with the specified ID cannot be found. */
 export type CreateCartChannelNotFoundError = UserError & {
   __typename?: 'CreateCartChannelNotFoundError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when not all line items could be added to the cart. */
 export type CreateCartFailedNotAllLineItemsCouldBeAddedError = UserError & {
   __typename?: 'CreateCartFailedNotAllLineItemsCouldBeAddedError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a price channel with the specified ID cannot be found or is not a valid price channel. */
 export type CreateCartPriceChannelNotFoundError = UserError & {
   __typename?: 'CreateCartPriceChannelNotFoundError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when a shipping address country has no configured shipping zones. */
 export type CreateCartShippingAddressDoesNotHaveShippingZonesError = UserError & {
   __typename?: 'CreateCartShippingAddressDoesNotHaveShippingZonesError';
+  message: Scalars['String']['output'];
+};
+
+export type CreateCartStoreNotFoundError = UserError & {
+  __typename?: 'CreateCartStoreNotFoundError';
   message: Scalars['String']['output'];
 };
 
@@ -1092,8 +922,8 @@ export type Customer = Node & {
   id: Scalars['ID']['output'];
   /** The last name of the customer. */
   lastName?: Maybe<Scalars['String']['output']>;
-  /** A set of key-value pairs that can be attached to the customer for storing additional information. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Gets the metadata associated with the customer. */
+  metadata: Array<MetadataItem>;
   /** A list of orders associated with the customer. */
   orders: OrderConnection;
   /** The number of orders that are associated with the customer. */
@@ -1114,6 +944,11 @@ export type CustomerCustomerGroupsArgs = {
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type CustomerMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 
@@ -1138,11 +973,8 @@ export type CustomerAccessToken = {
 
 export type CustomerAccessTokenCreateError = InvalidCredentialsError;
 
-/** The fields used to create a customer access token. */
 export type CustomerAccessTokenCreateInput = {
-  /** The email address of the customer. */
   email: Scalars['String']['input'];
-  /** The password of the customer. */
   password: Scalars['String']['input'];
 };
 
@@ -1154,9 +986,7 @@ export type CustomerAccessTokenCreatePayload = {
 
 export type CustomerAccessTokenRefreshError = InvalidRefreshTokenError;
 
-/** Specifies the fields to refresh a customer access token. */
 export type CustomerAccessTokenRefreshInput = {
-  /** The refresh token of the customer access token. */
   refreshToken: Scalars['String']['input'];
 };
 
@@ -1168,33 +998,23 @@ export type CustomerAccessTokenRefreshPayload = {
 
 export type CustomerActivateError = CustomerEmailAlreadyConfirmedError | CustomerInvalidActivationTokenError | CustomerInvalidPasswordError;
 
-/** Activates a customer account using the provided token and sets the customer's password. */
 export type CustomerActivateInput = {
-  /** The email address of the customer to be activated. */
   email: Scalars['String']['input'];
-  /** The first name of the customer. */
   firstName?: InputMaybe<Scalars['String']['input']>;
-  /** The last name of the customer. */
   lastName?: InputMaybe<Scalars['String']['input']>;
-  /** The metadata of the customer, which can be used to store additional information about the customer */
   metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
-  /** The password to set for the customer account. */
   password: Scalars['String']['input'];
-  /** The activation token that was sent to the customer's email address, through `CustomerRegister`. */
   token: Scalars['String']['input'];
 };
 
-/** The payload of customer activation. */
 export type CustomerActivatePayload = {
   __typename?: 'CustomerActivatePayload';
-  /** The customer that was activated. */
   customer?: Maybe<Customer>;
-  /** The access token for the activated customer. */
   customerAccessToken?: Maybe<CustomerAccessToken>;
   errors?: Maybe<Array<CustomerActivateError>>;
 };
 
-export type CustomerAddress = BaseAddress & Node & {
+export type CustomerAddress = BaseAddress & {
   __typename?: 'CustomerAddress';
   /** The first line of the address. */
   address1?: Maybe<Scalars['String']['output']>;
@@ -1208,16 +1028,16 @@ export type CustomerAddress = BaseAddress & Node & {
   countryCode?: Maybe<Scalars['String']['output']>;
   /** The email address of the address. */
   email?: Maybe<Scalars['String']['output']>;
-  /** THe first name of the address. */
+  /** The first name of the address. */
   firstName?: Maybe<Scalars['String']['output']>;
-  /** The formatted address. */
+  /** Formatted address. */
   formatted?: Maybe<Scalars['String']['output']>;
   /** The unique identifier of the address. */
   id: Scalars['ID']['output'];
   /** The last name of the address. */
   lastName?: Maybe<Scalars['String']['output']>;
-  /** The metadata of the address, which can be used to store additional information about the address. */
-  metadata?: Maybe<Array<KeyValuePairOfStringAndString>>;
+  /** Gets the metadata associated with the address. */
+  metadata: Array<MetadataItem>;
   /** The name of the address. */
   name?: Maybe<Scalars['String']['output']>;
   /** The phone number of the address. */
@@ -1228,6 +1048,11 @@ export type CustomerAddress = BaseAddress & Node & {
   state?: Maybe<Scalars['String']['output']>;
 };
 
+
+export type CustomerAddressMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 /** A connection to a list of items. */
 export type CustomerAddressConnection = {
   __typename?: 'CustomerAddressConnection';
@@ -1236,16 +1061,14 @@ export type CustomerAddressConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<CustomerAddress>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
 
 export type CustomerAddressCreateError = AddressAlreadyExistsError | CustomerNotFoundError;
 
-/** Creates a new address for a customer. */
 export type CustomerAddressCreateInput = {
-  /** Specifies the fields to use when creating the address. */
   address: CustomerAddressInput;
 };
 
@@ -1257,9 +1080,7 @@ export type CustomerAddressCreatePayload = {
 
 export type CustomerAddressDeleteError = AddressNotFoundError | CustomerNotFoundError;
 
-/** The input fields to delete a customer's address. */
 export type CustomerAddressDeleteInput = {
-  /** The ID of the address to be deleted from the customer. */
   id: Scalars['ID']['input'];
 };
 
@@ -1277,47 +1098,28 @@ export type CustomerAddressEdge = {
   node: CustomerAddress;
 };
 
-/** Specifies the fields to use when creating/updating an address. */
 export type CustomerAddressInput = {
-  /** The first line of the address. Typically the street address or PO Box number. */
   address1?: InputMaybe<Scalars['String']['input']>;
-  /** The second line of the address. Typically the apartment, suite, or unit number. */
   address2?: InputMaybe<Scalars['String']['input']>;
-  /** The name of the city, district, village, or town. */
   city?: InputMaybe<Scalars['String']['input']>;
-  /** The name of the customer's company or organization. */
   company?: InputMaybe<Scalars['String']['input']>;
-  /** The two-letter ISO 3166-1 alpha-2 country code of the address. */
   countryCode?: InputMaybe<Scalars['String']['input']>;
-  /** The email address associated with the address. */
   email?: InputMaybe<Scalars['String']['input']>;
-  /** The first name of the address. */
   firstName?: InputMaybe<Scalars['String']['input']>;
-  /** Indicates if the address should be set as the default billing address for the customer. */
   isDefaultBilling?: InputMaybe<Scalars['Boolean']['input']>;
-  /** Indicates if the address should be set as the default shipping address for the customer. */
   isDefaultShipping?: InputMaybe<Scalars['Boolean']['input']>;
-  /** The last name of the address. */
   lastName?: InputMaybe<Scalars['String']['input']>;
-  /** The metadata of the address, which can be used to store additional information about the address. */
   metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
-  /** The name of the address. */
   name?: InputMaybe<Scalars['String']['input']>;
-  /** The address's unique phone number, formatted using E.164 standard. For example, +16135551111. */
   phone?: InputMaybe<Scalars['String']['input']>;
-  /** The zip or postal code of the address. */
   postalCode?: InputMaybe<Scalars['String']['input']>;
-  /** The name of the state, province, or region. For example, Colorado. */
   state?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CustomerAddressUpdateError = AddressAlreadyExistsError | AddressNotFoundError | CustomerNotFoundError;
 
-/** Updates a specific address for a customer. */
 export type CustomerAddressUpdateInput = {
-  /** Specifies the fields to use when updating the address. */
   address: CustomerAddressInput;
-  /** The ID of the address to be updated. */
   id: Scalars['ID']['input'];
 };
 
@@ -1327,7 +1129,6 @@ export type CustomerAddressUpdatePayload = {
   errors?: Maybe<Array<CustomerAddressUpdateError>>;
 };
 
-/** The email address has already been confirmed. */
 export type CustomerEmailAlreadyConfirmedError = UserError & {
   __typename?: 'CustomerEmailAlreadyConfirmedError';
   message: Scalars['String']['output'];
@@ -1349,7 +1150,7 @@ export type CustomerGroupConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<CustomerGroup>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -1362,19 +1163,16 @@ export type CustomerGroupEdge = {
   node: CustomerGroup;
 };
 
-/** The provided activation token is invalid or has expired. */
 export type CustomerInvalidActivationTokenError = UserError & {
   __typename?: 'CustomerInvalidActivationTokenError';
   message: Scalars['String']['output'];
 };
 
-/** The provided password does not meet the required criteria. */
 export type CustomerInvalidPasswordError = UserError & {
   __typename?: 'CustomerInvalidPasswordError';
   message: Scalars['String']['output'];
 };
 
-/** The customer with the specified ID was not found. */
 export type CustomerNotFoundError = UserError & {
   __typename?: 'CustomerNotFoundError';
   message: Scalars['String']['output'];
@@ -1382,35 +1180,25 @@ export type CustomerNotFoundError = UserError & {
 
 export type CustomerPasswordResetError = InvalidPasswordError | InvalidTokenError;
 
-/** Represents the input for resetting a customer's password. */
 export type CustomerPasswordResetInput = {
-  /** The email address of the customer whose password is being reset. */
   email: Scalars['String']['input'];
-  /** The new password for the customer. */
   password: Scalars['String']['input'];
-  /** The reset token that was sent to the customer's email address. */
   resetToken: Scalars['String']['input'];
 };
 
-/** Represents the payload for resetting a customer's password. */
 export type CustomerPasswordResetPayload = {
   __typename?: 'CustomerPasswordResetPayload';
-  /** The customer object which was reset. */
   customer?: Maybe<Customer>;
-  /** A newly created customer access token object for the customer. */
   customerAccessToken?: Maybe<CustomerAccessToken>;
   errors?: Maybe<Array<CustomerPasswordResetError>>;
 };
 
 export type CustomerPasswordResetTokenError = InvalidCredentialsError;
 
-/** Represents the input for requesting a password reset token for a customer. */
 export type CustomerPasswordResetTokenInput = {
-  /** The email address of the customer to recover. */
   email: Scalars['String']['input'];
 };
 
-/** Represents the payload for requesting a password reset token. */
 export type CustomerPasswordResetTokenPayload = {
   __typename?: 'CustomerPasswordResetTokenPayload';
   errors?: Maybe<Array<CustomerPasswordResetTokenError>>;
@@ -1418,31 +1206,23 @@ export type CustomerPasswordResetTokenPayload = {
 
 export type CustomerRegisterError = CustomerRegisterFailedError;
 
-/** Registration of the customer failed. */
 export type CustomerRegisterFailedError = UserError & {
   __typename?: 'CustomerRegisterFailedError';
   message: Scalars['String']['output'];
 };
 
-/** Generates a CustomerEmailConfirmationToken event in webhooks, you can use this to send a confirmation email to the customer. */
 export type CustomerRegisterInput = {
-  /** The customer's email address. */
   email: Scalars['String']['input'];
 };
 
-/** The payload of customer registration. */
 export type CustomerRegisterPayload = {
   __typename?: 'CustomerRegisterPayload';
   errors?: Maybe<Array<CustomerRegisterError>>;
 };
 
-/** Specifies the fields to update a customer. */
 export type CustomerUpdateInput = {
-  /** The new email address of the customer. */
   email?: InputMaybe<Scalars['String']['input']>;
-  /** The new first name of the customer. */
   firstName?: InputMaybe<Scalars['String']['input']>;
-  /** The new last name of the customer. */
   lastName?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -1471,7 +1251,7 @@ export type DiscountApplicationConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<DiscountApplication>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -1484,13 +1264,26 @@ export type DiscountApplicationEdge = {
   node: DiscountApplication;
 };
 
+/** The value of the discount application, either absolute or relative. */
 export type DiscountApplicationValue = Money | RelativeValue;
 
-export type DiscountCodeDto = {
-  __typename?: 'DiscountCodeDto';
-  cartId: TypeIdDecoded;
+export type DiscountCode = {
+  __typename?: 'DiscountCode';
+  /** The code string for the discount code. */
   code: Scalars['String']['output'];
+  /** An error state describing why the discount code could not be applied, if applicable. */
+  error?: Maybe<DiscountCodeError>;
 };
+
+export enum DiscountCodeError {
+  ExcludedByDiscountPolicy = 'EXCLUDED_BY_DISCOUNT_POLICY',
+  MaxApplicationsPerCustomerReached = 'MAX_APPLICATIONS_PER_CUSTOMER_REACHED',
+  MaxApplicationsReached = 'MAX_APPLICATIONS_REACHED',
+  None = 'NONE',
+  NotFound = 'NOT_FOUND',
+  NoMatch = 'NO_MATCH',
+  Unknown = 'UNKNOWN'
+}
 
 /** Represents a discounted price for a product variant. */
 export type DiscountedPrice = {
@@ -1525,34 +1318,24 @@ export type FacetValue = {
   name: Scalars['String']['output'];
 };
 
-/** Represents an exception that occurs when a user provides invalid credentials. */
 export type InvalidCredentialsError = UserError & {
   __typename?: 'InvalidCredentialsError';
   message: Scalars['String']['output'];
 };
 
-/** Represents an exception that occurs when a user provides an invalid email address. */
 export type InvalidPasswordError = UserError & {
   __typename?: 'InvalidPasswordError';
   message: Scalars['String']['output'];
 };
 
-/** Represents an exception that occurs when a user provides an invalid refresh token. */
 export type InvalidRefreshTokenError = UserError & {
   __typename?: 'InvalidRefreshTokenError';
   message: Scalars['String']['output'];
 };
 
-/** Represents an exception that occurs when a user provides an invalid token. */
 export type InvalidTokenError = UserError & {
   __typename?: 'InvalidTokenError';
   message: Scalars['String']['output'];
-};
-
-export type KeyValuePairOfStringAndString = {
-  __typename?: 'KeyValuePairOfStringAndString';
-  key: Scalars['String']['output'];
-  value: Scalars['String']['output'];
 };
 
 export type KeyValuePairOfStringAndStringInput = {
@@ -1566,11 +1349,17 @@ export type LineShippingMethod = {
   /** The unique identifier of the shipping method. */
   id: Scalars['ID']['output'];
   /** Gets the metadata associated with the shipping method. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  metadata: Array<MetadataItem>;
   /** The display name of the shipping method. */
   name: Scalars['String']['output'];
   /** The SKU of the shipping method, if any. */
   sku?: Maybe<Scalars['String']['output']>;
+};
+
+
+/** Represents the shipping method associated with a cart shipping line. */
+export type LineShippingMethodMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type ManualPaymentGateway = PaymentGateway & {
@@ -1583,7 +1372,7 @@ export type ManualPaymentGateway = PaymentGateway & {
   name: Scalars['String']['output'];
 };
 
-export type Media = {
+export type Media = Node & {
   __typename?: 'Media';
   /** The content type of the media. */
   contentType: Scalars['String']['output'];
@@ -1591,12 +1380,7 @@ export type Media = {
   fileExtension: Scalars['String']['output'];
   /** The file name of the media. */
   fileName: Scalars['String']['output'];
-  /**
-   * The unique identifier of the media.
-   *
-   *
-   * **Returns:**
-   */
+  /** The unique identifier of the media. */
   id: Scalars['ID']['output'];
   /** The full source URL of the media. */
   src: Scalars['String']['output'];
@@ -1610,7 +1394,7 @@ export type MediaConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<Media>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -1623,219 +1407,164 @@ export type MediaEdge = {
   node: Media;
 };
 
+/** Represents a key-value pair of metadata associated with an entity, providing additional information or attributes that can be used for various purposes such as filtering, categorization, or display. */
+export type MetadataItem = {
+  __typename?: 'MetadataItem';
+  /** Gets the key of the metadata item, which serves as an identifier for the type of metadata being represented. */
+  key: Scalars['String']['output'];
+  /** Gets the value of the metadata item, which contains the specific information or attribute associated with the key. */
+  value: Scalars['String']['output'];
+};
+
 /** The monetary value in the smallest unit of the currency. */
 export type Money = {
   __typename?: 'Money';
   /** The amount of money in the smallest unit of the currency. For example, 100 cents in USD. */
   centAmount: Scalars['Long']['output'];
-  /** The three-letter currency code that represents a world currency used in a store. Currency codes include standard standard ISO 4217 codes, legacy codes, and non-standard codes. For example, USD. */
+  /** The three-letter currency code that represents a world currency used in a store. Currency codes include standard ISO 4217 codes, legacy codes, and non-standard codes. For example, USD. */
   currencyCode: Scalars['String']['output'];
   /** The number of digits after the decimal separator in the currency. For example, 2 for USD and 0 for JPY. */
   fractionDigits: Scalars['Int']['output'];
 };
 
-/** This class contains the mutations for managing carts. */
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Completes the specified cart and creates an order if all validations pass. */
   cartComplete: CartCompletePayload;
-  /** Creates a new cart using the provided currency. */
   cartCreate: CartCreatePayload;
-  /** Applies a discount code to an existing cart using the given discount code. */
   cartDiscountCodeAdd: CartDiscountCodeAddPayload;
-  /** Removes a discount code from an existing cart using the given discount code. */
   cartDiscountCodeRemove: CartDiscountCodeRemovePayload;
-  /** Adds a new line item to an existing cart. This is safe to call concurrently. */
   cartLineItemsAdd: CartLineItemsAddPayload;
-  /** Removes line items from an existing cart. This is safe to call concurrently. */
   cartLineItemsRemove: CartLineItemsRemovePayload;
-  /** Updates one or more line items in an existing cart. */
   cartLineItemsUpdate: CartLineItemsUpdatePayload;
-  /**
-   * Initializes a new payment session for the specified cart and payment gateway.
-   * The payment session is valid for the duration "validUntil" as long as the cart total does not change.
-   * If the cart total changes, a new payment session must be initialized.
-   */
   cartPaymentSessionInitialize: CartPaymentSessionInitializePayload;
-  /**
-   * Replicates an existing cart. This is useful for creating a new cart based on an existing one,
-   * such if the user want to swap to another channel or currency.
-   */
   cartReplicate: CartReplicatePayload;
-  /** Adds a shipping line to the cart using a shipping method ID. */
   cartShippingLineAdd: CartShippingLineAddPayload;
-  /** Removes a shipping line from the cart using a shipping line ID. */
   cartShippingLineRemove: CartShippingLineRemovePayload;
-  /**
-   * Sets the shipping lines on the cart using the provided shipping method IDs.
-   * Existing shipping lines are replaced with the new selection.
-   */
   cartShippingLinesSet: CartShippingLinesSetPayload;
-  /** Updates an existing cart. This is safe to call concurrently. */
   cartUpdate: CartUpdatePayload;
-  /** Creates a customer access token. The customer access token is required to modify the customer object in any way. */
   customerAccessTokenCreate: CustomerAccessTokenCreatePayload;
-  /** Refreshes a customer access token using the refresh token. The refresh token is used to obtain a new access token without requiring the customer to log in again. */
   customerAccessTokenRefresh: CustomerAccessTokenRefreshPayload;
-  /** Activates a customer account using the provided token and sets the customer's password. */
   customerActivate: CustomerActivatePayload;
-  /** Creates a new address for a customer. */
   customerAddressCreate: CustomerAddressCreatePayload;
-  /** Deletes a specific address for a customer. */
   customerAddressDelete: CustomerAddressDeletePayload;
-  /** Updates a specific address for a customer. */
   customerAddressUpdate: CustomerAddressUpdatePayload;
-  /** Resets a customer's password using a valid reset token. This mutation requires the customer to provide their email, the new password, and the reset token they received via email. */
   customerPasswordReset: CustomerPasswordResetPayload;
-  /**
-   * If an customer exists, this mutation will fire a `CustomerPasswordResetTokenEvent` webhook event, which can be used to send a password reset email to the customer.
-   * The customer will receive an email with a link to reset their password.
-   */
   customerPasswordResetToken: CustomerPasswordResetTokenPayload;
-  /**
-   * If the customer does not exist or does not have a confirmed account, a email confirmation token event will be generated in webhooks.
-   * You can use this to send a confirmation email to the customer.
-   * If the customer already has a confirmed account, nothing happens
-   */
   customerRegister: CustomerRegisterPayload;
-  /** Updates an existing customer with the provided details. */
   customerUpdate: CustomerUpdatePayload;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartCompleteArgs = {
   input: CartCompleteInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartCreateArgs = {
   input: CartCreateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartDiscountCodeAddArgs = {
   input: CartDiscountCodeAddInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartDiscountCodeRemoveArgs = {
   input: CartDiscountCodeRemoveInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartLineItemsAddArgs = {
   input: CartLineItemsAddInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartLineItemsRemoveArgs = {
   input: CartLineItemsRemoveInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartLineItemsUpdateArgs = {
   input: CartLineItemsUpdateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartPaymentSessionInitializeArgs = {
   input: CartPaymentSessionInitializeInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartReplicateArgs = {
   input: CartReplicateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartShippingLineAddArgs = {
   input: CartShippingLineAddInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartShippingLineRemoveArgs = {
   input: CartShippingLineRemoveInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartShippingLinesSetArgs = {
   input: CartShippingLinesSetInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCartUpdateArgs = {
   input: CartUpdateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerAccessTokenCreateArgs = {
   input: CustomerAccessTokenCreateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerAccessTokenRefreshArgs = {
   input: CustomerAccessTokenRefreshInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerActivateArgs = {
   input: CustomerActivateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerAddressCreateArgs = {
   input: CustomerAddressCreateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerAddressDeleteArgs = {
   input: CustomerAddressDeleteInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerAddressUpdateArgs = {
   input: CustomerAddressUpdateInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerPasswordResetArgs = {
   input: CustomerPasswordResetInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerPasswordResetTokenArgs = {
   input: CustomerPasswordResetTokenInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerRegisterArgs = {
   input: CustomerRegisterInput;
 };
 
 
-/** This class contains the mutations for managing carts. */
 export type MutationCustomerUpdateArgs = {
   input: CustomerUpdateInput;
 };
@@ -1848,14 +1577,14 @@ export type Node = {
 export type Order = Node & {
   __typename?: 'Order';
   /** Gets the billing address associated with the order. This may be the same as the shipping address. */
-  billingAddress?: Maybe<CartAddress>;
+  billingAddress?: Maybe<OrderAddress>;
   /** The date and time when the order was created. */
   createdAt: Scalars['DateTime']['output'];
   /** Retrieves the customer associated with the order. */
   customer?: Maybe<Customer>;
   /** Retrieves a paginated list of discount applications for the order */
   discountApplications: DiscountApplicationConnection;
-  /** The external reference for the order. */
+  /** The external reference of the order. */
   externalReference?: Maybe<Scalars['String']['output']>;
   /** The unique identifier for the order. */
   id: Scalars['ID']['output'];
@@ -1863,8 +1592,8 @@ export type Order = Node & {
   lineItems: OrderLineItemConnection;
   /** Sum of all LineItem quantities. */
   lineItemsQuantity: Scalars['Long']['output'];
-  /** The metadata associated with the order. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Gets the metadata associated with the order. */
+  metadata: Array<MetadataItem>;
   /** The order number. */
   orderNumber: Scalars['Int']['output'];
   /** Current status of the Order. */
@@ -1872,11 +1601,11 @@ export type Order = Node & {
   /** Payment status of the Order. */
   paymentState: PaymentState;
   /** Retrieves a paginated list of payments for a specific order. */
-  payments: PaymentDtoConnection;
+  payments: PaymentConnection;
   /** Shipment status of the Order. */
   shipmentState: ShipmentState;
   /** Gets the shipping address associated with the order. */
-  shippingAddress?: Maybe<CartAddress>;
+  shippingAddress?: Maybe<OrderAddress>;
   /** Gets the shipping lines associated with the order. */
   shippingLines: Array<OrderShippingLine>;
   /** Gets the total price of the order before discounts and taxes. */
@@ -1904,11 +1633,53 @@ export type OrderLineItemsArgs = {
 };
 
 
+export type OrderMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
 export type OrderPaymentsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
   last?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type OrderAddress = BaseAddress & {
+  __typename?: 'OrderAddress';
+  /** The first line of the address. Typically the street address or PO Box number. */
+  address1?: Maybe<Scalars['String']['output']>;
+  /** The second line of the address. Typically the number of the apartment, suite, or unit. */
+  address2?: Maybe<Scalars['String']['output']>;
+  /** Name of the city. */
+  city?: Maybe<Scalars['String']['output']>;
+  /** Name of the company. */
+  company?: Maybe<Scalars['String']['output']>;
+  /** Two-digit country code as per  ISO 3166-1 alpha-2 */
+  countryCode?: Maybe<Scalars['String']['output']>;
+  /** Email address of the contact. */
+  email?: Maybe<Scalars['String']['output']>;
+  /** Given name (first name) of the contact. */
+  firstName?: Maybe<Scalars['String']['output']>;
+  /** Formatted address. */
+  formatted?: Maybe<Scalars['String']['output']>;
+  /** The unique identifier of the address. */
+  id: Scalars['ID']['output'];
+  /** Family name (last name) of the contact. */
+  lastName?: Maybe<Scalars['String']['output']>;
+  /** Gets the metadata associated with the address. */
+  metadata: Array<MetadataItem>;
+  /** Phone number of the contact. */
+  phone?: Maybe<Scalars['String']['output']>;
+  /** Postal code. */
+  postalCode?: Maybe<Scalars['String']['output']>;
+  /** Name of the state, for example, Colorado. */
+  state?: Maybe<Scalars['String']['output']>;
+};
+
+
+export type OrderAddressMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** A connection to a list of items. */
@@ -1919,7 +1690,7 @@ export type OrderConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<Order>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -1937,14 +1708,14 @@ export type OrderEdge = {
  *
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
-export type OrderLineItem = {
+export type OrderLineItem = Node & {
   __typename?: 'OrderLineItem';
   /** Retrieves a paginated list of discount applications for a specific line item. */
   discountApplications: DiscountApplicationConnection;
   /** The unique identifier of the line item */
   id: Scalars['ID']['output'];
-  /** The metadata associated with the order line item. This can include additional information such as custom attributes or tags. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Gets the metadata associated with the order line item. */
+  metadata: Array<MetadataItem>;
   /**
    * This retrieves the product associated with a cart line item. If the product no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
    * In such cases, you can still use other properties like `productName` and `productSlug` to display information about the product.
@@ -1958,7 +1729,7 @@ export type OrderLineItem = {
   productName: Scalars['String']['output'];
   /** Retrieves the slug of the product associated with a order line item. This is useful for generating URLs or displaying product information. */
   productSlug: Scalars['String']['output'];
-  /** Retrieves the quantity of the order line item. */
+  /** Gets the quantity of the order line item. */
   quantity: Scalars['Int']['output'];
   /** Retrieves the SKU (Stock Keeping Unit) of the variant associated with a order line item. The SKU is a unique identifier for the variant, often used for inventory management. */
   sku: Scalars['String']['output'];
@@ -1970,9 +1741,9 @@ export type OrderLineItem = {
   taxRate?: Maybe<TaxRate>;
   /** Gets the taxed price of the `LineItem`. This may be null if the `LineItem` does not yet have a taxed price. */
   taxedPrice?: Maybe<TaxedPrice>;
-  /** Retrieves the total amount for the order line item. */
+  /** The total amount for the order line item. */
   total: Money;
-  /** Retrieves the unit price of the order line item. */
+  /** Gets the unit price of the order line item. */
   unitPrice: UnitPrice;
   /**
    * This retrieves the variant associated with a cart line item. If the variant no longer exists—such as if it has been removed from the channel or deleted entirely—this will return `null`.
@@ -2000,6 +1771,16 @@ export type OrderLineItemDiscountApplicationsArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
+/**
+ * Represents a line item in a order, which includes details about the product, variant, and any associated discounts.
+ *
+ * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
+ */
+export type OrderLineItemMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 /** A connection to a list of items. */
 export type OrderLineItemConnection = {
   __typename?: 'OrderLineItemConnection';
@@ -2008,7 +1789,7 @@ export type OrderLineItemConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<OrderLineItem>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -2022,13 +1803,13 @@ export type OrderLineItemEdge = {
 };
 
 /** Represents a shipping line applied to an order. */
-export type OrderShippingLine = {
+export type OrderShippingLine = Node & {
   __typename?: 'OrderShippingLine';
   /** The unique identifier of the order shipping line. */
   id: Scalars['ID']['output'];
   /** The shipping method associated with this shipping line. */
   shippingMethod: LineShippingMethod;
-  /** The subtotal for the shipping line before discounts and tax. */
+  /** The total amount for the shipping line before discounts and tax. */
   subtotal: Money;
   /** The tax behavior applied when calculating this shipping line. */
   taxBehavior: TaxBehavior;
@@ -2040,13 +1821,9 @@ export type OrderShippingLine = {
   total: Money;
 };
 
-/** The set of valid sort keys for the Orders query. */
 export enum OrderSortKeys {
-  /** Sorts by the date and time the order was created. */
   CreatedAt = 'CREATED_AT',
-  /** Sort by customer `ID`. */
   Id = 'ID',
-  /** Sorts by the order number. */
   OrderNumber = 'ORDER_NUMBER'
 }
 
@@ -2057,11 +1834,24 @@ export enum OrderState {
   Open = 'OPEN'
 }
 
+/** A cursor that points to a specific page. */
+export type PageCursor = {
+  __typename?: 'PageCursor';
+  /** The cursor. */
+  cursor: Scalars['String']['output'];
+  /** The page number. */
+  page: Scalars['Int']['output'];
+};
+
 /** Information about pagination in a connection. */
-export type PageInfoV2 = {
-  __typename?: 'PageInfoV2';
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  /** A list of cursors to continue paginating backwards. */
+  backwardCursors: Array<PageCursor>;
   /** When paginating forwards, the cursor to continue. */
   endCursor?: Maybe<Scalars['String']['output']>;
+  /** A list of cursors to continue paginating forwards. */
+  forwardCursors: Array<PageCursor>;
   /** Indicates whether more edges exist following the set defined by the clients arguments. */
   hasNextPage: Scalars['Boolean']['output'];
   /** Indicates whether more edges exist prior the set defined by the clients arguments. */
@@ -2070,37 +1860,37 @@ export type PageInfoV2 = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
-export type PaymentDto = {
-  __typename?: 'PaymentDto';
-  id: TypeIdDecoded;
+export type Payment = Node & {
+  __typename?: 'Payment';
+  /** The unique identifier for the payment. */
+  id: Scalars['ID']['output'];
+  /** The intended amount for the payment. */
   intendedAmount: Money;
-  orderId: TypeIdDecoded;
+  /** The paid amount for the payment. */
   paidAmount: Money;
-  paymentGatewayId: TypeIdDecoded;
-  paymentMethod: PaymentMethod;
-  pspReference: Scalars['String']['output'];
+  /** The refunded amount for the payment. */
   refundedAmount: Money;
 };
 
 /** A connection to a list of items. */
-export type PaymentDtoConnection = {
-  __typename?: 'PaymentDtoConnection';
+export type PaymentConnection = {
+  __typename?: 'PaymentConnection';
   /** A list of edges. */
-  edges?: Maybe<Array<PaymentDtoEdge>>;
+  edges?: Maybe<Array<PaymentEdge>>;
   /** A flattened list of the nodes */
-  nodes?: Maybe<Array<PaymentDto>>;
+  nodes?: Maybe<Array<Payment>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
 
-export type PaymentDtoEdge = {
-  __typename?: 'PaymentDtoEdge';
+export type PaymentEdge = {
+  __typename?: 'PaymentEdge';
   /** A cursor for use in pagination. */
   cursor: Scalars['String']['output'];
   /** The item at the end of the edge. */
-  node: PaymentDto;
+  node: Payment;
 };
 
 export type PaymentGateway = {
@@ -2110,7 +1900,6 @@ export type PaymentGateway = {
   name: Scalars['String']['output'];
 };
 
-/** This exception is thrown when the payment gateway cannot be used with the cart due to channel mismatch. */
 export type PaymentGatewayChannelMismatchError = UserError & {
   __typename?: 'PaymentGatewayChannelMismatchError';
   message: Scalars['String']['output'];
@@ -2124,7 +1913,7 @@ export type PaymentGatewayConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<PaymentGateway>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -2137,26 +1926,19 @@ export type PaymentGatewayEdge = {
   node: PaymentGateway;
 };
 
-/** This exception is thrown when a payment gateway is not found. */
 export type PaymentGatewayNotFoundError = UserError & {
   __typename?: 'PaymentGatewayNotFoundError';
   message: Scalars['String']['output'];
 };
 
-/** This exception is thrown when initializing the payment session fails at the provider. */
 export type PaymentGatewaySessionInitializeFailedError = UserError & {
   __typename?: 'PaymentGatewaySessionInitializeFailedError';
   message: Scalars['String']['output'];
 };
 
-export type PaymentMethod = {
-  __typename?: 'PaymentMethod';
-  copy?: Maybe<ValueObject>;
-  /** Name of the Payment Method. */
-  name: Scalars['String']['output'];
-};
-
 export type PaymentSession = {
+  /** The unique identifier of the payment session. */
+  id: Scalars['ID']['output'];
   /** The payment gateway associated with the payment session. */
   paymentGateway: PaymentGateway;
 };
@@ -2182,7 +1964,7 @@ export type PostalCodeInfo = {
   regex: Scalars['String']['output'];
 };
 
-export type Price = {
+export type Price = Node & {
   __typename?: 'Price';
   /** The discounted price, if applicable. This is the price after any discounts have been applied. */
   discountedPrice?: Maybe<DiscountedPrice>;
@@ -2193,107 +1975,50 @@ export type Price = {
   /** The Date and Time when the price becomes valid. */
   validFrom?: Maybe<Scalars['DateTime']['output']>;
   /** The Date and Time when the price becomes invalid. */
-  validTo?: Maybe<Scalars['DateTime']['output']>;
+  validUntil?: Maybe<Scalars['DateTime']['output']>;
   /** The value of the original price. This does not contains discounts. */
   value: Money;
 };
 
 /**
  * Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
  * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
  */
 export type Product = Node & {
   __typename?: 'Product';
-  /**
-   * A list of attributes associated with the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** A list of attributes associated with the product. */
   attributeAssignments: Array<AttributeAssignment>;
-  /**
-   * A list of categories associated with the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** A list of categories associated with the product. */
   categories: CategoryConnection;
-  /**
-   * A list of collections associated with the product.
-   *
-   *
-   * **Returns:**
-   */
-  collections: CollectionsConnection;
-  /**
-   * The rich description of the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** A list of collections associated with the product. */
+  collections: CollectionConnection;
+  /** The description of the product. */
   description?: Maybe<Scalars['String']['output']>;
   /** Gets the hero variant for the product, the hero variant is the first variant of the product, or the specific variant chosen for the channel */
   heroVariant?: Maybe<ProductVariant>;
-  /**
-   * The unique identifier of the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** The unique identifier of the product. */
   id: Scalars['ID']['output'];
-  /**
-   * The metadata associated with the product.
-   *
-   *
-   * **Returns:**
-   */
-  metadata: Array<KeyValuePairOfStringAndString>;
-  /**
-   * The name of the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** Custom metadata key/value pairs for the product. */
+  metadata: Array<MetadataItem>;
+  /** The name of the product. */
   name: Scalars['String']['output'];
-  /**
-   * The price range of the product, which includes the minimum and maximum prices across all variants.
-   *
-   *
-   * **Returns:**
-   */
+  /** The price range of the product, which includes the minimum and maximum prices across all variants. */
   priceRange?: Maybe<ProductPriceRange>;
-  /**
-   * The slug of the product, which is a URL-friendly identifier.
-   *
-   *
-   * **Returns:**
-   */
+  /** The slug of the product, which is a URL-friendly identifier. */
   slug: Scalars['String']['output'];
-  /**
-   * The tags associated with the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** The tags associated with the product. */
   tags: Array<Scalars['String']['output']>;
   /** The variants of the product. */
   variants: ProductVariantConnection;
   /** The number of variants that are associated with the product and published in the current channel. */
   variantsCount: Scalars['Long']['output'];
-  /**
-   * The vendor of the product.
-   *
-   *
-   * **Returns:**
-   */
+  /** The vendor of the product. */
   vendor?: Maybe<Scalars['String']['output']>;
 };
 
 
 /**
  * Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
  * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
  */
 export type ProductCategoriesArgs = {
@@ -2306,7 +2031,6 @@ export type ProductCategoriesArgs = {
 
 /**
  * Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
  * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
  */
 export type ProductCollectionsArgs = {
@@ -2319,7 +2043,15 @@ export type ProductCollectionsArgs = {
 
 /**
  * Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
- *
+ * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
+ */
+export type ProductMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+
+/**
+ * Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
  * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
  */
 export type ProductVariantsArgs = {
@@ -2334,20 +2066,11 @@ export enum ProductAttributeType {
   Text = 'TEXT'
 }
 
-/** The set of valid sort keys for the products inside a category. */
 export enum ProductCategorySortKeys {
-  /** Sort by product identifier. */
   Id = 'ID',
-  /** Sorts by the manual sort order of the product in the category. */
   Manual = 'MANUAL',
-  /** Sort by product name. */
   Name = 'NAME',
-  /**
-   * Sorts by product variant prices, if ASC is specified, it will sort by the lowest price of the variants.
-   * If DESC is specified, it will sort by the highest price of the variants.
-   */
   Price = 'PRICE',
-  /** Sort by the vendor value. */
   Vendor = 'VENDOR'
 }
 
@@ -2362,12 +2085,7 @@ export enum ProductCollectionSortKeys {
 /** Represents a discounted price for a product variant. */
 export type ProductDiscount = Node & {
   __typename?: 'ProductDiscount';
-  /**
-   * Gets the ID of the product discount.
-   *
-   *
-   * **Returns:**
-   */
+  /** Gets the ID of the product discount. */
   id: Scalars['ID']['output'];
   /** The name of the product discount. */
   name: Scalars['String']['output'];
@@ -2397,38 +2115,20 @@ export type ProductDiscountValue = ProductDiscountAbsoluteValue | ProductDiscoun
 
 export type ProductPriceRange = {
   __typename?: 'ProductPriceRange';
-  /**
-   * Gets the maximum price of the product in the specified currency.
-   *
-   *
-   * **Returns:**
-   */
+  /** Gets the maximum price of the product in the specified currency. */
   maxPrice: Price;
-  /**
-   * Gets the minimum price of the product in the specified currency.
-   *
-   *
-   * **Returns:**
-   */
+  /** Gets the minimum price of the product in the specified currency. */
   minPrice: Price;
 };
 
-/** The set of valid sort keys for the Products query. */
 export enum ProductSortKeys {
-  /** Sort by product identifier. */
   Id = 'ID',
-  /** Sort by product name. */
   Name = 'NAME',
-  /**
-   * Sorts by product variant prices, if ASC is specified, it will sort by the lowest price of the variants.
-   * If DESC is specified, it will sort by the highest price of the variants.
-   */
   Price = 'PRICE',
-  /** Sort by the vendor value. */
   Vendor = 'VENDOR'
 }
 
-export type ProductVariant = {
+export type ProductVariant = Node & {
   __typename?: 'ProductVariant';
   /** Returns the availability status of the variant, including sale eligibility and stock details. */
   availability?: Maybe<ProductVariantAvailability>;
@@ -2440,8 +2140,8 @@ export type ProductVariant = {
   image?: Maybe<Media>;
   /** A list of media associated with the variant. */
   media: MediaConnection;
-  /** The metadata associated with the variant. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Custom metadata key/value pairs for the product variant. */
+  metadata: Array<MetadataItem>;
   /** The name of the variant. */
   name: Scalars['String']['output'];
   /** Gets the scoped price for the variant, the scoped price is the price for the current channel and currency. */
@@ -2462,6 +2162,11 @@ export type ProductVariantMediaArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
 };
 
+
+export type ProductVariantMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type ProductVariantAvailability = {
   __typename?: 'ProductVariantAvailability';
   /** Indicates whether the variant is available for purchase in the current channel. If `Channel`, isn't specified, it will throw an exception. */
@@ -2480,7 +2185,7 @@ export type ProductVariantConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<ProductVariant>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -2493,7 +2198,6 @@ export type ProductVariantEdge = {
   node: ProductVariant;
 };
 
-/** This exception is thrown when a product variant with the specified ID cannot be found. */
 export type ProductVariantNotFoundError = UserError & {
   __typename?: 'ProductVariantNotFoundError';
   message: Scalars['String']['output'];
@@ -2510,7 +2214,7 @@ export type ProductsConnection = {
   /** A flattened list of the nodes */
   nodes?: Maybe<Array<Product>>;
   /** Information to aid in pagination. */
-  pageInfo: PageInfoV2;
+  pageInfo: PageInfo;
   /** Identifies the total count of items in the connection. */
   totalCount: Scalars['Int']['output'];
 };
@@ -2523,67 +2227,38 @@ export type ProductsEdge = {
   node: Product;
 };
 
-/** The customer queries. */
 export type Query = {
   __typename?: 'Query';
-  /**
-   * Retrieves a cart by its ID.
-   *
-   *
-   * **Returns:**
-   */
+  /** Retrieves a cart by its ID. */
   cart?: Maybe<Cart>;
   /** Returns a list of categories. */
   categories: CategoryConnection;
-  /**
-   * Gets a single `Category` by its ID or slug.
-   *
-   *
-   * **Returns:**
-   */
+  /** Gets a single `Category` by its ID or slug. */
   category?: Maybe<Category>;
-  /**
-   * Gets a single `Collection` by its ID or slug.
-   *
-   *
-   * **Returns:**
-   */
-  collection?: Maybe<Collections>;
+  /** Gets a single `Collection` by its ID or slug. */
+  collection?: Maybe<Collection>;
   /** Returns a list of collections. */
-  collections: CollectionsConnection;
+  collections: CollectionConnection;
   /** Retrieves a list of all countries. */
   countries: Array<CountryInfo>;
-  /** The customer associated with the given access token given in the Authorization header. */
   customer?: Maybe<Customer>;
   node?: Maybe<Node>;
   /** Retrieves a single order by `ID`. */
   order?: Maybe<Order>;
   /** Retrieves a paginated list of payment gateways. */
   paymentGateways: PaymentGatewayConnection;
-  /**
-   * Gets a single `Product` by its ID or slug.
-   *
-   *
-   * **Returns:**
-   */
+  /** Gets a single `Product` by its ID or slug. */
   product?: Maybe<Product>;
-  /**
-   * Returns a list of products.
-   *
-   *
-   * **Returns:**
-   */
+  /** Returns a list of products. */
   products: ProductsConnection;
 };
 
 
-/** The customer queries. */
 export type QueryCartArgs = {
   id: Scalars['ID']['input'];
 };
 
 
-/** The customer queries. */
 export type QueryCategoriesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2596,7 +2271,6 @@ export type QueryCategoriesArgs = {
 };
 
 
-/** The customer queries. */
 export type QueryCategoryArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   priceChannelId?: InputMaybe<Scalars['ID']['input']>;
@@ -2607,7 +2281,6 @@ export type QueryCategoryArgs = {
 };
 
 
-/** The customer queries. */
 export type QueryCollectionArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   priceChannelId?: InputMaybe<Scalars['ID']['input']>;
@@ -2618,7 +2291,6 @@ export type QueryCollectionArgs = {
 };
 
 
-/** The customer queries. */
 export type QueryCollectionsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2627,19 +2299,16 @@ export type QueryCollectionsArgs = {
 };
 
 
-/** The customer queries. */
 export type QueryNodeArgs = {
   id: Scalars['ID']['input'];
 };
 
 
-/** The customer queries. */
 export type QueryOrderArgs = {
   id: Scalars['ID']['input'];
 };
 
 
-/** The customer queries. */
 export type QueryPaymentGatewaysArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2649,7 +2318,6 @@ export type QueryPaymentGatewaysArgs = {
 };
 
 
-/** The customer queries. */
 export type QueryProductArgs = {
   id?: InputMaybe<Scalars['ID']['input']>;
   priceChannelId?: InputMaybe<Scalars['ID']['input']>;
@@ -2660,7 +2328,6 @@ export type QueryProductArgs = {
 };
 
 
-/** The customer queries. */
 export type QueryProductsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   before?: InputMaybe<Scalars['String']['input']>;
@@ -2677,12 +2344,7 @@ export type QueryProductsArgs = {
 
 export type RelativeShippingMethodRate = CartAvailableShippingMethodRate & {
   __typename?: 'RelativeShippingMethodRate';
-  /**
-   * The unique identifier for the shipping method rate.
-   *
-   *
-   * **Returns:**
-   */
+  /** The unique identifier for the shipping method rate. */
   id: Scalars['ID']['output'];
   /** The rate of the shipping method rate, expressed as a percentage of the total cost. */
   rate: Scalars['Float']['output'];
@@ -2695,11 +2357,8 @@ export type RelativeValue = {
 };
 
 export enum ReplicationStrategy {
-  /** Replicates the cart by approximating the requested quantities as closely as possible. For example, if a line item specifies a quantity of 5 but only 4 are available, 4 will be added to the replicated cart. */
   PartialReplication = 'PARTIAL_REPLICATION',
-  /** Replicates the cart while excluding any line items that cannot be fully replicated. For example, if a line item specifies a quantity of 5 but only 4 are available, the item will be removed from the replicated cart. */
   SkipUnavailable = 'SKIP_UNAVAILABLE',
-  /** Generates an error if the cart cannot be replicated exactly as specified. */
   Strict = 'STRICT'
 }
 
@@ -2723,17 +2382,32 @@ export enum ShipmentState {
   Shipped = 'SHIPPED'
 }
 
-/** This exception is thrown when a shipping method with the specified ID cannot be found. */
+export type ShippingMethod = Node & {
+  __typename?: 'ShippingMethod';
+  /** The description of the shipping method. */
+  description?: Maybe<Scalars['String']['output']>;
+  /** The unique identifier of the shipping method. */
+  id: Scalars['ID']['output'];
+  /** Gets the metadata associated with the shipping method. */
+  metadata: Array<MetadataItem>;
+  /** The name of the shipping method. */
+  name: Scalars['String']['output'];
+  /** The sku of the shipping method. */
+  sku?: Maybe<Scalars['String']['output']>;
+};
+
+
+export type ShippingMethodMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export type ShippingMethodNotFoundError = UserError & {
   __typename?: 'ShippingMethodNotFoundError';
   message: Scalars['String']['output'];
 };
 
-/** Represents the direction of sorting. */
 export enum SortDirection {
-  /** Sorts in ascending order. */
   Asc = 'ASC',
-  /** Sorts in descending order. */
   Desc = 'DESC'
 }
 
@@ -2777,16 +2451,19 @@ export type SwatchAttributeValue = AttributeValue & {
   id: Scalars['ID']['output'];
   /** The media associated the swatch. */
   media?: Maybe<Media>;
-  /** The metadata associated with the attribute value. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Custom metadata key/value pairs for the attribute value. */
+  metadata: Array<MetadataItem>;
   /** The value of the attribute. */
   value: Scalars['String']['output'];
 };
 
+
+export type SwatchAttributeValueMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
 export enum TaxBehavior {
-  /** Exclusive tax is added on top of the price. For example, a product has the price defined as 5.00 USD. The tax charged on this product could be 10% and would result in a final price of 5.50 USD. (Tax rates might differ—this is only an explanatory example.) */
   Exclusive = 'EXCLUSIVE',
-  /** Inclusive tax is already included in the price. For example, a product has the price defined as 5.00 USD. The final price the customer pays is 5.00 USD. */
   Inclusive = 'INCLUSIVE'
 }
 
@@ -2804,9 +2481,10 @@ export type TaxRate = {
   __typename?: 'TaxRate';
   /** Gets the tax composition of the tax rate, which includes details about how the tax is structured. */
   composition: TaxRateComposition;
+  /** The tax portions of the tax rate, which detail how the tax is divided among different components. */
+  portions: Array<TaxPortion>;
   /** Gets the tax rate as a decimal value. */
   rate: Scalars['Decimal']['output'];
-  /** The tax portions of the tax rate, which detail how the tax is divided among different components. */
   taxPortions: Array<TaxPortion>;
 };
 
@@ -2815,14 +2493,14 @@ export enum TaxRateComposition {
   Compound = 'COMPOUND'
 }
 
-/** The monetary value in the smallest unit of the currency. */
+/** This type represents the taxed price of an item. If it is set to null, it means that the item has not had its taxed price calculated yet. */
 export type TaxedPrice = {
   __typename?: 'TaxedPrice';
   /** The total price including tax. */
   gross: Money;
   /** The total price excluding tax. */
   net: Money;
-  /** The tax amount */
+  /** The tax amount. */
   tax: Money;
 };
 
@@ -2830,40 +2508,15 @@ export type TextAttributeValue = AttributeValue & {
   __typename?: 'TextAttributeValue';
   /** The unique identifier of the attribute value. */
   id: Scalars['ID']['output'];
-  /** The metadata associated with the attribute value. */
-  metadata: Array<KeyValuePairOfStringAndString>;
+  /** Custom metadata key/value pairs for the attribute value. */
+  metadata: Array<MetadataItem>;
   /** The value of the attribute. */
   value: Scalars['String']['output'];
 };
 
-export type TypeId = {
-  __typename?: 'TypeId';
-  decode: TypeIdDecoded;
-  hasType: Scalars['Boolean']['output'];
-};
 
-
-export type TypeIdHasTypeArgs = {
-  type: Scalars['String']['input'];
-};
-
-export type TypeIdDecoded = {
-  __typename?: 'TypeIdDecoded';
-  encode: TypeId;
-  hasType: Scalars['Boolean']['output'];
-  id: Scalars['UUID']['output'];
-  suffix: Scalars['String']['output'];
-  type: Scalars['String']['output'];
-};
-
-
-export type TypeIdDecodedHasTypeArgs = {
-  type: Scalars['String']['input'];
-};
-
-export type TypeIdDecodedInput = {
-  id: Scalars['UUID']['input'];
-  type: Scalars['String']['input'];
+export type TextAttributeValueMetadataArgs = {
+  keys?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /**
@@ -2875,18 +2528,12 @@ export type UnitPrice = {
   __typename?: 'UnitPrice';
   /** The three-letter currency code that represents a world currency used in a store. Currency codes include standard ISO 4217 codes, legacy codes, and non-standard codes. For example, USD. */
   discountedPrice?: Maybe<DiscountedPrice>;
-  /** Retrieves the tax behavior of the unit price. */
+  /** Gets the tax behavior of the unit price. */
   taxBehavior: TaxBehavior;
-  /**
-   * The monetary value in the smallest unit of the currency.
-   *
-   *
-   * **Returns:**
-   */
+  /** The monetary value in the smallest unit of the currency. */
   value: Money;
 };
 
-/** This exception is thrown when line item updates exceed available stock. */
 export type UpdateCartLineItemsInsufficientStockError = UserError & {
   __typename?: 'UpdateCartLineItemsInsufficientStockError';
   message: Scalars['String']['output'];
@@ -2894,11 +2541,6 @@ export type UpdateCartLineItemsInsufficientStockError = UserError & {
 
 export type UserError = {
   message: Scalars['String']['output'];
-};
-
-export type ValueObject = {
-  __typename?: 'ValueObject';
-  copy?: Maybe<ValueObject>;
 };
 
 export type ZoneInfo = {
@@ -2988,7 +2630,7 @@ export type CartDetailsQueryVariables = Exact<{
 export type CartDetailsQuery = { __typename?: 'Query', cart?: { __typename?: 'Cart', id: string, customerId?: string | null, lineItemsQuantity: any, shippingAddress?: { __typename?: 'CartAddress', countryCode?: string | null } | null, lineItems: { __typename?: 'CartLineItemConnection', edges?: Array<{ __typename?: 'CartLineItemEdge', node: (
           { __typename?: 'CartLineItem', id: string, discountApplications: { __typename?: 'DiscountApplicationConnection', edges?: Array<{ __typename?: 'DiscountApplicationEdge', node: { __typename?: 'DiscountApplication', discountedAmount: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } }> | null } }
           & { ' $fragmentRefs'?: { 'CartLineItemFragment': CartLineItemFragment } }
-        ) }> | null }, discountCodes: Array<{ __typename?: 'DiscountCodeDto', code: string }>, subtotal: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number }, taxedPrice?: { __typename?: 'TaxedPrice', tax: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } | null, total: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } | null };
+        ) }> | null }, discountCodes: Array<{ __typename?: 'DiscountCode', code: string }>, subtotal: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number }, taxedPrice?: { __typename?: 'TaxedPrice', tax: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } | null, total: { __typename?: 'Money', centAmount: any, currencyCode: string, fractionDigits: number } } | null };
 
 export type CartCustomerDetailsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3119,7 +2761,7 @@ export type ProductsGridQueryVariables = Exact<{
 export type ProductsGridQuery = { __typename?: 'Query', products: { __typename?: 'ProductsConnection', edges?: Array<{ __typename?: 'ProductsEdge', node: (
         { __typename?: 'Product', id: string }
         & { ' $fragmentRefs'?: { 'ProductGridTileFragment': ProductGridTileFragment } }
-      ) }> | null, pageInfo: { __typename?: 'PageInfoV2', endCursor?: string | null, hasNextPage: boolean } } };
+      ) }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean } } };
 
 export type ProductDetailQueryVariables = Exact<{
   slug?: InputMaybe<Scalars['String']['input']>;

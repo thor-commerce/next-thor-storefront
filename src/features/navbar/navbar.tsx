@@ -1,10 +1,8 @@
 import Navigation from "@/components/navigation/navigation";
-import s from "./navbar.module.css";
-import NavbarCart from "./navbar-cart/navbar-cart";
 import { Suspense } from "react";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import NavbarCart from "./navbar-cart/navbar-cart";
 import NavbarProfile from "./navbar-profile/navbar-profile";
+import s from "./navbar.module.css";
 
 export default async function Navbar() {
   return (

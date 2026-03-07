@@ -6,7 +6,8 @@
     ],
     "BaseAddress": [
       "CartAddress",
-      "CustomerAddress"
+      "CustomerAddress",
+      "OrderAddress"
     ],
     "CartAvailableShippingMethodRate": [
       "AbsoluteShippingMethodRate",
@@ -27,7 +28,8 @@
       "CreateCartChannelNotFoundError",
       "CreateCartFailedNotAllLineItemsCouldBeAddedError",
       "CreateCartPriceChannelNotFoundError",
-      "CreateCartShippingAddressDoesNotHaveShippingZonesError"
+      "CreateCartShippingAddressDoesNotHaveShippingZonesError",
+      "CreateCartStoreNotFoundError"
     ],
     "CartDiscountCodeAddError": [
       "CartAddDiscountCodeNotFoundError",
@@ -118,13 +120,24 @@
       "RelativeValue"
     ],
     "Node": [
+      "Attribute",
       "Cart",
+      "CartLineItem",
+      "CartShippingLine",
+      "Category",
+      "Collection",
       "Customer",
-      "CustomerAddress",
       "CustomerGroup",
+      "Media",
       "Order",
+      "OrderLineItem",
+      "OrderShippingLine",
+      "Payment",
+      "Price",
       "Product",
-      "ProductDiscount"
+      "ProductDiscount",
+      "ProductVariant",
+      "ShippingMethod"
     ],
     "PaymentGateway": [
       "ManualPaymentGateway",
@@ -163,6 +176,7 @@
       "CreateCartFailedNotAllLineItemsCouldBeAddedError",
       "CreateCartPriceChannelNotFoundError",
       "CreateCartShippingAddressDoesNotHaveShippingZonesError",
+      "CreateCartStoreNotFoundError",
       "CustomerEmailAlreadyConfirmedError",
       "CustomerInvalidActivationTokenError",
       "CustomerInvalidPasswordError",

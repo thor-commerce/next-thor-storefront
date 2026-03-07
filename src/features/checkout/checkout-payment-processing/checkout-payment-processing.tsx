@@ -2,10 +2,10 @@
 import { CheckoutCartDetailsQuery } from "@/__generated__/thor/graphql";
 import Spinner from "@/components/spinner/spinner";
 import { loadStripe } from "@stripe/stripe-js";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
+import { placeOrder } from "../actions";
 import useCheckout from "../hooks/use-checkout";
 import s from "./checkout-payment-processing.module.css";
-import { placeOrder } from "../actions";
 
 interface Props {
   cart?: CheckoutCartDetailsQuery["cart"];
@@ -37,7 +37,7 @@ export default function CheckoutPaymentProcessing({
     throw new Error("No publishable key found");
   }
 
-  const onPaymentComplete = async () => {
+  const onPaymentComplete = useCallback(async () => {
     const stripe = await loadStripe(publishableKey);
     if (!stripe) {
       throw new Error("Stripe failed to load");
@@ -65,6 +65,7 @@ export default function CheckoutPaymentProcessing({
           return;
         }
       } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         lastError = error instanceof Error ? error : new Error(String(error));
 
         if (attempt < maxRetries - 1) {
@@ -76,11 +77,11 @@ export default function CheckoutPaymentProcessing({
 
     setErrorMessage("Error processing payment");
     removePaymentProcessing();
-  };
+  }, [publishableKey, setErrorMessage, removePaymentProcessing, paymentIntentClientSecret, cart.id]);
 
   useEffect(() => {
     void onPaymentComplete();
-  }, []);
+  }, [onPaymentComplete]);
 
   return (
     <div className={s.root}>

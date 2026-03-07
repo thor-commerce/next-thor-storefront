@@ -312,22 +312,22 @@ export type CategoryEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CollectionsKeySpecifier = ('id' | 'name' | 'products' | 'slug' | CollectionsKeySpecifier)[];
-export type CollectionsFieldPolicy = {
+export type CollectionKeySpecifier = ('id' | 'name' | 'products' | 'slug' | CollectionKeySpecifier)[];
+export type CollectionFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	products?: FieldPolicy<any> | FieldReadFunction<any>,
 	slug?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CollectionsConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | CollectionsConnectionKeySpecifier)[];
-export type CollectionsConnectionFieldPolicy = {
+export type CollectionConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | CollectionConnectionKeySpecifier)[];
+export type CollectionConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>,
 	totalCount?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type CollectionsEdgeKeySpecifier = ('cursor' | 'node' | CollectionsEdgeKeySpecifier)[];
-export type CollectionsEdgeFieldPolicy = {
+export type CollectionEdgeKeySpecifier = ('cursor' | 'node' | CollectionEdgeKeySpecifier)[];
+export type CollectionEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -376,6 +376,10 @@ export type CreateCartPriceChannelNotFoundErrorFieldPolicy = {
 };
 export type CreateCartShippingAddressDoesNotHaveShippingZonesErrorKeySpecifier = ('message' | CreateCartShippingAddressDoesNotHaveShippingZonesErrorKeySpecifier)[];
 export type CreateCartShippingAddressDoesNotHaveShippingZonesErrorFieldPolicy = {
+	message?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type CreateCartStoreNotFoundErrorKeySpecifier = ('message' | CreateCartStoreNotFoundErrorKeySpecifier)[];
+export type CreateCartStoreNotFoundErrorFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type CustomerKeySpecifier = ('addresses' | 'customerGroups' | 'defaultBillingAddress' | 'defaultShippingAddress' | 'email' | 'firstName' | 'id' | 'lastName' | 'metadata' | 'orders' | 'ordersCount' | CustomerKeySpecifier)[];
@@ -533,10 +537,10 @@ export type DiscountApplicationEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type DiscountCodeDtoKeySpecifier = ('cartId' | 'code' | DiscountCodeDtoKeySpecifier)[];
-export type DiscountCodeDtoFieldPolicy = {
-	cartId?: FieldPolicy<any> | FieldReadFunction<any>,
-	code?: FieldPolicy<any> | FieldReadFunction<any>
+export type DiscountCodeKeySpecifier = ('code' | 'error' | DiscountCodeKeySpecifier)[];
+export type DiscountCodeFieldPolicy = {
+	code?: FieldPolicy<any> | FieldReadFunction<any>,
+	error?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type DiscountedPriceKeySpecifier = ('discount' | 'value' | DiscountedPriceKeySpecifier)[];
 export type DiscountedPriceFieldPolicy = {
@@ -570,11 +574,6 @@ export type InvalidTokenErrorKeySpecifier = ('message' | InvalidTokenErrorKeySpe
 export type InvalidTokenErrorFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type KeyValuePairOfStringAndStringKeySpecifier = ('key' | 'value' | KeyValuePairOfStringAndStringKeySpecifier)[];
-export type KeyValuePairOfStringAndStringFieldPolicy = {
-	key?: FieldPolicy<any> | FieldReadFunction<any>,
-	value?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type LineShippingMethodKeySpecifier = ('id' | 'metadata' | 'name' | 'sku' | LineShippingMethodKeySpecifier)[];
 export type LineShippingMethodFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -607,6 +606,11 @@ export type MediaEdgeKeySpecifier = ('cursor' | 'node' | MediaEdgeKeySpecifier)[
 export type MediaEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type MetadataItemKeySpecifier = ('key' | 'value' | MetadataItemKeySpecifier)[];
+export type MetadataItemFieldPolicy = {
+	key?: FieldPolicy<any> | FieldReadFunction<any>,
+	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type MoneyKeySpecifier = ('centAmount' | 'currencyCode' | 'fractionDigits' | MoneyKeySpecifier)[];
 export type MoneyFieldPolicy = {
@@ -666,6 +670,23 @@ export type OrderFieldPolicy = {
 	taxedPrice?: FieldPolicy<any> | FieldReadFunction<any>,
 	total?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type OrderAddressKeySpecifier = ('address1' | 'address2' | 'city' | 'company' | 'countryCode' | 'email' | 'firstName' | 'formatted' | 'id' | 'lastName' | 'metadata' | 'phone' | 'postalCode' | 'state' | OrderAddressKeySpecifier)[];
+export type OrderAddressFieldPolicy = {
+	address1?: FieldPolicy<any> | FieldReadFunction<any>,
+	address2?: FieldPolicy<any> | FieldReadFunction<any>,
+	city?: FieldPolicy<any> | FieldReadFunction<any>,
+	company?: FieldPolicy<any> | FieldReadFunction<any>,
+	countryCode?: FieldPolicy<any> | FieldReadFunction<any>,
+	email?: FieldPolicy<any> | FieldReadFunction<any>,
+	firstName?: FieldPolicy<any> | FieldReadFunction<any>,
+	formatted?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	lastName?: FieldPolicy<any> | FieldReadFunction<any>,
+	metadata?: FieldPolicy<any> | FieldReadFunction<any>,
+	phone?: FieldPolicy<any> | FieldReadFunction<any>,
+	postalCode?: FieldPolicy<any> | FieldReadFunction<any>,
+	state?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type OrderConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | OrderConnectionKeySpecifier)[];
 export type OrderConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -721,33 +742,36 @@ export type OrderShippingLineFieldPolicy = {
 	taxedPrice?: FieldPolicy<any> | FieldReadFunction<any>,
 	total?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PageInfoV2KeySpecifier = ('endCursor' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoV2KeySpecifier)[];
-export type PageInfoV2FieldPolicy = {
+export type PageCursorKeySpecifier = ('cursor' | 'page' | PageCursorKeySpecifier)[];
+export type PageCursorFieldPolicy = {
+	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	page?: FieldPolicy<any> | FieldReadFunction<any>
+};
+export type PageInfoKeySpecifier = ('backwardCursors' | 'endCursor' | 'forwardCursors' | 'hasNextPage' | 'hasPreviousPage' | 'startCursor' | PageInfoKeySpecifier)[];
+export type PageInfoFieldPolicy = {
+	backwardCursors?: FieldPolicy<any> | FieldReadFunction<any>,
 	endCursor?: FieldPolicy<any> | FieldReadFunction<any>,
+	forwardCursors?: FieldPolicy<any> | FieldReadFunction<any>,
 	hasNextPage?: FieldPolicy<any> | FieldReadFunction<any>,
 	hasPreviousPage?: FieldPolicy<any> | FieldReadFunction<any>,
 	startCursor?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PaymentDtoKeySpecifier = ('id' | 'intendedAmount' | 'orderId' | 'paidAmount' | 'paymentGatewayId' | 'paymentMethod' | 'pspReference' | 'refundedAmount' | PaymentDtoKeySpecifier)[];
-export type PaymentDtoFieldPolicy = {
+export type PaymentKeySpecifier = ('id' | 'intendedAmount' | 'paidAmount' | 'refundedAmount' | PaymentKeySpecifier)[];
+export type PaymentFieldPolicy = {
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	intendedAmount?: FieldPolicy<any> | FieldReadFunction<any>,
-	orderId?: FieldPolicy<any> | FieldReadFunction<any>,
 	paidAmount?: FieldPolicy<any> | FieldReadFunction<any>,
-	paymentGatewayId?: FieldPolicy<any> | FieldReadFunction<any>,
-	paymentMethod?: FieldPolicy<any> | FieldReadFunction<any>,
-	pspReference?: FieldPolicy<any> | FieldReadFunction<any>,
 	refundedAmount?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PaymentDtoConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | PaymentDtoConnectionKeySpecifier)[];
-export type PaymentDtoConnectionFieldPolicy = {
+export type PaymentConnectionKeySpecifier = ('edges' | 'nodes' | 'pageInfo' | 'totalCount' | PaymentConnectionKeySpecifier)[];
+export type PaymentConnectionFieldPolicy = {
 	edges?: FieldPolicy<any> | FieldReadFunction<any>,
 	nodes?: FieldPolicy<any> | FieldReadFunction<any>,
 	pageInfo?: FieldPolicy<any> | FieldReadFunction<any>,
 	totalCount?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PaymentDtoEdgeKeySpecifier = ('cursor' | 'node' | PaymentDtoEdgeKeySpecifier)[];
-export type PaymentDtoEdgeFieldPolicy = {
+export type PaymentEdgeKeySpecifier = ('cursor' | 'node' | PaymentEdgeKeySpecifier)[];
+export type PaymentEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -780,13 +804,9 @@ export type PaymentGatewaySessionInitializeFailedErrorKeySpecifier = ('message' 
 export type PaymentGatewaySessionInitializeFailedErrorFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PaymentMethodKeySpecifier = ('copy' | 'name' | PaymentMethodKeySpecifier)[];
-export type PaymentMethodFieldPolicy = {
-	copy?: FieldPolicy<any> | FieldReadFunction<any>,
-	name?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type PaymentSessionKeySpecifier = ('paymentGateway' | PaymentSessionKeySpecifier)[];
+export type PaymentSessionKeySpecifier = ('id' | 'paymentGateway' | PaymentSessionKeySpecifier)[];
 export type PaymentSessionFieldPolicy = {
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	paymentGateway?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type PostalCodeInfoKeySpecifier = ('exampleList' | 'examples' | 'fieldName' | 'isRequired' | 'regex' | PostalCodeInfoKeySpecifier)[];
@@ -797,13 +817,13 @@ export type PostalCodeInfoFieldPolicy = {
 	isRequired?: FieldPolicy<any> | FieldReadFunction<any>,
 	regex?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type PriceKeySpecifier = ('discountedPrice' | 'id' | 'taxBehavior' | 'validFrom' | 'validTo' | 'value' | PriceKeySpecifier)[];
+export type PriceKeySpecifier = ('discountedPrice' | 'id' | 'taxBehavior' | 'validFrom' | 'validUntil' | 'value' | PriceKeySpecifier)[];
 export type PriceFieldPolicy = {
 	discountedPrice?: FieldPolicy<any> | FieldReadFunction<any>,
 	id?: FieldPolicy<any> | FieldReadFunction<any>,
 	taxBehavior?: FieldPolicy<any> | FieldReadFunction<any>,
 	validFrom?: FieldPolicy<any> | FieldReadFunction<any>,
-	validTo?: FieldPolicy<any> | FieldReadFunction<any>,
+	validUntil?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ProductKeySpecifier = ('attributeAssignments' | 'categories' | 'collections' | 'description' | 'heroVariant' | 'id' | 'metadata' | 'name' | 'priceRange' | 'slug' | 'tags' | 'variants' | 'variantsCount' | 'vendor' | ProductKeySpecifier)[];
@@ -925,6 +945,14 @@ export type SelectedAttributeFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
+export type ShippingMethodKeySpecifier = ('description' | 'id' | 'metadata' | 'name' | 'sku' | ShippingMethodKeySpecifier)[];
+export type ShippingMethodFieldPolicy = {
+	description?: FieldPolicy<any> | FieldReadFunction<any>,
+	id?: FieldPolicy<any> | FieldReadFunction<any>,
+	metadata?: FieldPolicy<any> | FieldReadFunction<any>,
+	name?: FieldPolicy<any> | FieldReadFunction<any>,
+	sku?: FieldPolicy<any> | FieldReadFunction<any>
+};
 export type ShippingMethodNotFoundErrorKeySpecifier = ('message' | ShippingMethodNotFoundErrorKeySpecifier)[];
 export type ShippingMethodNotFoundErrorFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>
@@ -960,9 +988,10 @@ export type TaxPortionFieldPolicy = {
 	name?: FieldPolicy<any> | FieldReadFunction<any>,
 	rate?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type TaxRateKeySpecifier = ('composition' | 'rate' | 'taxPortions' | TaxRateKeySpecifier)[];
+export type TaxRateKeySpecifier = ('composition' | 'portions' | 'rate' | 'taxPortions' | TaxRateKeySpecifier)[];
 export type TaxRateFieldPolicy = {
 	composition?: FieldPolicy<any> | FieldReadFunction<any>,
+	portions?: FieldPolicy<any> | FieldReadFunction<any>,
 	rate?: FieldPolicy<any> | FieldReadFunction<any>,
 	taxPortions?: FieldPolicy<any> | FieldReadFunction<any>
 };
@@ -978,19 +1007,6 @@ export type TextAttributeValueFieldPolicy = {
 	metadata?: FieldPolicy<any> | FieldReadFunction<any>,
 	value?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type TypeIdKeySpecifier = ('decode' | 'hasType' | TypeIdKeySpecifier)[];
-export type TypeIdFieldPolicy = {
-	decode?: FieldPolicy<any> | FieldReadFunction<any>,
-	hasType?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type TypeIdDecodedKeySpecifier = ('encode' | 'hasType' | 'id' | 'suffix' | 'type' | TypeIdDecodedKeySpecifier)[];
-export type TypeIdDecodedFieldPolicy = {
-	encode?: FieldPolicy<any> | FieldReadFunction<any>,
-	hasType?: FieldPolicy<any> | FieldReadFunction<any>,
-	id?: FieldPolicy<any> | FieldReadFunction<any>,
-	suffix?: FieldPolicy<any> | FieldReadFunction<any>,
-	type?: FieldPolicy<any> | FieldReadFunction<any>
-};
 export type UnitPriceKeySpecifier = ('discountedPrice' | 'taxBehavior' | 'value' | UnitPriceKeySpecifier)[];
 export type UnitPriceFieldPolicy = {
 	discountedPrice?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -1004,10 +1020,6 @@ export type UpdateCartLineItemsInsufficientStockErrorFieldPolicy = {
 export type UserErrorKeySpecifier = ('message' | UserErrorKeySpecifier)[];
 export type UserErrorFieldPolicy = {
 	message?: FieldPolicy<any> | FieldReadFunction<any>
-};
-export type ValueObjectKeySpecifier = ('copy' | ValueObjectKeySpecifier)[];
-export type ValueObjectFieldPolicy = {
-	copy?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type ZoneInfoKeySpecifier = ('code' | 'name' | 'postalCodeRegex' | ZoneInfoKeySpecifier)[];
 export type ZoneInfoFieldPolicy = {
@@ -1208,17 +1220,17 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | CategoryEdgeKeySpecifier | (() => undefined | CategoryEdgeKeySpecifier),
 		fields?: CategoryEdgeFieldPolicy,
 	},
-	Collections?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | CollectionsKeySpecifier | (() => undefined | CollectionsKeySpecifier),
-		fields?: CollectionsFieldPolicy,
+	Collection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CollectionKeySpecifier | (() => undefined | CollectionKeySpecifier),
+		fields?: CollectionFieldPolicy,
 	},
-	CollectionsConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | CollectionsConnectionKeySpecifier | (() => undefined | CollectionsConnectionKeySpecifier),
-		fields?: CollectionsConnectionFieldPolicy,
+	CollectionConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CollectionConnectionKeySpecifier | (() => undefined | CollectionConnectionKeySpecifier),
+		fields?: CollectionConnectionFieldPolicy,
 	},
-	CollectionsEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | CollectionsEdgeKeySpecifier | (() => undefined | CollectionsEdgeKeySpecifier),
-		fields?: CollectionsEdgeFieldPolicy,
+	CollectionEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CollectionEdgeKeySpecifier | (() => undefined | CollectionEdgeKeySpecifier),
+		fields?: CollectionEdgeFieldPolicy,
 	},
 	CountryInfo?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CountryInfoKeySpecifier | (() => undefined | CountryInfoKeySpecifier),
@@ -1263,6 +1275,10 @@ export type StrictTypedTypePolicies = {
 	CreateCartShippingAddressDoesNotHaveShippingZonesError?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CreateCartShippingAddressDoesNotHaveShippingZonesErrorKeySpecifier | (() => undefined | CreateCartShippingAddressDoesNotHaveShippingZonesErrorKeySpecifier),
 		fields?: CreateCartShippingAddressDoesNotHaveShippingZonesErrorFieldPolicy,
+	},
+	CreateCartStoreNotFoundError?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | CreateCartStoreNotFoundErrorKeySpecifier | (() => undefined | CreateCartStoreNotFoundErrorKeySpecifier),
+		fields?: CreateCartStoreNotFoundErrorFieldPolicy,
 	},
 	Customer?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | CustomerKeySpecifier | (() => undefined | CustomerKeySpecifier),
@@ -1368,9 +1384,9 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | DiscountApplicationEdgeKeySpecifier | (() => undefined | DiscountApplicationEdgeKeySpecifier),
 		fields?: DiscountApplicationEdgeFieldPolicy,
 	},
-	DiscountCodeDto?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | DiscountCodeDtoKeySpecifier | (() => undefined | DiscountCodeDtoKeySpecifier),
-		fields?: DiscountCodeDtoFieldPolicy,
+	DiscountCode?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | DiscountCodeKeySpecifier | (() => undefined | DiscountCodeKeySpecifier),
+		fields?: DiscountCodeFieldPolicy,
 	},
 	DiscountedPrice?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | DiscountedPriceKeySpecifier | (() => undefined | DiscountedPriceKeySpecifier),
@@ -1400,10 +1416,6 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | InvalidTokenErrorKeySpecifier | (() => undefined | InvalidTokenErrorKeySpecifier),
 		fields?: InvalidTokenErrorFieldPolicy,
 	},
-	KeyValuePairOfStringAndString?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | KeyValuePairOfStringAndStringKeySpecifier | (() => undefined | KeyValuePairOfStringAndStringKeySpecifier),
-		fields?: KeyValuePairOfStringAndStringFieldPolicy,
-	},
 	LineShippingMethod?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | LineShippingMethodKeySpecifier | (() => undefined | LineShippingMethodKeySpecifier),
 		fields?: LineShippingMethodFieldPolicy,
@@ -1424,6 +1436,10 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | MediaEdgeKeySpecifier | (() => undefined | MediaEdgeKeySpecifier),
 		fields?: MediaEdgeFieldPolicy,
 	},
+	MetadataItem?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | MetadataItemKeySpecifier | (() => undefined | MetadataItemKeySpecifier),
+		fields?: MetadataItemFieldPolicy,
+	},
 	Money?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | MoneyKeySpecifier | (() => undefined | MoneyKeySpecifier),
 		fields?: MoneyFieldPolicy,
@@ -1439,6 +1455,10 @@ export type StrictTypedTypePolicies = {
 	Order?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | OrderKeySpecifier | (() => undefined | OrderKeySpecifier),
 		fields?: OrderFieldPolicy,
+	},
+	OrderAddress?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | OrderAddressKeySpecifier | (() => undefined | OrderAddressKeySpecifier),
+		fields?: OrderAddressFieldPolicy,
 	},
 	OrderConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | OrderConnectionKeySpecifier | (() => undefined | OrderConnectionKeySpecifier),
@@ -1464,21 +1484,25 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | OrderShippingLineKeySpecifier | (() => undefined | OrderShippingLineKeySpecifier),
 		fields?: OrderShippingLineFieldPolicy,
 	},
-	PageInfoV2?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PageInfoV2KeySpecifier | (() => undefined | PageInfoV2KeySpecifier),
-		fields?: PageInfoV2FieldPolicy,
+	PageCursor?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PageCursorKeySpecifier | (() => undefined | PageCursorKeySpecifier),
+		fields?: PageCursorFieldPolicy,
 	},
-	PaymentDto?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PaymentDtoKeySpecifier | (() => undefined | PaymentDtoKeySpecifier),
-		fields?: PaymentDtoFieldPolicy,
+	PageInfo?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PageInfoKeySpecifier | (() => undefined | PageInfoKeySpecifier),
+		fields?: PageInfoFieldPolicy,
 	},
-	PaymentDtoConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PaymentDtoConnectionKeySpecifier | (() => undefined | PaymentDtoConnectionKeySpecifier),
-		fields?: PaymentDtoConnectionFieldPolicy,
+	Payment?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PaymentKeySpecifier | (() => undefined | PaymentKeySpecifier),
+		fields?: PaymentFieldPolicy,
 	},
-	PaymentDtoEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PaymentDtoEdgeKeySpecifier | (() => undefined | PaymentDtoEdgeKeySpecifier),
-		fields?: PaymentDtoEdgeFieldPolicy,
+	PaymentConnection?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PaymentConnectionKeySpecifier | (() => undefined | PaymentConnectionKeySpecifier),
+		fields?: PaymentConnectionFieldPolicy,
+	},
+	PaymentEdge?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | PaymentEdgeKeySpecifier | (() => undefined | PaymentEdgeKeySpecifier),
+		fields?: PaymentEdgeFieldPolicy,
 	},
 	PaymentGateway?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | PaymentGatewayKeySpecifier | (() => undefined | PaymentGatewayKeySpecifier),
@@ -1503,10 +1527,6 @@ export type StrictTypedTypePolicies = {
 	PaymentGatewaySessionInitializeFailedError?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | PaymentGatewaySessionInitializeFailedErrorKeySpecifier | (() => undefined | PaymentGatewaySessionInitializeFailedErrorKeySpecifier),
 		fields?: PaymentGatewaySessionInitializeFailedErrorFieldPolicy,
-	},
-	PaymentMethod?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | PaymentMethodKeySpecifier | (() => undefined | PaymentMethodKeySpecifier),
-		fields?: PaymentMethodFieldPolicy,
 	},
 	PaymentSession?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | PaymentSessionKeySpecifier | (() => undefined | PaymentSessionKeySpecifier),
@@ -1584,6 +1604,10 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | SelectedAttributeKeySpecifier | (() => undefined | SelectedAttributeKeySpecifier),
 		fields?: SelectedAttributeFieldPolicy,
 	},
+	ShippingMethod?: Omit<TypePolicy, "fields" | "keyFields"> & {
+		keyFields?: false | ShippingMethodKeySpecifier | (() => undefined | ShippingMethodKeySpecifier),
+		fields?: ShippingMethodFieldPolicy,
+	},
 	ShippingMethodNotFoundError?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ShippingMethodNotFoundErrorKeySpecifier | (() => undefined | ShippingMethodNotFoundErrorKeySpecifier),
 		fields?: ShippingMethodNotFoundErrorFieldPolicy,
@@ -1620,14 +1644,6 @@ export type StrictTypedTypePolicies = {
 		keyFields?: false | TextAttributeValueKeySpecifier | (() => undefined | TextAttributeValueKeySpecifier),
 		fields?: TextAttributeValueFieldPolicy,
 	},
-	TypeId?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | TypeIdKeySpecifier | (() => undefined | TypeIdKeySpecifier),
-		fields?: TypeIdFieldPolicy,
-	},
-	TypeIdDecoded?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | TypeIdDecodedKeySpecifier | (() => undefined | TypeIdDecodedKeySpecifier),
-		fields?: TypeIdDecodedFieldPolicy,
-	},
 	UnitPrice?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UnitPriceKeySpecifier | (() => undefined | UnitPriceKeySpecifier),
 		fields?: UnitPriceFieldPolicy,
@@ -1639,10 +1655,6 @@ export type StrictTypedTypePolicies = {
 	UserError?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | UserErrorKeySpecifier | (() => undefined | UserErrorKeySpecifier),
 		fields?: UserErrorFieldPolicy,
-	},
-	ValueObject?: Omit<TypePolicy, "fields" | "keyFields"> & {
-		keyFields?: false | ValueObjectKeySpecifier | (() => undefined | ValueObjectKeySpecifier),
-		fields?: ValueObjectFieldPolicy,
 	},
 	ZoneInfo?: Omit<TypePolicy, "fields" | "keyFields"> & {
 		keyFields?: false | ZoneInfoKeySpecifier | (() => undefined | ZoneInfoKeySpecifier),
