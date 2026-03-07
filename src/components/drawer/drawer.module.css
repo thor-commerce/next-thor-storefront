@@ -1,83 +1,3 @@
-.cartButton {
-	cursor: pointer;
-	position: relative;
-	height: 48px;
-	background: none;
-	border: none;
-
-	.cartCount {
-		top: auto;
-		bottom: 10px;
-		background: #000000;
-		border-radius: 100%;
-
-		display: inline-block;
-		position: absolute;
-		z-index: 1;
-		width: 1.3em;
-		height: 1.3em;
-		box-sizing: border-box;
-		float: none;
-		font-size: 10px;
-		letter-spacing: -0.008em;
-		line-height: 1.3;
-		text-align: center;
-		pointer-events: none;
-		transform-origin: right;
-		right: -6px;
-		@media screen and (max-width: 833px) {
-			right: -6px;
-		}
-		.number {
-			color: currentColor;
-			-webkit-filter: invert(100%);
-			filter: invert(100%);
-		}
-	}
-}
-
-.cartView {
-	display: flex;
-	justify-content: space-around;
-	flex-wrap: wrap;
-	vertical-align: top;
-	position: relative;
-	margin: 0px auto 40px;
-	padding-top: 20px;
-}
-
-.container {
-	max-width: 1100px;
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-}
-
-.cartItemsContainer {
-	flex-basis: 66.6667%;
-	max-width: 66.6667%;
-	padding: 0 16px;
-}
-
-.cartSummaryContainer {
-	max-width: 33.3333%;
-	flex-grow: 1;
-	padding: 0 16px;
-}
-
-.cartHeading {
-	font-size: 24px;
-	font-weight: 500;
-}
-
-.cartSummaryHeading {
-	margin-bottom: 24px;
-}
-
-.checkoutButton {
-	margin-top: 20px;
-}
-
 .overlay {
 	position: fixed;
 	inset: 0;
@@ -125,7 +45,11 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 2rem;
+	padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+
+	@media (--bp-lg-up) {
+		padding: var(--spacing-2xl) var(--spacing-3xl) var(--spacing-xl) var(--spacing-3xl);
+	}
 }
 
 .closeButton {

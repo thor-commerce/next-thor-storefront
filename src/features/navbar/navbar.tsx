@@ -1,6 +1,6 @@
 import Navigation from "@/components/navigation/navigation";
 import { Suspense } from "react";
-import NavbarCart from "./navbar-cart/navbar-cart";
+import CartDrawer from "../cart/cart-drawer";
 import NavbarProfile from "./navbar-profile/navbar-profile";
 import s from "./navbar.module.css";
 
@@ -24,7 +24,7 @@ export default async function Navbar() {
         <div className={s.right}>
           <Suspense>
             <NavbarProfile />
-            <NavbarCart />
+            <CartDrawer />
           </Suspense>
         </div>
       </div>
