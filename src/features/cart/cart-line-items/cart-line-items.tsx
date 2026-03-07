@@ -17,7 +17,7 @@ export default function CartLineItems({
   return (
     <ul className={s.cartItemList}>
       {lines?.map((line) => (
-        <CartLineItem key={line.id} lineItemFragment={line} />
+        <CartLineItem key={line.id} line={line} />
       ))}
     </ul>
   );

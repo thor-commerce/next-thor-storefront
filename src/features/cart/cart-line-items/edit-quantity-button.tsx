@@ -1,43 +1,24 @@
 "use client";
-import { gql } from "@/__generated__/thor";
-import { EditItemQuantityButtonFragment } from "@/__generated__/thor/graphql";
 import PlusIcon from "@/components/icons/plus";
 import SubtractIcon from "@/components/icons/subtract";
 import Spinner from "@/components/spinner/spinner";
-import { FragmentType } from "@apollo/client";
-import { useSuspenseFragment } from "@apollo/client/react";
 import clsx from "clsx";
 import { useActionState, useMemo } from "react";
 import { useFormStatus } from "react-dom";
 import { updateItemQuantity } from "../actions";
+import { CartLineItemType } from "../types";
 import s from "./cart-line-items.module.css";
 
-const EDIT_ITEM_QUANTITY_BUTTON_FRAGMENT = gql(/* GraphQL */ `
-  fragment EditItemQuantityButton on CartLineItem {
-    id
-    quantity
-    variant {
-      availability {
-        availableForPurchase
-        availableQuantity
-        stockPolicy
-      }
-    }
-  }
-`);
+
 
 export default function EditItemQuantityButton({
-  itemFragment,
+  item,
   type,
 }: {
-  itemFragment: FragmentType<EditItemQuantityButtonFragment>;
+  item: CartLineItemType;
   type: "increase" | "decrease";
 }) {
-  const { data: item } = useSuspenseFragment({
-    from: itemFragment,
-    fragment: EDIT_ITEM_QUANTITY_BUTTON_FRAGMENT,
-    fragmentName: "EditItemQuantityButton",
-  });
+
   const [, formAction] = useActionState(updateItemQuantity, null);
   const payload = {
     lineId: item.id,

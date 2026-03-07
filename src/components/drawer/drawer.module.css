@@ -1,111 +1,141 @@
 .overlay {
-	position: fixed;
-	inset: 0;
-	z-index: 9999;
-	background: rgba(0 0 0 / 0.3);
-	backdrop-filter: blur(10px);
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--color-overlay);
 
-	&[data-entering] {
-		animation: sheet-blur 300ms;
-	}
+  &[data-entering] {
+    animation: sheet-blur var(--duration-normal) var(--ease-emphasized);
+  }
 
-	&[data-exiting] {
-		animation: sheet-blur 300ms reverse ease-in;
-	}
+  &[data-exiting] {
+    animation: sheet-blur var(--duration-normal) reverse ease-in;
+  }
 }
 
 .modal {
-	z-index: 9999;
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	right: 0;
-	width: 100%;
-	max-width: 460px;
-	background: white;
-	outline: none;
-	border-left: 1px solid var(--border-color);
-	box-shadow: -8px 0 20px rgba(0 0 0 / 0.1);
+  position: fixed;
+  top: var(--spacing-s);
+  right: var(--spacing-s);
+  bottom: var(--spacing-s);
+  z-index: 10000;
+  width: min(calc(100vw - (var(--spacing-s) * 2)), 32rem);
+  background: var(--color-surface-strong);
+  outline: none;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-m);
+  overflow: hidden;
 
-	&[data-entering] {
-		animation: sheet-slide 300ms;
-	}
+  &[data-entering] {
+    animation: sheet-slide var(--duration-normal) var(--ease-emphasized);
+  }
 
-	&[data-exiting] {
-		animation: sheet-slide 300ms reverse ease-in;
-	}
-
-	@media (--bp-lg-up) {
-		width: 50vw;
-		max-width: 800px;
-	}
+  &[data-exiting] {
+    animation: sheet-slide var(--duration-normal) reverse ease-in;
+  }
 }
 
 .drawerHeader {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: var(--spacing-2xl) var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-m);
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
 
-	@media (--bp-lg-up) {
-		padding: var(--spacing-2xl) var(--spacing-3xl) var(--spacing-xl) var(--spacing-3xl);
-	}
+  h1,
+  h2,
+  h3 {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-snug);
+    font-weight: var(--font-weight-semibold);
+  }
 }
 
 .closeButton {
-	display: flex;
-	background: transparent;
-	border: none;
-	justify-content: center;
-	align-items: center;
-	cursor: pointer;
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  background: transparent;
+  color: var(--foreground);
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+
+  @media (hover: hover) {
+    &:hover {
+      background: var(--color-surface-muted);
+      border-color: var(--color-border-strong);
+    }
+  }
 }
+
 .dialogClose {
-	display: flex;
-	background: transparent;
-	border: none;
-	width: 48px;
-	height: 48px;
-	justify-content: center;
-	align-items: center;
-	margin-left: auto;
-	position: absolute;
-	top: 0;
-	right: 0;
-	cursor: pointer;
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  margin-left: auto;
+  position: absolute;
+  top: var(--spacing-s);
+  right: var(--spacing-s);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-m);
+  background: transparent;
+  cursor: pointer;
 }
 
 .overlayCloseIcon {
-	display: none;
+  display: none;
 }
 
 .dialog {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	&:focus-visible {
-		outline: none;
-	}
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+
+  &:focus-visible {
+    outline: none;
+  }
+}
+
+@media (min-width: 64rem) {
+  .modal {
+    top: var(--spacing-l);
+    right: var(--spacing-l);
+    bottom: var(--spacing-l);
+    width: min(calc(100vw - (var(--spacing-l) * 2)), 36rem);
+  }
+
+  .drawerHeader {
+    padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-l);
+  }
 }
 
 @keyframes sheet-blur {
-	from {
-		background: rgba(0 0 0 / 0);
-		backdrop-filter: blur(0);
-	}
+  from {
+    background: rgba(22, 32, 43, 0);
+  }
 
-	to {
-		background: rgba(0 0 0 / 0.3);
-		backdrop-filter: blur(10px);
-	}
+  to {
+    background: var(--color-overlay);
+  }
 }
 
 @keyframes sheet-slide {
-	from {
-		transform: translateX(100%);
-	}
+  from {
+    opacity: 0;
+    transform: translateX(1rem);
+  }
 
-	to {
-		transform: translateX(0);
-	}
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

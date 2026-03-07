@@ -28,11 +28,45 @@ export const CART_DETAILS_QUERY = gql(/* GraphQL */ `
 				edges {
 					node {
 						id
-						...CartLineItem
-
+						id
+						...EditItemQuantityButton
+						taxBehavior
+						variantName
+						productName
+						quantity
+						productSlug
+						variant {
+							id
+							image {
+								src
+							}
+							selectedAttributes {
+								value
+							}
+							availability {
+								availableForPurchase
+								availableQuantity
+								stockPolicy
+							}
+						}
+						unitPrice {
+							value {
+								centAmount
+								currencyCode
+								fractionDigits
+							}
+							discountedPrice {
+								value {
+									centAmount
+									currencyCode
+									fractionDigits
+								}
+							}
+						}
 						discountApplications {
 							edges {
 								node {
+									label
 									discountedAmount {
 										centAmount
 										currencyCode
@@ -40,6 +74,11 @@ export const CART_DETAILS_QUERY = gql(/* GraphQL */ `
 									}
 								}
 							}
+						}
+						total {
+							centAmount
+							currencyCode
+							fractionDigits
 						}
 					}
 				}

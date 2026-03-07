@@ -1,84 +1,21 @@
-import { gql } from "@/__generated__/thor";
-import { CartLineItemFragment } from "@/__generated__/thor/graphql";
+import DiscountLabelIcon from "@/components/icons/discount-label";
+import Navigation from "@/components/navigation/navigation";
 import ThorImage from "@/components/thor-image/thor-image";
 import { mapEdgesToItems } from "@/utils/maps";
-import { FragmentType } from "@apollo/client";
-import { useSuspenseFragment } from "@apollo/client/react";
+import { formatMoney } from "@/utils/money";
+import clsx from "clsx";
+import { CartLineItemType } from "../types";
 import s from "./cart-line-items.module.css";
-import Navigation from "@/components/navigation/navigation";
-import DiscountLabelIcon from "@/components/icons/discount-label";
 import EditItemQuantityButton from "./edit-quantity-button";
 import { RemoveItemButton } from "./remove-line-item-button";
-import clsx from "clsx";
-import { formatMoney } from "@/utils/money";
 
-const CART_LINE_ITEM_FRAGMENT = gql(/* GraphQL */ `
-  fragment CartLineItem on CartLineItem {
-    id
-    ...EditItemQuantityButton
-    taxBehavior
-    variantName
-    productName
-    quantity
-    productSlug
-    variant {
-      id
-      image {
-        src
-      }
-      selectedAttributes {
-        value
-      }
-      availability {
-        availableForPurchase
-        availableQuantity
-        stockPolicy
-      }
-    }
-    unitPrice {
-      value {
-        centAmount
-        currencyCode
-        fractionDigits
-      }
-      discountedPrice {
-        value {
-          centAmount
-          currencyCode
-          fractionDigits
-        }
-      }
-    }
-    discountApplications {
-      edges {
-        node {
-          label
-          discountedAmount {
-            centAmount
-            currencyCode
-            fractionDigits
-          }
-        }
-      }
-    }
-    total {
-      centAmount
-      currencyCode
-      fractionDigits
-    }
-  }
-`);
 
 export default function CartLineItem({
-  lineItemFragment,
+  line,
 }: {
-  lineItemFragment: FragmentType<CartLineItemFragment>;
+  line: CartLineItemType;
 }) {
-  const { data: line } = useSuspenseFragment({
-    from: lineItemFragment,
-    fragment: CART_LINE_ITEM_FRAGMENT,
-    fragmentName: "CartLineItem",
-  });
+
   const attributesText = line.variant?.selectedAttributes
     .map((selectedAttr) => selectedAttr.value)
     .filter(Boolean)
@@ -138,14 +75,18 @@ export default function CartLineItem({
               </div>
               <div className={s.lineItemControls}>
                 <div className={s.quantityControls}>
-                  <EditItemQuantityButton itemFragment={line} type="decrease" />
+                  <EditItemQuantityButton item={line} type="decrease" />
                   <span className={s.quantity}>{line.quantity}</span>
-                  <EditItemQuantityButton itemFragment={line} type="increase" />
+                  <EditItemQuantityButton item={line} type="increase" />
                 </div>
                 <RemoveItemButton lineItemId={line.id} />
               </div>
             </div>
-            <div className={s.linePrice}>
+            <div
+              className={clsx(s.linePrice, {
+                [s.linePriceStacked]: isDiscounted,
+              })}
+            >
               {isDiscounted && (
                 <span className={clsx(s.subtotal, s.strikeThrough)}>
                   {formatMoney({
