@@ -53,5 +53,11 @@
 		"graphql-config": "^5.1.5",
 		"typescript": "^5",
 		"wrangler": "^4.71.0"
+	},
+	"lint-staged": {
+		"*.{js,jsx,ts,tsx}": [
+			"eslint --fix",
+			"git add"
+		]
 	}
 }

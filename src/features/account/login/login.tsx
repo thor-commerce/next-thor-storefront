@@ -2,24 +2,15 @@
 
 import Button from "@/components/button/button";
 import TextInput from "@/components/text-input/text-input";
-import { useActionState, useEffect } from "react";
+import { useActionState } from "react";
 import { login, LoginState } from "../actions";
-import { useRouter } from "next/navigation"; // 👈 App Router import
 import s from "./login.module.css";
 
 export default function Login() {
-  const router = useRouter();
-
   const [state, formAction, isPending] = useActionState<LoginState, FormData>(
     login,
     null
   );
-
-  useEffect(() => {
-    if (state?.success) {
-      router.refresh();
-    }
-  }, [state?.success, router]);
 
   return (
     <div className={s.page}>

@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export type LoginState = { error?: string; success?: boolean } | null;
 
@@ -17,7 +18,7 @@ export async function login(_currentState: unknown, formData: FormData) {
 			return { error: response.error };
 		}
 
-		return { success: true };
+		redirect("/account");
 	} catch (err) {
 		console.error(err);
 		return { error: "Something went wrong, please try again." };

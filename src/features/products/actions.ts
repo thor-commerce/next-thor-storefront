@@ -2,7 +2,7 @@
 
 import { gql } from "@/__generated__/thor";
 import { CartLineItemsAddMutation, CartLineItemsAddMutationVariables } from "@/__generated__/thor/graphql";
-import { CACHE_TAGS } from "@/constants";
+import { CACHE_TAGS, getCartCacheTag } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { getServerContext } from "@/utils/server";
 import { updateTag } from "next/cache";
@@ -22,7 +22,7 @@ const CART_ADD_ITEMS_MUTATION = gql(/* GraphQL */ `
 	}
 `);
 
-export async function addItem(prevState: unknown, data: FormData) {
+export async function addItem(data: FormData) {
 	invariant(data, "Submitted form without data");
 
 	const selectedVariantID = data.get("variantId")?.toString();
@@ -40,13 +40,10 @@ export async function addItem(prevState: unknown, data: FormData) {
 
 	invariant(cart, "Cart not found or created");
 
-	saveCartIdToCookie(cart.id);
+	await saveCartIdToCookie(cart.id);
 
 	if (!selectedVariantID) {
-		return {
-			success: false,
-			message: "No variant selected",
-		};
+		return;
 	}
 	const cartLineItemsAddResponse = await getClient().mutate<
 		CartLineItemsAddMutation,
@@ -67,15 +64,9 @@ export async function addItem(prevState: unknown, data: FormData) {
 	});
 
 	if (!cartLineItemsAddResponse.data?.cartLineItemsAdd) {
-		return {
-			success: false,
-		};
+		return;
 	}
 
 	updateTag(CACHE_TAGS.cart);
-
-	return {
-		success: true,
-		quantity: 1,
-	};
+	updateTag(getCartCacheTag(cart.id));
 }

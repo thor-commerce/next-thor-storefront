@@ -1,48 +1,24 @@
 "use client";
 
 import { removeLineItem } from "@/features/cart/actions";
-import { useSafePendingState } from "@/hooks/use-safe-pending-state";
-import { useRouter } from "next/navigation";
 import clsx from "clsx";
+import { useFormStatus } from "react-dom";
 import s from "./cart-line-items.module.css";
 
 export function RemoveItemButton({ lineItemId }: { lineItemId: string }) {
-  const router = useRouter();
-  const { pending, startPending, stopPending } = useSafePendingState();
-
-  const handleRemove = async () => {
-    if (pending) {
-      return;
-    }
-
-    startPending();
-
-    try {
-      await removeLineItem(null, lineItemId);
-      router.refresh();
-    } finally {
-      stopPending();
-    }
-  };
-
   return (
-    <div className={s.removeForm}>
-      <SubmitButton pending={pending} onPress={handleRemove} />
-    </div>
+    <form action={removeLineItem} className={s.removeForm}>
+      <input type="hidden" name="lineId" value={lineItemId} />
+      <SubmitButton />
+    </form>
   );
 }
-function SubmitButton({ pending, onPress }: { pending: boolean; onPress: () => void }) {
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
   return (
     <button
-      type="button"
-      onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-        if (pending) {
-          e.preventDefault();
-          return;
-        }
-
-        void onPress();
-      }}
+      type="submit"
       aria-label={"Remove item"}
       aria-disabled={pending}
       disabled={pending}

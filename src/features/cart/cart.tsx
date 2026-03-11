@@ -1,6 +1,6 @@
 import Button from "@/components/button/button";
 import Navigation from "@/components/navigation/navigation";
-import { CACHE_TAGS } from "@/constants";
+import { CACHE_TAGS, getCartCacheTag } from "@/constants";
 import { PreloadQuery } from "@/lib/thor/apollo-client";
 import clsx from "clsx";
 import { Suspense } from "react";
@@ -23,8 +23,9 @@ export default async function Cart() {
       variables={{ id: cartId }}
       context={{
         fetchOptions: {
+          cache: "force-cache",
           next: {
-            tags: [CACHE_TAGS.cart],
+            tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
           }
         },
       }}

@@ -3,12 +3,10 @@
 import { CartDetailsQuery } from "@/__generated__/thor/graphql";
 import Button from "@/components/button/button";
 import TextInput from "@/components/text-input/text-input";
-import { useSafePendingState } from "@/hooks/use-safe-pending-state";
 import { QueryRef, useReadQuery } from "@apollo/client/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useActionState, useEffect } from "react";
 import {
   Disclosure,
   DisclosurePanel,
@@ -17,6 +15,7 @@ import {
 import { Controller, Path, useForm } from "react-hook-form";
 import z from "zod";
 import { addDiscountCode } from "../actions";
+import { DiscountCodeActionResponse } from "../types";
 import s from "./discount-code-form.module.css";
 import DiscountCodeLabel from "./discount-code-label";
 import { discountCodeSchema } from "./validation";
@@ -37,11 +36,10 @@ export default function DiscountCodeForm({
     defaultValues: { code: "" },
   });
 
-  console.log(cart?.discountCodes)
-
-  const router = useRouter();
-  const { pending: pendingAdd, startPending, stopPending } = useSafePendingState();
-  const [state, setState] = useState<Awaited<ReturnType<typeof addDiscountCode>> | null>(null);
+  const [state, formAction, pendingAdd] = useActionState<DiscountCodeActionResponse | null, FormData>(
+    addDiscountCode,
+    null,
+  );
 
   useEffect(() => {
     if (state?.errors) {
@@ -53,30 +51,20 @@ export default function DiscountCodeForm({
       });
     }
     if (state?.success) {
-      // Ensure controlled field fully clears
       form.reset({ code: "" });
+      form.clearErrors();
     }
   }, [form, state]);
 
-  const onSubmit = form.handleSubmit((_, e) => {
-    const formEl = e?.target as HTMLFormElement | null;
-    if (!formEl) return;
+  const handleSubmitCapture = async (event: React.FormEvent<HTMLFormElement>) => {
+    const isValid = await form.trigger();
+    if (!isValid) {
+      event.preventDefault();
+      return;
+    }
 
-    const fd = new FormData(formEl);
-
-    startPending();
-
-    void addDiscountCode(null, fd)
-      .then((response) => {
-        setState(response);
-        if (response.success) {
-          router.refresh();
-        }
-      })
-      .finally(() => {
-        stopPending();
-      });
-  });
+    form.clearErrors();
+  };
 
   return (
     <Disclosure
@@ -84,13 +72,18 @@ export default function DiscountCodeForm({
       defaultExpanded={(cart?.discountCodes?.length ?? 0) > 0}
     >
       <ReactAriaButton slot="trigger" className={s.disclosureButton}>
-        {/* <ChevronRight size={18} /> */}
         Do you have a discount code?
         <ChevronDown size={18} />
       </ReactAriaButton>
       <DisclosurePanel className={s.disclosurePanel}>
         <div className={s.disclosedContent}>
-          <form onSubmit={onSubmit} className={s.discountCodeForm}>
+          <form
+            action={formAction}
+            className={s.discountCodeForm}
+            onSubmitCapture={(event) => {
+              void handleSubmitCapture(event);
+            }}
+          >
             <Controller
               control={form.control}
               name="code"

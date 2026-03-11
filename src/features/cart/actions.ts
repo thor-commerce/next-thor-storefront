@@ -1,6 +1,6 @@
 "use server";
 
-import { CACHE_TAGS } from "@/constants";
+import { CACHE_TAGS, getCartCacheTag } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { updateTag } from "next/cache";
 import z from "zod";
@@ -15,40 +15,43 @@ import { DiscountCodeActionResponse, DiscountCodeFormData } from "./types";
 import { getCartIdFromCookies } from "./utils";
 
 export async function updateItemQuantity(
-	prevState: unknown,
-	payload: {
-		lineId: string;
-		quantity: number;
-	},
+	formData: FormData,
 ) {
 	const cartId = await getCartIdFromCookies();
-	console.log("Updating item quantity with payload", payload);
-	const test = await getClient().mutate({
+	const lineId = formData.get("lineId")?.toString();
+	const quantityValue = Number(formData.get("quantity"));
+
+	if (!lineId || !Number.isFinite(quantityValue)) {
+		return;
+	}
+
+	await getClient().mutate({
 		mutation: CART_LINE_ITEMS_UPDATE_MUTATION,
 		variables: {
 			input: {
 				cartId,
 				lineItems: [
 					{
-						lineItemId: payload.lineId,
-						quantity: payload.quantity,
+						lineItemId: lineId,
+						quantity: quantityValue,
 					},
 				],
 			},
 		},
 	});
 
-	console.log("updateItemQuantity response", test);
-
 	updateTag(CACHE_TAGS.cart);
-
-	return {
-		success: true,
-	};
+	updateTag(getCartCacheTag(cartId));
 }
 
-export async function removeLineItem(prevState: unknown, lineId: string) {
+export async function removeLineItem(formData: FormData) {
 	const cartId = await getCartIdFromCookies();
+	const lineId = formData.get("lineId")?.toString();
+
+	if (!lineId) {
+		return;
+	}
+
 	try {
 		await getClient().mutate({
 			mutation: CART_LINE_ITEMS_REMOVE_MUTATION,
@@ -60,14 +63,9 @@ export async function removeLineItem(prevState: unknown, lineId: string) {
 			},
 		});
 		updateTag(CACHE_TAGS.cart);
-		return {
-			success: true,
-		};
+		updateTag(getCartCacheTag(cartId));
 	} catch (e) {
 		console.error(e);
-		return {
-			success: false,
-		};
 	}
 }
 
@@ -111,6 +109,7 @@ export async function addDiscountCode(
 		}
 
 		updateTag(CACHE_TAGS.cart);
+		updateTag(getCartCacheTag(cartId));
 		return {
 			success: true,
 		};
@@ -124,11 +123,15 @@ export async function addDiscountCode(
 }
 
 export async function removeDiscountCode(
-	prevState: DiscountCodeActionResponse | null,
-	code: string,
-): Promise<DiscountCodeActionResponse> {
+	formData: FormData,
+) {
 	try {
 		const cartId = await getCartIdFromCookies();
+		const code = formData.get("code")?.toString();
+
+		if (!code) {
+			return;
+		}
 
 		await getClient().mutate({
 			mutation: CART_DISCOUNT_CODE_REMOVE_MUTATION,
@@ -140,13 +143,8 @@ export async function removeDiscountCode(
 			},
 		});
 		updateTag(CACHE_TAGS.cart);
-		return {
-			success: true,
-		};
+		updateTag(getCartCacheTag(cartId));
 	} catch {
-		return {
-			success: false,
-			messsage: "Failed to remove discount code",
-		};
+		return;
 	}
 }

@@ -14,8 +14,7 @@ const NavbarSignOutButton: FC<NavbarSignOutButtonProps> = ({}) => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess() {
-          router.push("/"); 
-          router.refresh(); 
+          router.push("/");
         },
       },
     });

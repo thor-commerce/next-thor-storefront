@@ -7,6 +7,7 @@ import {
 	ReplicationStrategy,
 } from "@/__generated__/thor/graphql";
 import { CACHE_TAGS } from "@/constants";
+import { getCartCacheTag } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { THOR_CART_COOKIE_NAME } from "@/lib/thor/config";
 import { getCurrencyByCountryCode } from "@/utils/countries";
@@ -47,7 +48,12 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
 			id: cartId,
 		},
 		context: {
-			fetchOptions: { tags: [CACHE_TAGS.cart] },
+			fetchOptions: {
+				cache: "force-cache",
+				next: {
+					tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
+				},
+			},
 		},
 	});
 
@@ -81,6 +87,7 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
 
 	if (changesCount > 0) {
 		updateTag(CACHE_TAGS.cart);
+		updateTag(getCartCacheTag(cart.id));
 	}
 }
 
@@ -119,6 +126,14 @@ export async function findOrCreateCart({
 		query: NAVBAR_CART_QUERY,
 		variables: {
 			id: cartId,
+		},
+		context: {
+			fetchOptions: {
+				cache: "force-cache",
+				next: {
+					tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
+				},
+			},
 		},
 	});
 

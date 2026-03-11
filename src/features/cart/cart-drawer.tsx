@@ -2,6 +2,7 @@
 
 import Button from "@/components/button/button";
 import ShoppingCart from "@/components/icons/shopping-cart";
+import { Cart } from "@/features/cart/types";
 import Navigation from "@/components/navigation/navigation";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
@@ -11,13 +12,11 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button as AriaButton, Dialog, DialogTrigger, Heading, Modal, ModalOverlay } from "react-aria-components";
 import { CheckoutStepEnum } from "../checkout/types";
-import { useCart } from "./cart-context";
 import CartLineItem from "./cart-line-items/cart-line-item";
 import s from "./cart.module.css";
 
-export default function CartDrawer() {
-    const { cart } = useCart();
-    const quantityRef = useRef(cart?.lineItemsQuantity);
+export default function CartDrawer({ cart }: { cart?: Cart | null }) {
+    const quantityRef = useRef(cart?.lineItemsQuantity ?? 0);
     const [isOpen, setOpen] = useState(false);
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -26,22 +25,26 @@ export default function CartDrawer() {
     const lines = mapEdgesToItems(cart?.lineItems) ?? [];
 
     useEffect(() => {
-        if (
-            cart?.lineItemsQuantity &&
-            cart.lineItemsQuantity !== quantityRef.current &&
-            cart.lineItemsQuantity > 0
-        ) {
+        const nextQuantity = cart?.lineItemsQuantity ?? 0;
+
+        if (nextQuantity > quantityRef.current) {
             if (!isOpen) {
                 // eslint-disable-next-line react-hooks/set-state-in-effect
                 setOpen(true);
             }
-
-            quantityRef.current = cart.lineItemsQuantity;
         }
+
+        quantityRef.current = nextQuantity;
     }, [cart?.lineItemsQuantity, isOpen]);
 
     useEffect(() => {
-        setOpen(false);
+        const timeout = window.setTimeout(() => {
+            setOpen(false);
+        }, 0);
+
+        return () => {
+            window.clearTimeout(timeout);
+        };
     }, [pathname, searchParams]);
 
     return (

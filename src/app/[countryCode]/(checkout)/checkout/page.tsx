@@ -1,4 +1,4 @@
-import { CACHE_TAGS } from "@/constants";
+import { CACHE_TAGS, getCartCacheTag } from "@/constants";
 
 import CheckoutContainer from "@/features/checkout/checkout-container/checkout-container";
 import {
@@ -58,7 +58,10 @@ export default async function CheckoutPage({
     variables: { id: checkout_id },
     context: {
       fetchOptions: {
-        tags: [CACHE_TAGS.cart],
+        cache: "force-cache",
+        next: {
+          tags: [CACHE_TAGS.cart, getCartCacheTag(checkout_id)],
+        },
       },
     },
   });

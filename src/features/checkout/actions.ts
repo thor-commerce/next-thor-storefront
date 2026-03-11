@@ -9,7 +9,7 @@ import {
 	CheckoutCartShippingLinesSetMutation,
 	CheckoutCartShippingLinesSetMutationVariables,
 } from "@/__generated__/thor/graphql";
-import { CACHE_TAGS } from "@/constants";
+import { CACHE_TAGS, getCartCacheTag } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { mapEdgesToItems } from "@/utils/maps";
 import { getServerContext } from "@/utils/server";
@@ -37,6 +37,7 @@ export async function cartUpdateAction(input: Omit<CartUpdateInput, "cartId">) {
 	});
 
 	updateTag(CACHE_TAGS.cart);
+	updateTag(getCartCacheTag(cartId));
 
 	return resp.data?.cartUpdate;
 }
@@ -57,6 +58,7 @@ export async function cartSetShippingMethodAction(shippingMethodId: string) {
 	});
 
 	updateTag(CACHE_TAGS.cart);
+	updateTag(getCartCacheTag(cartId));
 	return res.data?.cartShippingLinesSet;
 }
 
