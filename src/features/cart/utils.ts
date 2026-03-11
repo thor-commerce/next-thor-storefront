@@ -11,7 +11,7 @@ import { getClient } from "@/lib/thor/apollo-client";
 import { THOR_CART_COOKIE_NAME } from "@/lib/thor/config";
 import { getCurrencyByCountryCode } from "@/utils/countries";
 import { getServerContext } from "@/utils/server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
 import { CART_CREATE_MUTATION, CART_REPLICATE_MUTATION } from "./mutations";
 import { NAVBAR_CART_QUERY } from "./queries";
@@ -80,7 +80,7 @@ export async function cleanupCartCookieIfNeeded(cartId: string) {
 	}
 
 	if (changesCount > 0) {
-		revalidateTag(CACHE_TAGS.cart);
+		updateTag(CACHE_TAGS.cart);
 	}
 }
 

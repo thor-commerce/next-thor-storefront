@@ -13,7 +13,7 @@ import { CACHE_TAGS } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { mapEdgesToItems } from "@/utils/maps";
 import { getServerContext } from "@/utils/server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { CART_UPDATE_MUTATION } from "../cart/mutations";
 import { getCartIdFromCookies, removeCartCookie } from "../cart/utils";
@@ -36,7 +36,7 @@ export async function cartUpdateAction(input: Omit<CartUpdateInput, "cartId">) {
 		},
 	});
 
-	revalidateTag(CACHE_TAGS.cart);
+	updateTag(CACHE_TAGS.cart);
 
 	return resp.data?.cartUpdate;
 }
@@ -56,7 +56,7 @@ export async function cartSetShippingMethodAction(shippingMethodId: string) {
 		},
 	});
 
-	revalidateTag(CACHE_TAGS.cart);
+	updateTag(CACHE_TAGS.cart);
 	return res.data?.cartShippingLinesSet;
 }
 
@@ -94,7 +94,7 @@ export async function intializePaymentSession() {
 			},
 		},
 	});
-	// revalidateTag(CACHE_TAGS.cart);
+	// updateTag(CACHE_TAGS.cart);
 
 	return res.data?.cartPaymentSessionInitialize;
 }

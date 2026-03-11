@@ -2,7 +2,7 @@
 
 import { CACHE_TAGS } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import z from "zod";
 import { discountCodeSchema } from "./cart-discount-code-form/validation";
 import {
@@ -40,7 +40,7 @@ export async function updateItemQuantity(
 
 	console.log("updateItemQuantity response", test);
 
-	revalidateTag(CACHE_TAGS.cart);
+	updateTag(CACHE_TAGS.cart);
 
 	return {
 		success: true,
@@ -59,7 +59,7 @@ export async function removeLineItem(prevState: unknown, lineId: string) {
 				},
 			},
 		});
-		revalidateTag(CACHE_TAGS.cart);
+		updateTag(CACHE_TAGS.cart);
 		return {
 			success: true,
 		};
@@ -110,7 +110,7 @@ export async function addDiscountCode(
 			};
 		}
 
-		revalidateTag(CACHE_TAGS.cart);
+		updateTag(CACHE_TAGS.cart);
 		return {
 			success: true,
 		};
@@ -139,7 +139,7 @@ export async function removeDiscountCode(
 				},
 			},
 		});
-		revalidateTag(CACHE_TAGS.cart);
+		updateTag(CACHE_TAGS.cart);
 		return {
 			success: true,
 		};

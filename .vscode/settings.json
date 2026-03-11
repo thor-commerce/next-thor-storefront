@@ -22,8 +22,7 @@
 	// === File Nesting (cleaner explorer) ===
 	"explorer.fileNesting.enabled": true,
 	"explorer.fileNesting.patterns": {
-		"*.graphql": "${capture}.generated.ts",
-		"package.json": "pnpm-lock.yaml, .npmrc, .nvmrc, .env*, .graphqlrc.*"
+		"*.graphql": "${capture}.generated.ts"
 	},
 
 	// === Search Exclusions ===

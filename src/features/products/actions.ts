@@ -5,7 +5,7 @@ import { CartLineItemsAddMutation, CartLineItemsAddMutationVariables } from "@/_
 import { CACHE_TAGS } from "@/constants";
 import { getClient } from "@/lib/thor/apollo-client";
 import { getServerContext } from "@/utils/server";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import invariant from "tiny-invariant";
 import { findOrCreateCart, getCartIdFromCookies, saveCartIdToCookie } from "../cart/utils";
 
@@ -72,7 +72,7 @@ export async function addItem(prevState: unknown, data: FormData) {
 		};
 	}
 
-	revalidateTag(CACHE_TAGS.cart);
+	updateTag(CACHE_TAGS.cart);
 
 	return {
 		success: true,
