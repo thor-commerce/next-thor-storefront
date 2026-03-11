@@ -1,5 +1,6 @@
 "use client";
-import { CategoryGridQueryVariables } from "@/__generated__/thor/graphql";
+
+import { CollectionGridQueryVariables } from "@/__generated__/thor/graphql";
 import { ProductGridLoadMore } from "@/components/product-grid/product-grid-load-more";
 import ProductGridHeader from "@/components/product-grid/product-grid-header";
 import ProductGrid from "@/components/product-grid/product-grid";
@@ -12,66 +13,66 @@ import {
 import { mapEdgesToItems } from "@/utils/maps";
 import { useSuspenseQuery } from "@apollo/client/react";
 import { startTransition, useCallback } from "react";
-import { CATEGORY_GRID_QUERY } from "../queries";
+import { COLLECTION_GRID_QUERY } from "../queries";
 
 type Props = {
-	variables: CategoryGridQueryVariables;
+  variables: CollectionGridQueryVariables;
   sortValue: string;
 };
 
-export default function CategoryGrid({ variables, sortValue }: Props) {
-	const { data, fetchMore } = useSuspenseQuery(CATEGORY_GRID_QUERY, {
-		variables,
-	});
-  const category = data.category;
-	const products = mapEdgesToItems(category?.products);
-  const hasNextPage = category?.products.pageInfo.hasNextPage ?? false;
+export default function CollectionGrid({ variables, sortValue }: Props) {
+  const { data, fetchMore } = useSuspenseQuery(COLLECTION_GRID_QUERY, {
+    variables,
+  });
+  const collection = data.collection;
+  const products = mapEdgesToItems(collection?.products);
+  const hasNextPage = collection?.products.pageInfo.hasNextPage ?? false;
 
   const handleLoadMore = useCallback(() => {
-    if (!category || !hasNextPage) {
+    if (!collection || !hasNextPage) {
       return;
     }
 
     startTransition(() => {
       fetchMore({
         variables: {
-          after: category.products.pageInfo.endCursor,
+          after: collection.products.pageInfo.endCursor,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (!fetchMoreResult?.category?.products) {
+          if (!fetchMoreResult?.collection?.products) {
             return prev;
           }
 
           return {
             ...prev,
-            category: prev.category
+            collection: prev.collection
               ? {
-                  ...prev.category,
-                  ...fetchMoreResult.category,
+                  ...prev.collection,
+                  ...fetchMoreResult.collection,
                   products: {
-                    ...fetchMoreResult.category.products,
+                    ...fetchMoreResult.collection.products,
                     edges: [
-                      ...(prev.category.products.edges || []),
-                      ...(fetchMoreResult.category.products.edges || []),
+                      ...(prev.collection.products.edges || []),
+                      ...(fetchMoreResult.collection.products.edges || []),
                     ],
                   },
                 }
-              : fetchMoreResult.category,
+              : fetchMoreResult.collection,
           };
         },
       });
     });
-  }, [category, fetchMore, hasNextPage]);
+  }, [collection, fetchMore, hasNextPage]);
 
-	if (!category) {
-		return null;
-	}
+  if (!collection) {
+    return null;
+  }
 
-	return (
+  return (
     <>
       <ProductGridHeader
-        heading={category.name}
-        meta={formatProductCount(category.products.totalCount)}
+        heading={collection.name}
+        meta={formatProductCount(collection.products.totalCount)}
         actions={
           <ProductListingSort
             value={sortValue}
@@ -90,5 +91,5 @@ export default function CategoryGrid({ variables, sortValue }: Props) {
         <ProductGridLoadMore loadMore={handleLoadMore} hasNextPage={hasNextPage} />
       </ProductGrid>
     </>
-	);
+  );
 }

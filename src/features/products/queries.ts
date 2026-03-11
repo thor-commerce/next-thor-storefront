@@ -22,6 +22,7 @@ export const PRODUCTS_GRID_QUERY = gql(/* GraphQL */ `
           ...ProductGridTile
         }
       }
+      totalCount
       pageInfo {
         endCursor
         hasNextPage
@@ -36,6 +37,29 @@ export const PRODUCT_QUERY = gql(/* GraphQL */ `
       id
       name
       description
+      categories(first: 1) {
+        edges {
+          node {
+            id
+            name
+            slug
+            ancestors {
+              id
+              name
+              slug
+            }
+          }
+        }
+      }
+      collections(first: 1) {
+        edges {
+          node {
+            id
+            name
+            slug
+          }
+        }
+      }
       attributeAssignments {
         name
         attribute {

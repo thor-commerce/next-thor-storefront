@@ -1,17 +1,10 @@
 .textField {
-  position: relative;
   width: fit-content;
   color: var(--text-color);
   flex-direction: column;
   display: flex;
   font-size: var(--text-sm);
-
-  &:focus-within label,
-  &:has(input:not(:placeholder-shown)) label {
-    transform: translate(0, 0);
-    pointer-events: all;
-    font-size: var(--text-xs);
-  }
+  gap: var(--spacing-2xs);
 
   &:where([data-block="true"]) {
     width: 100%;
@@ -22,20 +15,12 @@
   }
 }
 .label {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.875rem;
-  transition: all var(--duration-fast) var(--ease-standard);
-  transform: translateY(0.5rem);
-
-  /* pointer-events: none; */
-  z-index: 1;
-  letter-spacing: 0.02em;
+  position: static;
   color: var(--text-muted);
   font-size: var(--text-sm);
   display: block;
   cursor: text;
-  align-self: flex-start;
+  font-weight: var(--font-weight-medium);
 }
 
 .inputWrapper {
@@ -44,18 +29,18 @@
   letter-spacing: 0.01em;
 }
 .input {
-  padding: 1.375rem 0.875rem 0.5rem;
+  padding: 0 0.875rem;
   border: 1px solid var(--input-border-color);
   border-radius: var(--input-border-radius);
   background: var(--input-bg-color);
   min-height: var(--control-height-m);
   font-family: var(--helvetica);
   font-size: var(--text-sm);
-  box-shadow: inset 0 1px 0 rgba(15, 23, 42, 0.02);
 
   &:focus {
     outline: none;
     border-color: var(--input-focus-border-color);
+    box-shadow: 0 0 0 3px var(--focus-ring-color);
   }
 
   &:invalid {

@@ -19,6 +19,12 @@ export default async function Navbar() {
             <Navigation href="/products" className={s.navLink}>
               All products
             </Navigation>
+            <Navigation href="/categories" className={s.navLink}>
+              Categories
+            </Navigation>
+            <Navigation href="/collections" className={s.navLink}>
+              Collections
+            </Navigation>
           </nav>
         </div>
         <div className={s.right}>

@@ -1,31 +1,32 @@
 import { gql } from "@/__generated__/thor";
 
-export const CATEGORIES_QUERY = gql(/* GraphQL */ `
-  query Categories($storeId: ID!, $currency: String!) {
-    categories(first: 48, storeId: $storeId, priceCurrency: $currency) {
+export const COLLECTIONS_QUERY = gql(/* GraphQL */ `
+  query Collections($storeId: ID!, $currency: String!) {
+    collections(first: 48) {
       edges {
         node {
           id
           name
           slug
-          childrenCount
-          productsCount
+          products(first: 0, storeId: $storeId, priceCurrency: $currency) {
+            totalCount
+          }
         }
       }
     }
   }
 `);
 
-export const CATEGORY_GRID_QUERY = gql(/* GraphQL */ `
-  query CategoryGrid(
+export const COLLECTION_GRID_QUERY = gql(/* GraphQL */ `
+  query CollectionGrid(
     $slug: String!
     $currency: String!
     $storeId: ID!
     $after: String
     $sortDirection: SortDirection!
-    $sortKey: ProductCategorySortKeys!
+    $sortKey: ProductCollectionSortKeys!
   ) {
-    category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+    collection(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
       id
       name
       products(

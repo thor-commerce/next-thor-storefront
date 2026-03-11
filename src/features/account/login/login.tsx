@@ -5,6 +5,7 @@ import TextInput from "@/components/text-input/text-input";
 import { useActionState, useEffect } from "react";
 import { login, LoginState } from "../actions";
 import { useRouter } from "next/navigation"; // 👈 App Router import
+import s from "./login.module.css";
 
 export default function Login() {
   const router = useRouter();
@@ -21,26 +22,24 @@ export default function Login() {
   }, [state?.success, router]);
 
   return (
-    <form
-      action={formAction}
-      style={{
-        maxWidth: 500,
-        margin: "100px auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: 20,
-      }}
-    >
-      <TextInput label="Email" type="email" name="email" block />
-      <TextInput label="Password" type="password" name="password" block />
+    <div className={s.page}>
+      <div className={s.header}>
+        <h1 className={s.title}>Sign in</h1>
+        <p className={s.subtitle}>Access your account, order history, and saved addresses.</p>
+      </div>
 
-      {state?.error && (
-        <p style={{ color: "red", fontSize: 14 }}>{state.error}</p>
-      )}
+      <div className={s.panel}>
+        <form action={formAction} className={s.form}>
+          <TextInput label="Email" type="email" name="email" block />
+          <TextInput label="Password" type="password" name="password" block />
 
-      <Button type="submit" loading={isPending}>
-        Sign in
-      </Button>
-    </form>
+          {state?.error && <p className={s.error}>{state.error}</p>}
+
+          <Button type="submit" loading={isPending}>
+            Sign in
+          </Button>
+        </form>
+      </div>
+    </div>
   );
 }

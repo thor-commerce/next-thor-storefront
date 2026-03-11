@@ -58,9 +58,7 @@ export default forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
       {...rest}
     >
       <Label className={s.label}>
-        <span className={s.placeholder}>
-          {label} {isRequired && "*"}
-        </span>
+        {label} {isRequired && "*"}
       </Label>
       <span className={s.inputWrapper}>
         <Input
@@ -68,7 +66,6 @@ export default forwardRef<HTMLInputElement, TextInputProps>(function TextInput(
             /* Forward controlled form props to the actual input element */
           {...inputControlProps}
           className={clsx(s.input, inputClassName)}
-          placeholder=" "
         />
       </span>
       {description && <Text slot="description">{description}</Text>}

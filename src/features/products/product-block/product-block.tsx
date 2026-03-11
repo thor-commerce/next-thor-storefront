@@ -1,6 +1,7 @@
 "use client";
 
 import { TaxBehavior } from "@/__generated__/thor/graphql";
+import Navigation from "@/components/navigation/navigation";
 import ThorImage from "@/components/thor-image/thor-image";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
@@ -29,6 +30,8 @@ const getTaxType = ({
 
 export default function ProductBlock({ product, selectedVariant }: Props) {
   const media = mapEdgesToItems(selectedVariant.media);
+  const categories = mapEdgesToItems(product.categories);
+  const collections = mapEdgesToItems(product.collections);
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
   const heroMedia =
     media[activeMediaIndex] ??
@@ -37,6 +40,26 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
     };
   const price = selectedVariant.price;
 
+  const primaryCategory = categories.find(Boolean);
+  const primaryCollection = collections.find(Boolean);
+  const breadcrumbItems = primaryCategory
+    ? [
+        { label: "Products", href: "/products" },
+        ...primaryCategory.ancestors.map((ancestor) => ({
+          label: ancestor.name,
+          href: `/categories/${ancestor.slug}`,
+        })),
+        {
+          label: primaryCategory.name,
+          href: `/categories/${primaryCategory.slug}`,
+        },
+      ]
+    : primaryCollection
+      ? [
+          { label: "Products", href: "/products" },
+          { label: primaryCollection.name, href: `/collections/${primaryCollection.slug}` },
+        ]
+      : [{ label: "Products", href: "/products" }];
 
   const discountedPrice = price?.discountedPrice;
   const discountValue = discountedPrice?.discount?.value;
@@ -110,6 +133,21 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
       </div>
       <div className={s.productBlockProductDetailContainer}>
         <div className={s.productInfo}>
+          <nav className={s.breadcrumbs} aria-label="Breadcrumb">
+            <ol className={s.breadcrumbList}>
+              <li className={s.breadcrumbItem}>
+                <Navigation href="/">Home</Navigation>
+              </li>
+              {breadcrumbItems.map((item) => (
+                <li key={item.href} className={s.breadcrumbItem}>
+                  <Navigation href={item.href}>{item.label}</Navigation>
+                </li>
+              ))}
+              <li className={s.breadcrumbItem} aria-current="page">
+                <span>{product.name}</span>
+              </li>
+            </ol>
+          </nav>
           <h1 className={s.productHeading}>{product.name}</h1>
           <p className={s.productDescription}>{product.description}</p>
         </div>

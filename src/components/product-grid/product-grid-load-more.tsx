@@ -25,7 +25,7 @@ export function ProductGridLoadMore({
   if (!hasNextPage) return null;
 
   return (
-    <div
+    <li
       ref={ref}
       style={{
         minHeight: 40,
@@ -33,6 +33,6 @@ export function ProductGridLoadMore({
         justifyContent: "center",
         alignItems: "center",
       }}
-    ></div>
+    ></li>
   );
 }

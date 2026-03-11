@@ -11,6 +11,7 @@ import {
 import { ApolloClient, InMemoryCache, registerApolloClient } from "@apollo/client-integration-nextjs";
 import { SetContextLink } from "@apollo/client/link/context";
 import { ErrorLink } from "@apollo/client/link/error";
+import { headers } from "next/headers";
 
 disableFragmentWarnings();
 
@@ -65,14 +66,15 @@ const errorLink = new ErrorLink(({ error, operation }) => {
 	}
 });
 
-const authLink = new SetContextLink(async ({ headers }) => {
+const authLink = new SetContextLink(async ({ headers: operationHeaders },) => {
 	const sessionCtx = await auth.api.getSession({
-		headers: await import("next/headers").then((mod) => mod.headers()),
+		headers: await headers(),
 	});
+
 
 	return {
 		headers: {
-			...headers,
+			...operationHeaders,
 			...(sessionCtx?.session.token && {
 				Authorization: `Bearer ${sessionCtx.session.token}`,
 			}),
@@ -91,7 +93,7 @@ export const { getClient, PreloadQuery } = registerApolloClient(() => {
 			errorLink,
 			authLink,
 			new HttpLink({
-				uri: `https://dev-api.thorcommerce.io/${process.env.NEXT_PUBLIC_THOR_COMMERCE_ORGANIZATION}/storefront/graphql`,
+				uri: `https://api.thorcommerce.io/${process.env.NEXT_PUBLIC_THOR_COMMERCE_ORGANIZATION}/storefront/graphql`,
 			}),
 		]),
 	});

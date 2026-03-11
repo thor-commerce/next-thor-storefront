@@ -1,18 +1,25 @@
-import Hero from "@/components/hero/hero";
-import Image from "next/image";
+import { HomePageQuery, HomePageQueryVariables } from "@/__generated__/thor/graphql";
+import Homepage from "@/features/home/homepage";
+import { HOME_PAGE_QUERY } from "@/features/home/queries";
+import { getClient } from "@/lib/thor/apollo-client";
+import { getCountryByCountryCode } from "@/utils/countries";
+import { notFound } from "next/navigation";
 
-export default function HomePage() {
-	return (
-		<div>
-			<Hero
-				title="Fish & Veggies? Ice Cream's on Us!"
-				subtitle="Buy fish or vegetables and get 20% off ice cream. Because healthy eating deserves a sweet reward."
-				mediaPosition="center bottom"
-				height={80}
-				gradientOverlay="dark"
-				theme="dark"
-				media={<Image src="/campaign/fish-veg-ice-desktop.png" alt="Hero" fill priority />}
-			/>
-		</div>
-	);
+export default async function HomePage({ params }: PageProps<"/[countryCode]">) {
+	const { countryCode } = await params;
+  const country = getCountryByCountryCode(countryCode);
+
+  const { data } = await getClient().query<HomePageQuery, HomePageQueryVariables>({
+    query: HOME_PAGE_QUERY,
+    variables: {
+      currency: country.currencies[0],
+      storeId: country.store,
+    },
+  });
+
+  if (!data) {
+    return notFound();
+  }
+
+	return <Homepage data={data} />;
 }

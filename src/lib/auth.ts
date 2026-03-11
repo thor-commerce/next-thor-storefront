@@ -23,7 +23,7 @@ export const auth = betterAuth({
 
   plugins: [
     thorAuthPlugin({
-      apiEndpoint: `https://dev-api.thorcommerce.io/${process.env.NEXT_PUBLIC_THOR_COMMERCE_ORGANIZATION}/storefront/graphql`,
+      apiEndpoint: `https://api.thorcommerce.io/${process.env.NEXT_PUBLIC_THOR_COMMERCE_ORGANIZATION}/storefront/graphql`,
       refreshThresholdMinutes: 5
     }),
     customSession(async ({ user, session }) => {
