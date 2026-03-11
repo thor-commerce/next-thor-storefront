@@ -6,6 +6,8 @@ import { getCartIdFromCookies } from "@/features/cart/utils";
 import Navbar from "@/features/navbar/navbar";
 import { getClient } from "@/lib/thor/apollo-client";
 
+export const dynamic = "force-dynamic"
+
 export default async function RootLayout({
   children,
 }: Readonly<{

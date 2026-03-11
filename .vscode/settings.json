@@ -1,22 +1,35 @@
 {
-	// make sure the settings below is not present in either user and
-	// workspace settings so adding ids to messages on save works
-	// "eslint.codeActionsOnSave.rules": [],
+	// === Editor Settings ===
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"typescript.tsdk": "node_modules/typescript/lib",
 	"editor.codeActionsOnSave": {
-		"source.fixAll": "always",
-		"source.organizeImports": "explicit"
+		"source.fixAll": "always"
 	},
-	"css.validate": true,
 	"editor.quickSuggestions": {
 		"strings": true
 	},
-	"[typescript]": {
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+
+	// === TypeScript ===
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.preferences.importModuleSpecifier": "non-relative",
+
+	// === ESLint ===
+	"eslint.run": "onSave",
+
+	// === GraphQL ===
+	"graphql-config.load.filePath": ".graphqlrc.ts",
+
+	// === File Nesting (cleaner explorer) ===
+	"explorer.fileNesting.enabled": true,
+	"explorer.fileNesting.patterns": {
+		"*.graphql": "${capture}.generated.ts",
+		"package.json": "pnpm-lock.yaml, .npmrc, .nvmrc, .env*, .graphqlrc.*"
 	},
-	"[typescriptreact]": {
-		"editor.defaultFormatter": "vscode.typescript-language-features"
+
+	// === Search Exclusions ===
+	"search.exclude": {
+		"**/src/__generated__/**": true,
+		"**/node_modules": true,
+		"**/.next": true
 	}
 }

@@ -1,88 +1,81 @@
 "use server";
 
 import { gql } from "@/__generated__/thor";
+import { CartLineItemsAddMutation, CartLineItemsAddMutationVariables } from "@/__generated__/thor/graphql";
 import { CACHE_TAGS } from "@/constants";
+import { getClient } from "@/lib/thor/apollo-client";
+import { getServerContext } from "@/utils/server";
 import { revalidateTag } from "next/cache";
 import invariant from "tiny-invariant";
-import {
-  findOrCreateCart,
-  getCartIdFromCookies,
-  saveCartIdToCookie,
-} from "../cart/utils";
-import { getServerContext } from "@/utils/server";
-import { getClient } from "@/lib/thor/apollo-client";
-import {
-  CartLineItemsAddMutation,
-  CartLineItemsAddMutationVariables,
-} from "@/__generated__/thor/graphql";
+import { findOrCreateCart, getCartIdFromCookies, saveCartIdToCookie } from "../cart/utils";
 
 const CART_ADD_ITEMS_MUTATION = gql(/* GraphQL */ `
-  mutation CartLineItemsAdd($input: CartLineItemsAddInput!) {
-    cartLineItemsAdd(input: $input) {
-      cart {
-        id
-      }
-      errors {
-        __typename
-      }
-    }
-  }
+	mutation CartLineItemsAdd($input: CartLineItemsAddInput!) {
+		cartLineItemsAdd(input: $input) {
+			cart {
+				id
+			}
+			errors {
+				__typename
+			}
+		}
+	}
 `);
 
 export async function addItem(prevState: unknown, data: FormData) {
-  invariant(data, "Submitted form without data");
+	invariant(data, "Submitted form without data");
 
-  const selectedVariantID = data.get("variantId")?.toString();
+	const selectedVariantID = data.get("variantId")?.toString();
 
-  //can i acccess the url from inside here?
+	//can i acccess the url from inside here?
 
-  const cartId = await getCartIdFromCookies();
-  const { store, country } = await getServerContext();
+	const cartId = await getCartIdFromCookies();
+	const { store, country } = await getServerContext();
 
-  const cart = await findOrCreateCart({
-    cartId,
-    storeId: store,
-    country: country.code.toUpperCase(),
-  });
+	const cart = await findOrCreateCart({
+		cartId,
+		storeId: store,
+		country: country.code.toUpperCase(),
+	});
 
-  invariant(cart, "Cart not found or created");
+	invariant(cart, "Cart not found or created");
 
-  saveCartIdToCookie(cart.id);
+	saveCartIdToCookie(cart.id);
 
-  if (!selectedVariantID) {
-    return {
-      success: false,
-      message: "No variant selected",
-    };
-  }
-  const cartLineItemsAddResponse = await getClient().mutate<
-    CartLineItemsAddMutation,
-    CartLineItemsAddMutationVariables
-  >({
-    mutation: CART_ADD_ITEMS_MUTATION,
-    variables: {
-      input: {
-        cartId: cart.id,
-        lineItems: [
-          {
-            variantId: selectedVariantID,
-            quantity: 1, // Default to adding one item
-          },
-        ],
-      },
-    },
-  });
+	if (!selectedVariantID) {
+		return {
+			success: false,
+			message: "No variant selected",
+		};
+	}
+	const cartLineItemsAddResponse = await getClient().mutate<
+		CartLineItemsAddMutation,
+		CartLineItemsAddMutationVariables
+	>({
+		mutation: CART_ADD_ITEMS_MUTATION,
+		variables: {
+			input: {
+				cartId: cart.id,
+				lineItems: [
+					{
+						variantId: selectedVariantID,
+						quantity: 1, // Default to adding one item
+					},
+				],
+			},
+		},
+	});
 
-  if (!cartLineItemsAddResponse.data?.cartLineItemsAdd) {
-    return {
-      success: false,
-    };
-  }
+	if (!cartLineItemsAddResponse.data?.cartLineItemsAdd) {
+		return {
+			success: false,
+		};
+	}
 
-  revalidateTag(CACHE_TAGS.cart);
+	revalidateTag(CACHE_TAGS.cart);
 
-  return {
-    success: true,
-    quantity: 1,
-  };
+	return {
+		success: true,
+		quantity: 1,
+	};
 }

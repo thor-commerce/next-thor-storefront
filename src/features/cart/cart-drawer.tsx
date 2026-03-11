@@ -29,6 +29,7 @@ export default function CartDrawer() {
             cart.lineItemsQuantity > 0
         ) {
             if (!isOpen) {
+                // eslint-disable-next-line react-hooks/set-state-in-effect
                 setOpen(true);
             }
 

@@ -1,14 +1,15 @@
 "use client";
 
-import ThorImage from "@/components/thor-image/thor-image";
-import { ProductDetailProduct, ProductDetailProductVariant } from "../types";
-import s from "./product-block.module.css";
-import { mapEdgesToItems } from "@/utils/maps";
-import ProductAttributesSelector from "./product-attribute-selector";
-import AddToCartButton from "../components/add-to-cart-button";
-import clsx from "clsx";
-import { formatMoney } from "@/utils/money";
 import { TaxBehavior } from "@/__generated__/thor/graphql";
+import ThorImage from "@/components/thor-image/thor-image";
+import { mapEdgesToItems } from "@/utils/maps";
+import { formatMoney } from "@/utils/money";
+import clsx from "clsx";
+import { useState } from "react";
+import AddToCartButton from "../components/add-to-cart-button";
+import { ProductDetailProduct, ProductDetailProductVariant } from "../types";
+import ProductAttributesSelector from "./product-attribute-selector";
+import s from "./product-block.module.css";
 type Props = {
   product: ProductDetailProduct;
   selectedVariant: ProductDetailProductVariant;
@@ -28,9 +29,14 @@ const getTaxType = ({
 
 export default function ProductBlock({ product, selectedVariant }: Props) {
   const media = mapEdgesToItems(selectedVariant.media);
-
-  const heroMedia = media.find(Boolean);
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+  const heroMedia =
+    media[activeMediaIndex] ??
+    media.find(Boolean) ?? {
+      src: selectedVariant.image?.src ?? "",
+    };
   const price = selectedVariant.price;
+
 
   const discountedPrice = price?.discountedPrice;
   const discountValue = discountedPrice?.discount?.value;
@@ -69,6 +75,29 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
     <div className={s.productBlockContainer}>
       <div className={s.productBlockMediaContainer}>
         <div className={s.productBlockMediaCarousel}>
+          <div className={s.productMediaThumbRail}>
+            {media.map((item, index) => (
+              <button
+                key={`${item.src}-${index}`}
+                type="button"
+                className={clsx(s.productMediaThumbButton, {
+                  [s.isActiveThumb]: index === activeMediaIndex,
+                })}
+                onClick={() => setActiveMediaIndex(index)}
+                aria-label={`Show product image ${index + 1}`}
+              >
+                <span className={s.productMediaThumb}>
+                  <ThorImage
+                    src={item.src ?? ""}
+                    alt={product.name}
+                    fill
+                    sizes="80px"
+                    className={s.productMediaThumbImage}
+                  />
+                </span>
+              </button>
+            ))}
+          </div>
           <div className={s.productMediaWrapper}>
             <ThorImage
               src={heroMedia?.src ?? ""}
@@ -121,11 +150,16 @@ export default function ProductBlock({ product, selectedVariant }: Props) {
         {price && (
           <div className={s.taxLabel}>
             {getTaxType({ currencyCode: price.value.currencyCode })}{" "}
-           {price.taxBehavior == TaxBehavior.Inclusive ? "included in price" : "excluded from price"}
+            {price.taxBehavior == TaxBehavior.Inclusive
+              ? "included in price"
+              : "excluded from price"}
           </div>
         )}
 
-        <AddToCartButton selectedVariantId={selectedVariant.id} />
+        <AddToCartButton
+          selectedVariantId={selectedVariant.id}
+          className={s.addToCartButton}
+        />
       </div>
     </div>
   );

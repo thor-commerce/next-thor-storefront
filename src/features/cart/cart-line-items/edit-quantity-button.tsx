@@ -19,7 +19,8 @@ export default function EditItemQuantityButton({
   type: "increase" | "decrease";
 }) {
 
-  const [, formAction] = useActionState(updateItemQuantity, null);
+  const [, formAction, pending] = useActionState(updateItemQuantity, null);
+  console.log("ACTION PENDING", pending)
   const payload = {
     lineId: item.id,
     quantity: type === "increase" ? item.quantity + 1 : item.quantity - 1,
@@ -54,6 +55,7 @@ function SubmitButton({
 }) {
   const { pending } = useFormStatus();
 
+  console.log("PENDING", pending)
   return (
     <button
       type="submit"

@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { thorAuthPlugin } from "@thor-commerce/better-auth-thor";
-import { createAuthMiddleware, customSession } from "better-auth/plugins";
+import { customSession } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
@@ -32,7 +32,7 @@ export const auth = betterAuth({
       return {
         user: {
           ...user,
-          groups: (user as any).groups as Array<{ id: string; name: string }> || []
+          groups: (user as unknown as { groups: Array<{ id: string; name: string }> }).groups || []
         },
         session
       };

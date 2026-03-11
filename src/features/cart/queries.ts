@@ -28,8 +28,6 @@ export const CART_DETAILS_QUERY = gql(/* GraphQL */ `
 				edges {
 					node {
 						id
-						id
-						...EditItemQuantityButton
 						taxBehavior
 						variantName
 						productName

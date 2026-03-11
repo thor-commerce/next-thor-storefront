@@ -7,6 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "eslint",
+		"lint:fix": "eslint --fix",
 		"codegen": "graphql-codegen --config codegen.ts",
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
@@ -14,14 +15,14 @@
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
 	},
 	"dependencies": {
-		"@apollo/client": "^4.1.6",
+		"@apollo/client": "^4.0.7",
 		"@apollo/client-integration-nextjs": "^0.14.4",
 		"@graphql-codegen/fragment-matcher": "^6.0.0",
 		"@graphql-codegen/typescript-apollo-client-helpers": "^3.0.1",
 		"@graphql-typed-document-node/core": "^3.2.0",
 		"@hookform/resolvers": "^5.2.2",
-		"@next/env": "^16.1.6",
-		"@opennextjs/cloudflare": "^1.14.3",
+		"@next/env": "15.5.12",
+		"@opennextjs/cloudflare": "^1.17.1",
 		"@stripe/react-stripe-js": "^5.3.0",
 		"@stripe/stripe-js": "^8.2.0",
 		"@thor-commerce/better-auth-thor": "^0.2.0",
@@ -30,11 +31,11 @@
 		"graphql": "^16.11.0",
 		"lodash-es": "^4.17.21",
 		"lucide-react": "^0.552.0",
-		"next": "16.1.6",
+		"next": "15.5.12",
 		"path-to-regexp": "^8.3.0",
-		"react": "19.2.0",
+		"react": "19.0.0",
 		"react-aria-components": "^1.16.0",
-		"react-dom": "19.2.0",
+		"react-dom": "19.0.0",
 		"react-hook-form": "^7.66.0",
 		"react-intersection-observer": "^10.0.0",
 		"stripe": "^19.2.1",
@@ -48,9 +49,9 @@
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"eslint": "^9",
-		"eslint-config-next": "16.1.6",
+		"eslint-config-next": "16.0.0",
 		"graphql-config": "^5.1.5",
 		"typescript": "^5",
-		"wrangler": "^4.53.0"
+		"wrangler": "^4.71.0"
 	}
 }

@@ -1,85 +1,153 @@
 .attributeSelectorForm {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  margin-bottom: 32px;
-}
-.optionsContainer {
-  margin: 0px auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0px, 1fr));
-  gap: 7px;
-  max-width: 100%;
-  border: 1px solid transparent;
+  gap: 1.25rem;
+}
+
+.optionsContainer {
+  display: grid;
   width: 100%;
+  margin: 0;
+  border: 0;
+
+  &.textOptionsContainer {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
 
   &.swatchOptionsContainer {
-    grid-template-columns: repeat(6, minmax(0px, 1fr));
-    column-gap: 10px;
-    row-gap: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  &.colorTextOptionsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
   }
 }
 
 .legend {
-  padding-bottom: 10px;
-  font-weight: 600;
-  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-s);
+  padding-bottom: 0.75rem;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-semibold);
+  color: var(--foreground);
+}
+
+.selectedValue {
+  color: var(--text-muted);
+  font-weight: var(--font-weight-medium);
 }
 
 .textOption {
-  font-size: 14px;
-  grid-column: span 1;
-  -webkit-box-align: center;
-  align-items: center;
-
   display: flex;
-  height: 48px;
-  -webkit-box-pack: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &:hover label {
-    border: 1px solid #171717;
-    border-radius: 4px;
-  }
-
-  label {
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    border: 1px solid #cacacb;
-    border-radius: 4px;
-  }
+  align-items: center;
+  min-height: 3rem;
+  font-size: var(--text-sm);
 }
+
+.textOption label {
+  display: flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard),
+  box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.colorTextOption label {
+  width: 3rem;
+  min-height: 3rem;
+  padding: 0;
+  justify-content: center;
+  gap: 0;
+  border-radius: var(--radius-pill);
+}
+
+.textOptionInput:not(:disabled) ~ label:hover {
+  border-color: var(--foreground);
+}
+
 .textOptionInput:disabled ~ label {
-  background: #f5f5f5;
+  background: var(--color-surface-muted);
   cursor: not-allowed;
   color: var(--text-muted);
+  opacity: 0.45;
+  box-shadow: none;
 }
+
 .textOptionInput:checked ~ label {
-  border: 1px solid #171717;
-  border-radius: 4px;
+  border-color: var(--foreground);
+  background: var(--color-surface-muted);
+  box-shadow: inset 0 0 0 1px var(--foreground);
+}
+
+.colorDot {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  border-radius: 999rem;
+  background: var(--color);
+  box-shadow:
+    inset 0 0 0 1px rgba(15, 23, 42, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+.colorValue {
+  display: none;
 }
 
 .swatchOption {
-  aspect-ratio: 1 / 1;
-  label {
-    width: 100%;
-    height: 100%;
-    display: block;
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    background: var(--product-tile-bg);
-    &:hover {
-      outline: 1px solid #171717;
-      outline-offset: 1px;
-    }
-  }
+  width: 3.25rem;
+  height: 3.25rem;
+  flex: 0 0 auto;
+}
+
+.imageSwatchOption {
+  width: 3.5rem;
+  height: 3.5rem;
+}
+
+.swatchLabel {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: 999rem;
+  border: 1px solid var(--color-border-strong);
+  background: var(--product-tile-bg);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.imageSwatchLabel {
+  border-radius: var(--radius-m);
+}
+
+.colorSwatchLabel {
+  box-shadow: inset 0 0 0 0.25rem var(--color-surface);
+}
+
+.swatchInput:not(:disabled) ~ .swatchLabel:hover {
+  border-color: var(--foreground);
+  transform: translateY(-1px);
 }
 
 .swatchColor {
@@ -87,7 +155,56 @@
   inset: 0;
   background: var(--color);
 }
-.swatchInput:checked ~ label {
-  outline: 1px solid #171717;
-  outline-offset: 1px;
+
+.swatchMedia {
+  object-fit: cover;
+}
+
+.swatchInput:checked ~ .swatchLabel {
+  border-color: var(--foreground);
+  box-shadow:
+    0 0 0 2px var(--color-surface),
+    0 0 0 3px var(--foreground);
+}
+
+.swatchInput:checked ~ .colorSwatchLabel {
+  box-shadow:
+    inset 0 0 0 0.25rem var(--color-surface),
+    0 0 0 2px var(--color-surface),
+    0 0 0 3px var(--foreground);
+}
+
+.swatchInput:disabled ~ .swatchLabel {
+  cursor: not-allowed;
+  opacity: 0.35;
+  transform: none;
+  box-shadow: none;
+}
+
+.swatchInput:disabled ~ .imageSwatchLabel::after,
+.swatchInput:disabled ~ .colorSwatchLabel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.swatchInput:disabled ~ .colorSwatchLabel::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 70%;
+  height: 1px;
+  background: rgba(15, 23, 42, 0.28);
+  transform: translate(-50%, -50%) rotate(-35deg);
+  z-index: 1;
+}
+
+@media (max-width: 40rem) {
+  .optionsContainer {
+    &.textOptionsContainer {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 }

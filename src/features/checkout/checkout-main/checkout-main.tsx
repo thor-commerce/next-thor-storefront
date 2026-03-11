@@ -1,24 +1,23 @@
 "use client";
 import { CheckoutCartDetailsQuery } from "@/__generated__/thor/graphql";
+import Button from "@/components/button/button";
 import Select from "@/components/select/select";
+import { SkeletonBox } from "@/components/skeleton-box/skeleton-box";
 import TextInput from "@/components/text-input/text-input";
 import { COUNTRIES } from "@/lib/thor/config";
 import { QueryRef, useReadQuery } from "@apollo/client/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useElements, useStripe } from "@stripe/react-stripe-js";
+import { pickBy } from "lodash-es";
+import { useCallback, useEffect, useRef, useTransition } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import invariant from "tiny-invariant";
-import { pickBy } from "lodash-es";
 import z from "zod";
 import { cartUpdateAction } from "../actions";
 import s from "./checkout-main.module.css";
-import { CheckoutSection } from "./checkout-section/checkout-section";
-import CheckoutShippingMethods from "./checkout-shipping-methods/checkout-shipping-methods";
 import CheckoutPayment from "./checkout-payment/checkout-payment";
-import Button from "@/components/button/button";
-import { useElements, useStripe } from "@stripe/react-stripe-js";
-import { SkeletonBox } from "@/components/skeleton-box/skeleton-box";
-import { useEffect, useRef, useCallback, useTransition } from "react";
-import { CheckoutShippingMethodsSkeleton } from "./checkout-shipping-methods/checkout-shipping-methods";
+import { CheckoutSection } from "./checkout-section/checkout-section";
+import CheckoutShippingMethods, { CheckoutShippingMethodsSkeleton } from "./checkout-shipping-methods/checkout-shipping-methods";
 
 const baseAddressFormSchema = z.object({
   country: z.string().min(2, "Country is required"),
@@ -176,6 +175,7 @@ export default function CheckoutMain({
   }, [updateCart, form]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/incompatible-library
     const subscription = form.watch(debouncedUpdateCart);
 
     return () => {

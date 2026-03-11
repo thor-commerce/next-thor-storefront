@@ -64,6 +64,9 @@ export const PRODUCT_QUERY = gql(/* GraphQL */ `
               name
               value
             }
+            image {
+              src
+            }
             availability {
               availableForPurchase
               availableQuantity

@@ -23,7 +23,9 @@ export default async function Cart() {
       variables={{ id: cartId }}
       context={{
         fetchOptions: {
-          tags: [CACHE_TAGS.cart],
+          next: {
+            tags: [CACHE_TAGS.cart],
+          }
         },
       }}
     >

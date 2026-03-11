@@ -1,10 +1,10 @@
+import Navigation from "@/components/navigation/navigation";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import s from "./navbar-profile.module.css";
-import Navigation from "@/components/navigation/navigation";
 import NavbarProfileDropdown from "./navbar-profile-dropdown";
+import s from "./navbar-profile.module.css";
 
-export const dynamic = "force-dynamic";
+
 
 export default async function NavbarProfile() {
   const session = await auth.api.getSession({
