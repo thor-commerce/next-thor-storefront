@@ -1,9 +1,9 @@
 "use client";
 import DiscountLabelIcon from "@/components/icons/discount-label";
+import { useSafePendingState } from "@/hooks/use-safe-pending-state";
+import { useRouter } from "next/navigation";
 import s from "./discount-code-label.module.css";
 import { Button } from "react-aria-components";
-import { startTransition, useActionState } from "react";
-import { DiscountCodeActionResponse } from "../types";
 import { removeDiscountCode } from "../actions";
 import { XIcon } from "lucide-react";
 
@@ -12,11 +12,25 @@ interface DiscountCodeLabelProps {
 }
 
 export default function DiscountCodeLabel({ code }: DiscountCodeLabelProps) {
-	const intialState: DiscountCodeActionResponse = {
-		success: false,
-		errors: {},
-	};
-	const [, removeFormAction, pendingRemove] = useActionState(removeDiscountCode, intialState);
+	const router = useRouter();
+	const { pending: pendingRemove, startPending, stopPending } = useSafePendingState();
+
+  const handleRemove = async () => {
+    if (pendingRemove) {
+      return;
+    }
+
+    startPending();
+
+    try {
+      const response = await removeDiscountCode(null, code);
+      if (response.success) {
+        router.refresh();
+      }
+    } finally {
+      stopPending();
+    }
+  };
 
 	return (
 		<li className={s.discountCodeLabel}>
@@ -29,7 +43,7 @@ export default function DiscountCodeLabel({ code }: DiscountCodeLabelProps) {
 					className={s.removeButton}
 					aria-label="Remove discount code"
 					isDisabled={pendingRemove}
-					onClick={() => startTransition(() => removeFormAction(code))}
+					onClick={() => void handleRemove()}
 				>
 					<span className={s.crossIcon}>
 						<XIcon size={16} />

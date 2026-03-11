@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
 import Button from "@/components/button/button";
+import { useSafePendingState } from "@/hooks/use-safe-pending-state";
+import { useRouter } from "next/navigation";
 import { addItem } from "../actions";
 
 interface Props {
@@ -12,23 +12,36 @@ interface Props {
 }
 
 function AddToCartButton({ className, selectedVariantId, disabled }: Props) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, formAction] = useActionState(addItem, null);
-
-  return (
-    <form className={className} action={formAction}>
-      <input type="hidden" name="variantId" value={selectedVariantId} />
-      <SubmitButton disabled={disabled} />
-    </form>
-  );
-}
-
-function SubmitButton({ disabled }: { disabled?: boolean }) {
-  const { pending } = useFormStatus();
+  const router = useRouter();
+  const { pending, startPending, stopPending } = useSafePendingState();
   const isButtonDisabled = disabled || pending;
 
+  const handleAddToCart = async () => {
+    if (isButtonDisabled) {
+      return;
+    }
+
+    startPending();
+
+    try {
+      const formData = new FormData();
+      formData.set("variantId", selectedVariantId);
+      await addItem(null, formData);
+      router.refresh();
+    } finally {
+      stopPending();
+    }
+  };
+
   return (
-    <Button block type="submit" disabled={isButtonDisabled} loading={pending}>
+    <Button
+      block
+      type="button"
+      className={className}
+      disabled={isButtonDisabled}
+      loading={pending}
+      onClick={() => void handleAddToCart()}
+    >
       Add to cart
     </Button>
   );

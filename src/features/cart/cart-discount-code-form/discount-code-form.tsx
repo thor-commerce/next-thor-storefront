@@ -3,10 +3,12 @@
 import { CartDetailsQuery } from "@/__generated__/thor/graphql";
 import Button from "@/components/button/button";
 import TextInput from "@/components/text-input/text-input";
+import { useSafePendingState } from "@/hooks/use-safe-pending-state";
 import { QueryRef, useReadQuery } from "@apollo/client/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown } from "lucide-react";
-import { startTransition, useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Disclosure,
   DisclosurePanel,
@@ -37,7 +39,9 @@ export default function DiscountCodeForm({
 
   console.log(cart?.discountCodes)
 
-  const [state, formAction, pendingAdd] = useActionState(addDiscountCode, null);
+  const router = useRouter();
+  const { pending: pendingAdd, startPending, stopPending } = useSafePendingState();
+  const [state, setState] = useState<Awaited<ReturnType<typeof addDiscountCode>> | null>(null);
 
   useEffect(() => {
     if (state?.errors) {
@@ -60,10 +64,18 @@ export default function DiscountCodeForm({
 
     const fd = new FormData(formEl);
 
-    // Optional: wrap in a transition to keep the UI snappy
-    startTransition(() => {
-      formAction(fd);
-    });
+    startPending();
+
+    void addDiscountCode(null, fd)
+      .then((response) => {
+        setState(response);
+        if (response.success) {
+          router.refresh();
+        }
+      })
+      .finally(() => {
+        stopPending();
+      });
   });
 
   return (

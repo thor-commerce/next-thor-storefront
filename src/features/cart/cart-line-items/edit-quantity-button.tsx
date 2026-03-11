@@ -2,9 +2,10 @@
 import PlusIcon from "@/components/icons/plus";
 import SubtractIcon from "@/components/icons/subtract";
 import Spinner from "@/components/spinner/spinner";
+import { useSafePendingState } from "@/hooks/use-safe-pending-state";
+import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { useActionState, useMemo } from "react";
-import { useFormStatus } from "react-dom";
+import { useMemo } from "react";
 import { updateItemQuantity } from "../actions";
 import { CartLineItemType } from "../types";
 import s from "./cart-line-items.module.css";
@@ -18,14 +19,12 @@ export default function EditItemQuantityButton({
   item: CartLineItemType;
   type: "increase" | "decrease";
 }) {
-
-  const [, formAction, pending] = useActionState(updateItemQuantity, null);
-  console.log("ACTION PENDING", pending)
+  const router = useRouter();
+  const { pending, startPending, stopPending } = useSafePendingState();
   const payload = {
     lineId: item.id,
     quantity: type === "increase" ? item.quantity + 1 : item.quantity - 1,
   };
-  const actionWithVariant = formAction.bind(null, payload);
 
   const disabled = useMemo(() => {
     if (!item.variant?.availability) return true;
@@ -39,28 +38,52 @@ export default function EditItemQuantityButton({
     }
   }, [item, type]);
 
+  const handleUpdate = async () => {
+    if (pending || disabled) {
+      return;
+    }
+
+    startPending();
+
+    try {
+      await updateItemQuantity(null, payload);
+      router.refresh();
+    } finally {
+      stopPending();
+    }
+  };
+
   return (
-    <form action={actionWithVariant}>
-      <SubmitButton type={type} disabled={disabled} />
-    </form>
+    <SubmitButton
+      type={type}
+      disabled={disabled}
+      pending={pending}
+      onPress={handleUpdate}
+    />
   );
 }
 
 function SubmitButton({
   type,
   disabled = false,
+  pending,
+  onPress,
 }: {
   type: "increase" | "decrease";
   disabled?: boolean;
+  pending: boolean;
+  onPress: () => void;
 }) {
-  const { pending } = useFormStatus();
-
-  console.log("PENDING", pending)
   return (
     <button
-      type="submit"
+      type="button"
       onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-        if (pending || disabled) e.preventDefault();
+        if (pending || disabled) {
+          e.preventDefault();
+          return;
+        }
+
+        void onPress();
       }}
       aria-label={
         type === "increase" ? "Increase item quantity" : "Reduce item quantity"
@@ -69,7 +92,7 @@ function SubmitButton({
       disabled={pending || disabled}
       className={clsx(s.quantityButton)}
     >
-      {!pending ? type === "increase" ? <PlusIcon /> : <SubtractIcon /> : <Spinner size="small" />}
+      {!pending ? (type === "increase" ? <PlusIcon /> : <SubtractIcon />) : <Spinner size="small" />}
     </button>
   );
 }

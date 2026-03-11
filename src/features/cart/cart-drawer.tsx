@@ -7,6 +7,7 @@ import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
 import clsx from "clsx";
 import { XIcon } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Button as AriaButton, Dialog, DialogTrigger, Heading, Modal, ModalOverlay } from "react-aria-components";
 import { CheckoutStepEnum } from "../checkout/types";
@@ -18,6 +19,8 @@ export default function CartDrawer() {
     const { cart } = useCart();
     const quantityRef = useRef(cart?.lineItemsQuantity);
     const [isOpen, setOpen] = useState(false);
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
     const hasItems = Boolean(cart?.lineItemsQuantity && cart.lineItemsQuantity > 0);
     const lines = mapEdgesToItems(cart?.lineItems) ?? [];
@@ -36,6 +39,10 @@ export default function CartDrawer() {
             quantityRef.current = cart.lineItemsQuantity;
         }
     }, [cart?.lineItemsQuantity, isOpen]);
+
+    useEffect(() => {
+        setOpen(false);
+    }, [pathname, searchParams]);
 
     return (
         <DialogTrigger>
@@ -74,7 +81,15 @@ export default function CartDrawer() {
                 }}
             >
                 <Modal className={s.modal}>
-                    <Dialog className={s.dialog}>
+                    <Dialog
+                        className={s.dialog}
+                        onClickCapture={(event) => {
+                            const target = event.target as HTMLElement | null;
+                            if (target?.closest("a[href]")) {
+                                setOpen(false);
+                            }
+                        }}
+                    >
                         <header className={s.drawerHeader}>
                             <div className={s.drawerHeading}>
                                 <Heading>Your Bag</Heading>

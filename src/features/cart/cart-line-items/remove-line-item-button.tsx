@@ -1,30 +1,47 @@
 "use client";
 
 import { removeLineItem } from "@/features/cart/actions";
+import { useSafePendingState } from "@/hooks/use-safe-pending-state";
+import { useRouter } from "next/navigation";
 import clsx from "clsx";
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
 import s from "./cart-line-items.module.css";
 
 export function RemoveItemButton({ lineItemId }: { lineItemId: string }) {
-  const [, formAction] = useActionState(removeLineItem, null);
+  const router = useRouter();
+  const { pending, startPending, stopPending } = useSafePendingState();
 
-  const actionWithVariant = formAction.bind(null, lineItemId);
+  const handleRemove = async () => {
+    if (pending) {
+      return;
+    }
+
+    startPending();
+
+    try {
+      await removeLineItem(null, lineItemId);
+      router.refresh();
+    } finally {
+      stopPending();
+    }
+  };
 
   return (
-    <form action={actionWithVariant} className={s.removeForm}>
-      <SubmitButton />
-    </form>
+    <div className={s.removeForm}>
+      <SubmitButton pending={pending} onPress={handleRemove} />
+    </div>
   );
 }
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
+function SubmitButton({ pending, onPress }: { pending: boolean; onPress: () => void }) {
   return (
     <button
-      type="submit"
+      type="button"
       onClick={(e: React.FormEvent<HTMLButtonElement>) => {
-        if (pending) e.preventDefault();
+        if (pending) {
+          e.preventDefault();
+          return;
+        }
+
+        void onPress();
       }}
       aria-label={"Remove item"}
       aria-disabled={pending}
