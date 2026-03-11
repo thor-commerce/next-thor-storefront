@@ -6,37 +6,33 @@ import { getCartIdFromCookies } from "@/features/cart/utils";
 import Navbar from "@/features/navbar/navbar";
 import { getClient } from "@/lib/thor/apollo-client";
 
-export const dynamic = "force-dynamic"
-
 export default async function RootLayout({
-  children,
+	children,
 }: Readonly<{
-  children: React.ReactNode;
+	children: React.ReactNode;
 }>) {
-  const cartId = await getCartIdFromCookies();
+	const cartId = await getCartIdFromCookies();
 
-  const variables: CartDetailsQueryVariables | undefined = cartId
-    ? { id: cartId }
-    : undefined;
+	const variables: CartDetailsQueryVariables | undefined = cartId ? { id: cartId } : undefined;
 
-  const { data } = variables
-    ? await getClient().query({
-      query: CART_DETAILS_QUERY,
-      variables: { id: cartId },
-      context: {
-        fetchOptions: {
-          tags: [CACHE_TAGS.cart],
-        },
-      },
-    })
-    : { data: null };
+	const { data } = variables
+		? await getClient().query({
+				query: CART_DETAILS_QUERY,
+				variables: { id: cartId },
+				context: {
+					fetchOptions: {
+						tags: [CACHE_TAGS.cart],
+					},
+				},
+			})
+		: { data: null };
 
-  const cart = data?.cart;
+	const cart = data?.cart;
 
-  return (
-    <CartProvider cart={cart}>
-      <Navbar />
-      {children}
-    </CartProvider>
-  );
+	return (
+		<CartProvider cart={cart}>
+			<Navbar />
+			{children}
+		</CartProvider>
+	);
 }
