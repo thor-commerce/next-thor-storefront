@@ -13,7 +13,6 @@ export default async function CartDrawerWrapper() {
 				variables: { id: cartId },
 				context: {
 					fetchOptions: {
-						cache: "force-cache",
 						next: {
 							tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
 						},

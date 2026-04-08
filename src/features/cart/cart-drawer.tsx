@@ -20,6 +20,7 @@ export default function CartDrawer({ cart }: { cart?: Cart | null }) {
     const [isOpen, setOpen] = useState(false);
     const pathname = usePathname();
     const searchParams = useSearchParams();
+    const search = searchParams.toString();
 
     const hasItems = Boolean(cart?.lineItemsQuantity && cart.lineItemsQuantity > 0);
     const lines = mapEdgesToItems(cart?.lineItems) ?? [];
@@ -45,7 +46,7 @@ export default function CartDrawer({ cart }: { cart?: Cart | null }) {
         return () => {
             window.clearTimeout(timeout);
         };
-    }, [pathname, searchParams]);
+    }, [pathname, search]);
 
     return (
         <DialogTrigger>

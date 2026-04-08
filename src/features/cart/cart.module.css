@@ -2,13 +2,12 @@
 	position: relative;
 	display: grid;
 	place-items: center;
-	inline-size: 3rem;
-	block-size: 3rem;
-	border: 1px solid var(--color-border-subtle);
+	inline-size: 2rem;
+	block-size: 2rem;
+	border: none;
 	border-radius: var(--radius-m);
 	background: var(--color-surface);
 	color: var(--foreground);
-	box-shadow: var(--shadow-xs);
 	transition:
 		border-color var(--duration-fast) var(--ease-standard),
 		background-color var(--duration-fast) var(--ease-standard),
@@ -42,8 +41,8 @@
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-inline-size: 1.4rem;
-	block-size: 1.4rem;
+	inline-size: 1.2rem;
+	block-size: 1.2rem;
 	padding-inline: var(--spacing-2xs);
 	border: 2px solid var(--color-surface);
 	border-radius: var(--radius-pill);
