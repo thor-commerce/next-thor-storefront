@@ -1,7 +1,12 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-import { customerActivate, customerRegister } from "@/lib/thorcommerce/storefront";
+import {
+	customerActivate,
+	customerPasswordReset,
+	customerPasswordResetToken,
+	customerRegister,
+} from "@/lib/thorcommerce/storefront";
 import { redirect } from "next/navigation";
 
 export type LoginState = { error?: string; success?: boolean } | null;
@@ -79,4 +84,77 @@ export async function activate(_currentState: unknown, formData: FormData): Prom
 	}
 
 	redirect("/account");
+}
+
+export type ForgotPasswordState = { error?: string; success?: boolean; email?: string } | null;
+
+export async function requestPasswordReset(
+	_currentState: unknown,
+	formData: FormData
+): Promise<ForgotPasswordState> {
+	const email = (formData.get("email") as string)?.trim();
+
+	if (!email) {
+		return { error: "Email is required." };
+	}
+
+	try {
+		const response = await customerPasswordResetToken({
+			input: { email },
+		});
+
+		if (response.errors && response.errors.length > 0) {
+			return { error: "We couldn't send a reset code. Please check the email and try again.", email };
+		}
+
+		return { success: true, email };
+	} catch (err) {
+		console.error(err);
+		return { error: "Something went wrong, please try again.", email };
+	}
+}
+
+export type ResetPasswordState = { error?: string; success?: boolean } | null;
+
+export async function resetPassword(
+	_currentState: unknown,
+	formData: FormData
+): Promise<ResetPasswordState> {
+	const email = (formData.get("email") as string)?.trim();
+	const token = (formData.get("token") as string)?.trim();
+	const password = formData.get("password") as string;
+	const confirmPassword = formData.get("confirmPassword") as string;
+
+	if (!email) {
+		return { error: "Email is required." };
+	}
+
+	if (!token) {
+		return { error: "Reset code is required." };
+	}
+
+	if (password !== confirmPassword) {
+		return { error: "Passwords do not match." };
+	}
+
+	try {
+		const response = await customerPasswordReset({
+			input: { email, password, resetToken: token },
+		});
+
+		if (response.errors && response.errors.length > 0) {
+			const hasInvalidPassword = response.errors.some((error) => error.code === "InvalidPasswordError");
+
+			return {
+				error: hasInvalidPassword
+					? "Password does not meet the requirements."
+					: "Reset failed. Please check the code and try again.",
+			};
+		}
+
+		return { success: true };
+	} catch (err) {
+		console.error(err);
+		return { error: "Something went wrong, please try again." };
+	}
 }

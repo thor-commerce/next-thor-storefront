@@ -4,7 +4,7 @@ import { CACHE_TAGS } from "@/constants";
 import { getCartIdFromCookies } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { headers } from "next/headers";
@@ -183,6 +183,24 @@ export const customerActivate = async (variables: CustomerActivateMutationVariab
     })
 
     return data.customerActivate;
+}
+
+export const customerPasswordResetToken = async (variables: CustomerResetPasswordTokenMutationVariables) => {
+    const data = await storefrontFetch({
+        query: CustomerResetPasswordTokenDocument,
+        variables
+    })
+
+    return data.customerPasswordResetToken;
+}
+
+export const customerPasswordReset = async (variables: CustomerResetPasswordMutationVariables) => {
+    const data = await storefrontFetch({
+        query: CustomerResetPasswordDocument,
+        variables
+    })
+
+    return data.customerPasswordReset;
 }
 
 

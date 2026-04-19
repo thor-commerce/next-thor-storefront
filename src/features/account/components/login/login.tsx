@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { login, LoginState } from "@/features/account/actions";
 
 interface Props {
-	setView: (view: "login" | "register") => void;
+	setView: (view: "login" | "register" | "forgot") => void;
 }
 
 export default function Login({ setView }: Props) {
@@ -22,6 +22,9 @@ export default function Login({ setView }: Props) {
 				<form action={formAction} className={s.form}>
 					<TextInput label="Email" type="email" name="email" block />
 					<TextInput label="Password" type="password" name="password" block />
+					<button type="button" className={s.forgotButton} onClick={() => setView("forgot")}>
+						Forgot password?
+					</button>
 
 					{state?.error && <p className={s.error}>{state.error}</p>}
 
@@ -31,7 +34,7 @@ export default function Login({ setView }: Props) {
 				</form>
 				<div className={s.signUpPrompt}>
 					{"Don't have an account?"}
-					<button className={s.signUpButton} onClick={() => setView("register")}>
+					<button type="button" className={s.signUpButton} onClick={() => setView("register")}>
 						Sign up
 					</button>
 				</div>

@@ -5,7 +5,7 @@ import { useActionState } from "react";
 import { activate, ActivateState, register, RegisterState } from "@/features/account/actions";
 
 interface Props {
-	setView: (view: "login" | "register") => void;
+	setView: (view: "login" | "register" | "forgot") => void;
 }
 
 export default function Register({ setView }: Props) {
@@ -34,7 +34,7 @@ export default function Register({ setView }: Props) {
 
 				<div className={s.signUpPrompt}>
 					{"Already a member?"}
-					<button className={s.signUpButton} onClick={() => setView("login")}>
+					<button type="button" className={s.signUpButton} onClick={() => setView("login")}>
 						Sign in
 					</button>
 				</div>
