@@ -1,20 +1,7 @@
 "use server";
 
-import {
-	CartReplicateMutation,
-	CartReplicateMutationVariables,
-	CartState,
-	ReplicationStrategy,
-} from "@/__generated__/thor/graphql";
-import { CACHE_TAGS } from "@/constants";
-import { getCartCacheTag } from "@/constants";
-import { getClient } from "@/lib/thorcommerce/apollo-client";
 import { THOR_CART_COOKIE_NAME } from "@/lib/thorcommerce/config";
-
-import { getServerContext } from "@/utils/server";
-import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
-import { CART_REPLICATE_MUTATION } from "./mutations";
 
 export async function removeCartCookie() {
 	try {
