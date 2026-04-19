@@ -1,0 +1,73 @@
+fragment Cart on Cart {
+	id
+	customerId
+	shippingAddress {
+		countryCode
+	}
+	lineItemsQuantity
+	lineItems(first: 100) {
+		edges {
+			node {
+				id
+				taxBehavior
+				variantName
+				variantId
+				productName
+				quantity
+				productSlug
+				variant {
+					id
+					image {
+						src
+					}
+					selectedAttributes {
+						value
+					}
+					availability {
+						availableForPurchase
+						availableQuantity
+						stockPolicy
+					}
+				}
+				unitPrice {
+					value {
+						...Money
+					}
+					discountedPrice {
+						value {
+							...Money
+						}
+					}
+				}
+				discountApplications {
+					edges {
+						node {
+							label
+							discountedAmount {
+								...Money
+							}
+						}
+					}
+				}
+				total {
+					...Money
+				}
+			}
+		}
+	}
+	discountCodes {
+		code
+		error
+	}
+	subtotal {
+		...Money
+	}
+	taxedPrice {
+		tax {
+			...Money
+		}
+	}
+	total {
+		...Money
+	}
+}

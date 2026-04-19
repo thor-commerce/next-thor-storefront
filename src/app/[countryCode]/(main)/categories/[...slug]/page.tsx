@@ -1,43 +1,28 @@
-import {
-  CategoryGridQueryVariables,
-} from "@/__generated__/thor/graphql";
-import { ProductGridSkeleton } from "@/components/product-grid/product-grid";
-import CategoryGrid from "@/features/categories/category-grid/category-grid";
+import CategoryPage from "@/features/categories/category-page/category-page";
 import { getCategorySort } from "@/features/product-listing/sort";
-import { CATEGORY_GRID_QUERY } from "@/features/categories/queries";
+import { getCategoryList } from "@/lib/thorcommerce/storefront";
 
-import { PreloadQuery } from "@/lib/thor/apollo-client";
-import { getCountryByCountryCode } from "@/utils/countries";
-import { Suspense } from "react";
-
-export default async function CategoryPage({
-  params,
-  searchParams,
+export default async function Category({
+	params,
+	searchParams,
 }: PageProps<"/[countryCode]/categories/[...slug]">) {
-  const { slug, countryCode } = await params;
-  const { sort } = await searchParams;
-  const selectedSort = getCategorySort(sort);
+	const { slug } = await params;
+	const { sort } = await searchParams;
+	const selectedSort = getCategorySort(sort);
 
-  const categorySlug = slug?.[slug.length - 1];
+	const categorySlug = slug?.[slug.length - 1];
 
-  if (!categorySlug) {
-    throw new Error("Category slug is required");
-  }
+	if (!categorySlug) {
+		throw new Error("Category slug is required");
+	}
 
-  const country = getCountryByCountryCode(countryCode);
-  const variables: CategoryGridQueryVariables = {
-    slug: categorySlug.toLowerCase(),
-    currency: country.currencies[0],
-    storeId: country.store,
-    sortKey: selectedSort.sortKey,
-    sortDirection: selectedSort.sortDirection,
-  };
+	const { name, products, totalCount } = await getCategoryList({
+		slug: categorySlug.toLowerCase(),
+		sortDirection: selectedSort.sortDirection,
+		sortKey: selectedSort.sortKey,
+	});
 
-  return (
-    <PreloadQuery query={CATEGORY_GRID_QUERY} variables={variables}>
-      <Suspense fallback={<ProductGridSkeleton />}>
-        <CategoryGrid variables={variables} sortValue={selectedSort.selected} />
-      </Suspense>
-    </PreloadQuery>
-  );
+	return (
+		<CategoryPage name={name} products={products} totalCount={totalCount} sortValue={selectedSort.selected} />
+	);
 }

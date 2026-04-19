@@ -1,7 +1,7 @@
 "use server";
 
 import { gql } from "@/__generated__/thor";
-import { getClient } from "@/lib/thor/apollo-client";
+import { getClient } from "@/lib/thorcommerce/apollo-client";
 import { revalidatePath } from "next/cache";
 
 export type UpdateProfileState = { error?: string; success?: boolean } | null;

@@ -1,0 +1,69 @@
+mutation CartCreate($input: CartCreateInput!) {
+	cartCreate(input: $input) {
+		cart {
+			...Cart
+		}
+	}
+}
+
+mutation CartUpdate($input: CartUpdateInput!) {
+	cartUpdate(input: $input) {
+		cart {
+			...Cart
+		}
+	}
+}
+
+mutation CartReplicate($input: CartReplicateInput!) {
+	cartReplicate(input: $input) {
+		cart {
+			...Cart
+		}
+	}
+}
+
+mutation CartDiscountCodeAdd($input: CartDiscountCodeAddInput!) {
+	cartDiscountCodeAdd(input: $input) {
+		cart {
+			...Cart
+		}
+		errors {
+			code: __typename
+		}
+	}
+}
+
+mutation CartDiscountCodeRemove($input: CartDiscountCodeRemoveInput!) {
+	cartDiscountCodeRemove(input: $input) {
+		cart {
+			...Cart
+		}
+	}
+}
+
+mutation CartLineItemsAdd($input: CartLineItemsAddInput!) {
+	cartLineItemsAdd(input: $input) {
+		cart {
+			...Cart
+		}
+		errors {
+			__typename
+		}
+	}
+}
+
+mutation CartLineItemsUpdate($input: CartLineItemsUpdateInput!) {
+	cartLineItemsUpdate(input: $input) {
+		cart {
+			...Cart
+		}
+	}
+}
+
+mutation CartLineItemsRemove($input: CartLineItemsRemoveInput!) {
+	cartLineItemsRemove(input: $input) {
+		cart {
+			...Cart
+		}
+	}
+}

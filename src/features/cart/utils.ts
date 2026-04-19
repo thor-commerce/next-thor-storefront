@@ -8,14 +8,13 @@ import {
 } from "@/__generated__/thor/graphql";
 import { CACHE_TAGS } from "@/constants";
 import { getCartCacheTag } from "@/constants";
-import { getClient } from "@/lib/thor/apollo-client";
-import { THOR_CART_COOKIE_NAME } from "@/lib/thor/config";
-import { getCurrencyByCountryCode } from "@/utils/countries";
+import { getClient } from "@/lib/thorcommerce/apollo-client";
+import { THOR_CART_COOKIE_NAME } from "@/lib/thorcommerce/config";
+
 import { getServerContext } from "@/utils/server";
 import { updateTag } from "next/cache";
 import { cookies } from "next/headers";
-import { CART_CREATE_MUTATION, CART_REPLICATE_MUTATION } from "./mutations";
-import { NAVBAR_CART_QUERY } from "./queries";
+import { CART_REPLICATE_MUTATION } from "./mutations";
 
 export async function removeCartCookie() {
 	try {
@@ -41,103 +40,53 @@ export async function saveCartIdToCookie(cartId: string) {
 	});
 }
 
-export async function cleanupCartCookieIfNeeded(cartId: string) {
-	const { data } = await getClient().query({
-		query: NAVBAR_CART_QUERY,
-		variables: {
-			id: cartId,
-		},
-		context: {
-			fetchOptions: {
-				cache: "force-cache",
-				next: {
-					tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
-				},
-			},
-		},
-	});
+// export async function cleanupCartCookieIfNeeded(cartId: string) {
+// 	const { data } = await getClient().query({
+// 		query: NAVBAR_CART_QUERY,
+// 		variables: {
+// 			id: cartId,
+// 		},
+// 		context: {
+// 			fetchOptions: {
+// 				cache: "force-cache",
+// 				next: {
+// 					tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
+// 				},
+// 			},
+// 		},
+// 	});
 
-	const cart = data?.cart;
+// 	const cart = data?.cart;
 
-	if (!cart || cart.state === CartState.Ordered) {
-		await removeCartCookie();
-		return;
-	}
+// 	if (!cart || cart.state === CartState.Ordered) {
+// 		await removeCartCookie();
+// 		return;
+// 	}
 
-	const { country } = await getServerContext();
-	let changesCount = 0;
-	if (cart.store?.id != country.store || country.currencies[0] != cart.currency) {
-		const { data } = await getClient().mutate<CartReplicateMutation, CartReplicateMutationVariables>({
-			mutation: CART_REPLICATE_MUTATION,
-			variables: {
-				input: {
-					cartId: cart.id,
-					storeId: country.store,
-					currency: country.currencies[0],
-					strategy: ReplicationStrategy.SkipUnavailable,
-				},
-			},
-		});
+// 	const { country } = await getServerContext();
+// 	let changesCount = 0;
+// 	if (cart.store?.id != country.store || country.currencies[0] != cart.currency) {
+// 		const { data } = await getClient().mutate<CartReplicateMutation, CartReplicateMutationVariables>({
+// 			mutation: CART_REPLICATE_MUTATION,
+// 			variables: {
+// 				input: {
+// 					cartId: cart.id,
+// 					storeId: country.store,
+// 					currency: country.currencies[0],
+// 					strategy: ReplicationStrategy.SkipUnavailable,
+// 				},
+// 			},
+// 		});
 
-		if (data?.cartReplicate.cart?.id) {
-			await saveCartIdToCookie(data.cartReplicate.cart.id);
-			changesCount++;
-		}
-	}
+// 		if (data?.cartReplicate.cart?.id) {
+// 			await saveCartIdToCookie(data.cartReplicate.cart.id);
+// 			changesCount++;
+// 		}
+// 	}
 
-	if (changesCount > 0) {
-		updateTag(CACHE_TAGS.cart);
-		updateTag(getCartCacheTag(cart.id));
-	}
-}
+// 	if (changesCount > 0) {
+// 		updateTag(CACHE_TAGS.cart);
+// 		updateTag(getCartCacheTag(cart.id));
+// 	}
+// }
 
-const createCart = ({ storeId, currency }: { storeId: string; currency: string }) =>
-	getClient().mutate({
-		mutation: CART_CREATE_MUTATION,
-		variables: {
-			input: {
-				storeId: storeId,
-				currency,
-			},
-		},
-	});
-
-export async function findOrCreateCart({
-	storeId,
-	cartId,
-	country,
-}: {
-	cartId?: string;
-	storeId: string;
-	country: string;
-}) {
-	const currency = getCurrencyByCountryCode(country);
-
-	if (!cartId) {
-		return (
-			await createCart({
-				storeId,
-				currency,
-			})
-		).data?.cartCreate?.cart;
-	}
-
-	const { data } = await getClient().query({
-		query: NAVBAR_CART_QUERY,
-		variables: {
-			id: cartId,
-		},
-		context: {
-			fetchOptions: {
-				cache: "force-cache",
-				next: {
-					tags: [CACHE_TAGS.cart, getCartCacheTag(cartId)],
-				},
-			},
-		},
-	});
-
-	const cart = data?.cart;
-
-	return cart || (await createCart({ storeId, currency })).data?.cartCreate?.cart;
-}

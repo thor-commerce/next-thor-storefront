@@ -914,7 +914,7 @@ export type ProductsEdgeFieldPolicy = {
 	cursor?: FieldPolicy<any> | FieldReadFunction<any>,
 	node?: FieldPolicy<any> | FieldReadFunction<any>
 };
-export type QueryKeySpecifier = ('cart' | 'categories' | 'category' | 'collection' | 'collections' | 'countries' | 'customer' | 'node' | 'order' | 'paymentGateways' | 'product' | 'products' | QueryKeySpecifier)[];
+export type QueryKeySpecifier = ('cart' | 'categories' | 'category' | 'collection' | 'collections' | 'countries' | 'customer' | 'node' | 'order' | 'paymentGateways' | 'product' | 'productVariants' | 'products' | QueryKeySpecifier)[];
 export type QueryFieldPolicy = {
 	cart?: FieldPolicy<any> | FieldReadFunction<any>,
 	categories?: FieldPolicy<any> | FieldReadFunction<any>,
@@ -927,6 +927,7 @@ export type QueryFieldPolicy = {
 	order?: FieldPolicy<any> | FieldReadFunction<any>,
 	paymentGateways?: FieldPolicy<any> | FieldReadFunction<any>,
 	product?: FieldPolicy<any> | FieldReadFunction<any>,
+	productVariants?: FieldPolicy<any> | FieldReadFunction<any>,
 	products?: FieldPolicy<any> | FieldReadFunction<any>
 };
 export type RelativeShippingMethodRateKeySpecifier = ('id' | 'rate' | RelativeShippingMethodRateKeySpecifier)[];

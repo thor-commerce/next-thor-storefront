@@ -1,27 +1,29 @@
-import { CategoriesQueryVariables } from "@/__generated__/thor/graphql";
 import ProductGridHeader from "@/components/product-grid/product-grid-header";
-import { TaxonomyGridSkeleton } from "@/components/taxonomy-grid/taxonomy-grid";
-import CategoriesList from "@/features/categories/categories-list/categories-list";
-import { CATEGORIES_QUERY } from "@/features/categories/queries";
-import { PreloadQuery } from "@/lib/thor/apollo-client";
-import { getCountryByCountryCode } from "@/utils/countries";
-import { Suspense } from "react";
+import TaxonomyGrid from "@/components/taxonomy-grid/taxonomy-grid";
+import { getCategories } from "@/lib/thorcommerce/storefront";
 
-export default async function CategoriesPage({ params }: PageProps<"/[countryCode]/categories">) {
-	const { countryCode } = await params;
+const formatCategoryMeta = (productsCount: number, childrenCount: number) => {
+	const meta = [`${productsCount} ${productsCount === 1 ? "product" : "products"}`];
 
-	const country = getCountryByCountryCode(countryCode);
-	const variables: CategoriesQueryVariables = {
-		currency: country.currencies[0],
-		storeId: country.store,
-	};
+	if (childrenCount > 0) {
+		meta.push(`${childrenCount} ${childrenCount === 1 ? "subcategory" : "subcategories"}`);
+	}
+
+	return meta.join(" · ");
+};
+
+export default async function CategoriesPage({}: PageProps<"/[countryCode]/categories">) {
+	const categories = (await getCategories()).map((category) => ({
+		id: category.id,
+		href: `/categories/${category.slug}`,
+		title: category.name,
+		meta: formatCategoryMeta(category.products.totalCount, category.childrenCount),
+	}));
 
 	return (
-		<PreloadQuery query={CATEGORIES_QUERY} variables={variables}>
+		<>
 			<ProductGridHeader heading="Categories" />
-			<Suspense fallback={<TaxonomyGridSkeleton />}>
-				<CategoriesList variables={variables} />
-			</Suspense>
-		</PreloadQuery>
+			<TaxonomyGrid items={categories} />;
+		</>
 	);
 }

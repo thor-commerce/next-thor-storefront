@@ -1,0 +1,49 @@
+query Categories($storeId: ID!, $currency: String!) {
+	categories(first: 100) {
+		edges {
+			node {
+				id
+				name
+				slug
+				childrenCount
+				products(storeId: $storeId, priceCurrency: $currency) {
+					totalCount
+				}
+			}
+		}
+	}
+}
+
+query CategoryList(
+	$slug: String!
+	$currency: String!
+	$storeId: ID!
+	$after: String
+	$sortDirection: SortDirection!
+	$sortKey: ProductCategorySortKeys!
+) {
+	category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+		id
+		name
+		products(
+			first: 15
+			after: $after
+			sortDirection: $sortDirection
+			sortKey: $sortKey
+			priceCurrency: $currency
+			storeId: $storeId
+		) {
+			edges {
+				node {
+					id
+					...ProductListTile
+				}
+			}
+			totalCount
+			pageInfo {
+				endCursor
+				hasNextPage
+			}
+		}
+	}
+}

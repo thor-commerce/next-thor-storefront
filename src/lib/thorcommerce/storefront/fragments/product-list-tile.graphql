@@ -1,0 +1,15 @@
+fragment ProductListTile on Product {
+	id
+	name
+	slug
+	heroVariant {
+		image {
+			src
+		}
+	}
+	priceRange {
+		minPrice {
+			...Price
+		}
+	}
+}

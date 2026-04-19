@@ -1,0 +1,26 @@
+fragment Price on Price {
+	validFrom
+	validUntil
+	discountedPrice {
+		discount {
+			validFrom
+			validUntil
+			value {
+				... on ProductDiscountAbsoluteValue {
+					value {
+						...Money
+					}
+				}
+				... on ProductDiscountRelativeValue {
+					factor
+				}
+			}
+		}
+		value {
+			...Money
+		}
+	}
+	value {
+		...Money
+	}
+}

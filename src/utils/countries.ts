@@ -1,4 +1,4 @@
-import { COUNTRIES } from "@/lib/thor/config";
+import { COUNTRIES } from "@/lib/thorcommerce/config";
 
 export const getCountryByCountryCode = (countryCode: string) => {
   const country = COUNTRIES.find(

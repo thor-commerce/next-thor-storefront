@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { COUNTRIES, DEFAULT_COUNTRY } from "./lib/thor/config";
+import { COUNTRIES } from "./lib/thorcommerce/config";
+import { DEFAULT_COUNTRY, THOR_CURRENCY_HEADER, THOR_STORE_HEADER } from "./lib/thorcommerce/const";
 
 export const config = {
 	matcher: [
@@ -23,14 +24,11 @@ export async function middleware(request: NextRequest) {
 	const requestHeaders = new Headers(request.headers);
 	requestHeaders.set("x-route", routeValue);
 
-	let response = NextResponse.next({
-		request: {
-			headers: requestHeaders,
-		},
-	});
-
 	// Let static files pass through
-	if (pathname.includes(".")) return response;
+	if (pathname.includes(".")) {
+		return NextResponse.next({ request: { headers: requestHeaders } });
+	}
+
 	const viewerCountry = request.headers.get("CF-IPCountry")?.toLowerCase() || undefined;
 
 	// Extract a possible country code from the URL: e.g. /dk/products → "dk"
@@ -38,6 +36,16 @@ export async function middleware(request: NextRequest) {
 	const pathCountry = match?.[1]?.toLowerCase();
 	const rest = match?.[2] ?? "";
 	const countryCode = getCountryCode([pathCountry, viewerCountry]);
+	const country = COUNTRIES.find((c) => c.code.toLowerCase() === countryCode);
+
+	if (!country) {
+		//this can only happen if you set default country to something not in the list of countries, but we need to handle it anyway.
+		throw new Error(`Invalid country code: ${countryCode}`);
+	}
+
+	// Set store/currency headers for every downstream request
+	requestHeaders.set(THOR_STORE_HEADER, country.store);
+	requestHeaders.set(THOR_CURRENCY_HEADER, country.currencies[0]);
 
 	// If pathCountry is missing or invalid, redirect to one with country prefix
 	const isPathCountryValid = COUNTRIES.some((c) => c.code.toLowerCase() === pathCountry);
@@ -48,12 +56,13 @@ export async function middleware(request: NextRequest) {
 		newUrl.search = searchParams.toString();
 
 		// Use a 307 redirect so the HTTP method is preserved
-		response = NextResponse.redirect(newUrl);
-		response.headers.set("x-route", routeValue);
-		return response;
+		const redirect = NextResponse.redirect(newUrl);
+		redirect.headers.set(THOR_STORE_HEADER, country.store);
+		redirect.headers.set(THOR_CURRENCY_HEADER, country.currencies[0]);
+		return redirect;
 	}
 
-	return response;
+	return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 /**

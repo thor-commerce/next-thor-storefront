@@ -1,0 +1,28 @@
+query ProductList(
+	$storeId: ID!
+	$currency: String!
+	$sortDirection: SortDirection!
+	$sortKey: ProductSortKeys!
+	$priceChannel: ID
+) {
+	products(
+		first: 100
+		sortDirection: $sortDirection
+		sortKey: $sortKey
+		storeId: $storeId
+		priceCurrency: $currency
+		priceChannelId: $priceChannel
+	) {
+		edges {
+			node {
+				id
+				...ProductListTile
+			}
+		}
+		totalCount
+		pageInfo {
+			endCursor
+			hasNextPage
+		}
+	}
+}

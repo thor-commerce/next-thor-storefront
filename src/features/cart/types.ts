@@ -1,6 +1,6 @@
-import { CartDetailsQuery } from "@/__generated__/thor/graphql";
+import { CartFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
 
-export type Cart = NonNullable<CartDetailsQuery["cart"]>;
+export type Cart = CartFragment;
 
 export type CartLineItemType = NonNullable<Cart["lineItems"]["edges"]>[number]["node"];
 

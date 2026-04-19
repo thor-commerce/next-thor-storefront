@@ -1,0 +1,91 @@
+.header {
+	margin-bottom: var(--spacing-xl);
+}
+
+.title {
+	text-align: center;
+	font-size: var(--text-2xl);
+	line-height: 1;
+	font-weight: 600;
+}
+
+.subtitle {
+	font-size: var(--text-sm);
+	margin-top: var(--spacing-s);
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.panel {
+	padding: var(--spacing-xl);
+	border: 1px solid var(--color-border-subtle);
+	border-radius: var(--radius-l);
+	background: var(--color-surface);
+}
+
+.form {
+	display: grid;
+	gap: var(--spacing-m);
+}
+
+.error {
+	font-size: var(--text-sm);
+	color: var(--invalid-color);
+}
+
+.signUpPrompt {
+	padding: var(--spacing-m) 0;
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+}
+
+.signUpButton {
+	border: none;
+	background: none;
+	text-decoration: underline;
+}
+
+.activateIntro {
+	font-size: var(--text-sm);
+	margin-bottom: var(--spacing-l);
+}
+
+.activationCodeRow {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	align-items: end;
+	gap: var(--spacing-m);
+}
+
+.resendButton {
+	border: none;
+	background: none;
+	font-size: var(--text-sm);
+	cursor: pointer;
+	padding: var(--spacing-s) 0;
+	white-space: nowrap;
+}
+
+.resendButton:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+.passwordHints {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: grid;
+	gap: var(--spacing-xs);
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+}
+
+.passwordHints li::before {
+	content: "✓ ";
+}
+
+.hint {
+	font-size: var(--text-sm);
+	color: var(--text-muted);
+}

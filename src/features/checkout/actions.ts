@@ -10,7 +10,7 @@ import {
 	CheckoutCartShippingLinesSetMutationVariables,
 } from "@/__generated__/thor/graphql";
 import { CACHE_TAGS, getCartCacheTag } from "@/constants";
-import { getClient } from "@/lib/thor/apollo-client";
+import { getClient } from "@/lib/thorcommerce/apollo-client";
 import { mapEdgesToItems } from "@/utils/maps";
 import { getServerContext } from "@/utils/server";
 import { updateTag } from "next/cache";
