@@ -1,0 +1,34 @@
+mutation CustomerActivate($input: CustomerActivateInput!) {
+	customerActivate(input: $input) {
+		customer {
+			id
+		}
+		errors {
+			code: __typename
+		}
+	}
+}
+
+mutation CustomerRegister($input: CustomerRegisterInput!) {
+	customerRegister(input: $input) {
+		errors {
+			code: __typename
+		}
+	}
+}
+
+mutation CustomerResetPasswordToken($input: CustomerPasswordResetTokenInput!) {
+	customerPasswordResetToken(input: $input) {
+		errors {
+			code: __typename
+		}
+	}
+}
+
+mutation CustomerResetPassword($input: CustomerPasswordResetInput!) {
+	customerPasswordReset(input: $input) {
+		errors {
+			code: __typename
+		}
+	}
+}

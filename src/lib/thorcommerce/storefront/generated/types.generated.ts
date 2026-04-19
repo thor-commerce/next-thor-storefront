@@ -3295,6 +3295,33 @@ export type CustomerRegisterMutation = {
 	};
 };
 
+export type CustomerResetPasswordTokenMutationVariables = Exact<{
+	input: CustomerPasswordResetTokenInput;
+}>;
+
+export type CustomerResetPasswordTokenMutation = {
+	__typename?: "Mutation";
+	customerPasswordResetToken: {
+		__typename?: "CustomerPasswordResetTokenPayload";
+		errors?: Array<{ __typename?: "InvalidCredentialsError"; code: "InvalidCredentialsError" }> | null;
+	};
+};
+
+export type CustomerResetPasswordMutationVariables = Exact<{
+	input: CustomerPasswordResetInput;
+}>;
+
+export type CustomerResetPasswordMutation = {
+	__typename?: "Mutation";
+	customerPasswordReset: {
+		__typename?: "CustomerPasswordResetPayload";
+		errors?: Array<
+			| { __typename?: "InvalidPasswordError"; code: "InvalidPasswordError" }
+			| { __typename?: "InvalidTokenError"; code: "InvalidTokenError" }
+		> | null;
+	};
+};
+
 export type CartQueryVariables = Exact<{
 	id: Scalars["ID"]["input"];
 }>;
@@ -4596,6 +4623,30 @@ export const CustomerRegisterDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<CustomerRegisterMutation, CustomerRegisterMutationVariables>;
+export const CustomerResetPasswordTokenDocument = new TypedDocumentString(`
+    mutation CustomerResetPasswordToken($input: CustomerPasswordResetTokenInput!) {
+  customerPasswordResetToken(input: $input) {
+    errors {
+      code: __typename
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<
+	CustomerResetPasswordTokenMutation,
+	CustomerResetPasswordTokenMutationVariables
+>;
+export const CustomerResetPasswordDocument = new TypedDocumentString(`
+    mutation CustomerResetPassword($input: CustomerPasswordResetInput!) {
+  customerPasswordReset(input: $input) {
+    errors {
+      code: __typename
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<
+	CustomerResetPasswordMutation,
+	CustomerResetPasswordMutationVariables
+>;
 export const CartDocument = new TypedDocumentString(`
     query Cart($id: ID!) {
   cart(id: $id) {

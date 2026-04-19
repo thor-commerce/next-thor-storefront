@@ -1,7 +1,0 @@
-mutation CustomerRegister($input: CustomerRegisterInput!) {
-	customerRegister(input: $input) {
-		errors {
-			code: __typename
-		}
-	}
-}
