@@ -15,7 +15,13 @@
 	position: sticky;
 	top: var(--navbar-height);
 	border-right: 1px solid var(--border-color);
-	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-self: start;
+	height: calc(100svh - var(--navbar-height));
+	max-height: calc(100svh - var(--navbar-height));
+	min-height: 0;
+	overflow: hidden;
 }
 
 .filterHeader {
@@ -25,11 +31,18 @@
 	border-bottom: 1px solid var(--border-color);
 }
 .facetsContainer {
-	position: sticky;
-	top: var(--navbar-height);
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding-bottom: var(--spacing-l);
 }
 .filterAccordion {
 	border-bottom: 1px solid var(--border-color);
+	&:last-child {
+		border-bottom: none;
+		margin-bottom: var(--spacing-l);
+	}
 }
 
 .accordionTrigger {

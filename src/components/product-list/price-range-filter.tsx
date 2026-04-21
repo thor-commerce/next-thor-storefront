@@ -47,6 +47,7 @@ export default function PriceRangeFilter({
 
 	useEffect(() => {
 		if (optimistic && optimistic[0] === effectiveMin && optimistic[1] === effectiveMax) {
+			// eslint-disable-next-line react-hooks/set-state-in-effect
 			setOptimistic(undefined);
 		}
 	}, [effectiveMin, effectiveMax, optimistic]);
@@ -68,7 +69,7 @@ export default function PriceRangeFilter({
 	const isActive = displayValue[0] !== min || displayValue[1] !== max;
 
 	return (
-		<Disclosure id={id} className={s.filterAccordion}>
+		<Disclosure id={id} className={s.filterAccordion} defaultExpanded>
 			<Heading>
 				<AriaButton slot="trigger" className={s.accordionTrigger}>
 					<span className={s.accordionLabel}>

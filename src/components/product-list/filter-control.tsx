@@ -48,7 +48,7 @@ export default function FilterControl<TValue extends string = string>({
 	const selectedCount = displayValues.length;
 
 	return (
-		<Disclosure id={id} className={s.filterAccordion}>
+		<Disclosure id={id} className={s.filterAccordion} defaultExpanded={true}>
 			<Heading>
 				<AriaButton slot="trigger" className={s.accordionTrigger}>
 					<span className={s.accordionLabel}>
