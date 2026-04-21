@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { COUNTRIES } from "./lib/thorcommerce/config";
-import { DEFAULT_COUNTRY, THOR_CURRENCY_HEADER, THOR_STORE_HEADER } from "./lib/thorcommerce/const";
+import {
+	DEFAULT_COUNTRY,
+	THOR_COUNTRY_COOKIE_MAX_AGE,
+	THOR_COUNTRY_COOKIE_NAME,
+	THOR_CURRENCY_HEADER,
+	THOR_STORE_HEADER,
+} from "./lib/thorcommerce/const";
 
 export const config = {
 	matcher: [
@@ -47,6 +53,15 @@ export async function middleware(request: NextRequest) {
 	requestHeaders.set(THOR_STORE_HEADER, country.store);
 	requestHeaders.set(THOR_CURRENCY_HEADER, country.currencies[0]);
 
+	const countryCookieOptions = {
+		name: THOR_COUNTRY_COOKIE_NAME,
+		value: country.code.toLowerCase(),
+		path: "/",
+		maxAge: THOR_COUNTRY_COOKIE_MAX_AGE,
+		sameSite: "lax" as const,
+		secure: process.env.NODE_ENV === "production",
+	};
+
 	// If pathCountry is missing or invalid, redirect to one with country prefix
 	const isPathCountryValid = COUNTRIES.some((c) => c.code.toLowerCase() === pathCountry);
 
@@ -59,10 +74,13 @@ export async function middleware(request: NextRequest) {
 		const redirect = NextResponse.redirect(newUrl);
 		redirect.headers.set(THOR_STORE_HEADER, country.store);
 		redirect.headers.set(THOR_CURRENCY_HEADER, country.currencies[0]);
+		redirect.cookies.set(countryCookieOptions);
 		return redirect;
 	}
 
-	return NextResponse.next({ request: { headers: requestHeaders } });
+	const response = NextResponse.next({ request: { headers: requestHeaders } });
+	response.cookies.set(countryCookieOptions);
+	return response;
 }
 
 /**

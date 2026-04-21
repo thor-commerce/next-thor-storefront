@@ -2288,6 +2288,15 @@ export type Store = {
 	id: Scalars["ID"]["output"];
 };
 
+export type StripeConnectPaymentGateway = PaymentGateway & {
+	__typename?: "StripeConnectPaymentGateway";
+	connectedAccountId?: Maybe<Scalars["String"]["output"]>;
+	id: Scalars["ID"]["output"];
+	liveMode: Scalars["Boolean"]["output"];
+	name: Scalars["String"]["output"];
+	publishableKey: Scalars["String"]["output"];
+};
+
 export type StripePaymentGateway = PaymentGateway & {
 	__typename?: "StripePaymentGateway";
 	id: Scalars["ID"]["output"];
@@ -2469,6 +2478,13 @@ export type CartFragment = {
 		tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
 	} | null;
 	total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+};
+
+export type FacetFragment = {
+	__typename?: "Facet";
+	field: FacetField;
+	name: string;
+	values: Array<{ __typename?: "FacetValue"; name: string; count: number }>;
 };
 
 export type MoneyFragment = {
@@ -3432,6 +3448,7 @@ export type CategoryListQueryVariables = Exact<{
 	after?: InputMaybe<Scalars["String"]["input"]>;
 	sortDirection: SortDirection;
 	sortKey: ProductCategorySortKeys;
+	query?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type CategoryListQuery = {
@@ -3440,9 +3457,17 @@ export type CategoryListQuery = {
 		__typename?: "Category";
 		id: string;
 		name: string;
+		slug: string;
+		ancestors: Array<{ __typename?: "Category"; slug: string; name: string }>;
 		products: {
 			__typename?: "ProductsConnection";
 			totalCount: number;
+			facets: Array<{
+				__typename?: "Facet";
+				field: FacetField;
+				name: string;
+				values: Array<{ __typename?: "FacetValue"; name: string; count: number }>;
+			}>;
 			edges?: Array<{
 				__typename?: "ProductsEdge";
 				node: {
@@ -3597,6 +3622,19 @@ export type CollectionListQuery = {
 	} | null;
 };
 
+export type CurrentCustomerQueryVariables = Exact<{ [key: string]: never }>;
+
+export type CurrentCustomerQuery = {
+	__typename?: "Query";
+	customer?: {
+		__typename?: "Customer";
+		id: string;
+		email?: string | null;
+		firstName?: string | null;
+		lastName?: string | null;
+	} | null;
+};
+
 export type ProductDetailQueryVariables = Exact<{
 	slug: Scalars["String"]["input"];
 	currency?: InputMaybe<Scalars["String"]["input"]>;
@@ -3652,6 +3690,7 @@ export type ProductListQueryVariables = Exact<{
 	sortDirection: SortDirection;
 	sortKey: ProductSortKeys;
 	priceChannel?: InputMaybe<Scalars["ID"]["input"]>;
+	query?: InputMaybe<Scalars["String"]["input"]>;
 }>;
 
 export type ProductListQuery = {
@@ -3659,6 +3698,12 @@ export type ProductListQuery = {
 	products: {
 		__typename?: "ProductsConnection";
 		totalCount: number;
+		facets: Array<{
+			__typename?: "Facet";
+			field: FacetField;
+			name: string;
+			values: Array<{ __typename?: "FacetValue"; name: string; count: number }>;
+		}>;
 		edges?: Array<{
 			__typename?: "ProductsEdge";
 			node: {
@@ -3820,6 +3865,19 @@ export const CartFragmentDoc = new TypedDocumentString(
 }`,
 	{ fragmentName: "Cart" },
 ) as unknown as TypedDocumentString<CartFragment, unknown>;
+export const FacetFragmentDoc = new TypedDocumentString(
+	`
+    fragment Facet on Facet {
+  field
+  name
+  values {
+    name
+    count
+  }
+}
+    `,
+	{ fragmentName: "Facet" },
+) as unknown as TypedDocumentString<FacetFragment, unknown>;
 export const PriceFragmentDoc = new TypedDocumentString(
 	`
     fragment Price on Price {
@@ -4749,10 +4807,15 @@ export const CategoriesDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<CategoriesQuery, CategoriesQueryVariables>;
 export const CategoryListDocument = new TypedDocumentString(`
-    query CategoryList($slug: String!, $currency: String!, $storeId: ID!, $after: String, $sortDirection: SortDirection!, $sortKey: ProductCategorySortKeys!) {
+    query CategoryList($slug: String!, $currency: String!, $storeId: ID!, $after: String, $sortDirection: SortDirection!, $sortKey: ProductCategorySortKeys!, $query: String) {
   category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
     id
     name
+    slug
+    ancestors {
+      slug
+      name
+    }
     products(
       first: 15
       after: $after
@@ -4760,7 +4823,11 @@ export const CategoryListDocument = new TypedDocumentString(`
       sortKey: $sortKey
       priceCurrency: $currency
       storeId: $storeId
+      query: $query
     ) {
+      facets {
+        ...Facet
+      }
       edges {
         node {
           id
@@ -4775,7 +4842,15 @@ export const CategoryListDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Money on Money {
+    fragment Facet on Facet {
+  field
+  name
+  values {
+    name
+    count
+  }
+}
+fragment Money on Money {
   centAmount
   currencyCode
   fractionDigits
@@ -4910,6 +4985,16 @@ fragment ProductListTile on Product {
     }
   }
 }`) as unknown as TypedDocumentString<CollectionListQuery, CollectionListQueryVariables>;
+export const CurrentCustomerDocument = new TypedDocumentString(`
+    query CurrentCustomer {
+  customer {
+    id
+    email
+    firstName
+    lastName
+  }
+}
+    `) as unknown as TypedDocumentString<CurrentCustomerQuery, CurrentCustomerQueryVariables>;
 export const ProductDetailDocument = new TypedDocumentString(`
     query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChannel: ID) {
   product(
@@ -4956,7 +5041,7 @@ export const ProductDetailDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<ProductDetailQuery, ProductDetailQueryVariables>;
 export const ProductListDocument = new TypedDocumentString(`
-    query ProductList($storeId: ID!, $currency: String!, $sortDirection: SortDirection!, $sortKey: ProductSortKeys!, $priceChannel: ID) {
+    query ProductList($storeId: ID!, $currency: String!, $sortDirection: SortDirection!, $sortKey: ProductSortKeys!, $priceChannel: ID, $query: String) {
   products(
     first: 100
     sortDirection: $sortDirection
@@ -4964,7 +5049,11 @@ export const ProductListDocument = new TypedDocumentString(`
     storeId: $storeId
     priceCurrency: $currency
     priceChannelId: $priceChannel
+    query: $query
   ) {
+    facets {
+      ...Facet
+    }
     edges {
       node {
         id
@@ -4978,7 +5067,15 @@ export const ProductListDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Money on Money {
+    fragment Facet on Facet {
+  field
+  name
+  values {
+    name
+    count
+  }
+}
+fragment Money on Money {
   centAmount
   currencyCode
   fractionDigits

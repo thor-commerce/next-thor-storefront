@@ -1,5 +1,5 @@
 import CollectionPage from "@/features/collections/collection-page/collection-page";
-import { getCollectionSort } from "@/features/product-listing/sort";
+import { getCollectionSort } from "@/components/product-list/sort";
 import { getCollectionList } from "@/lib/thorcommerce/storefront";
 
 export default async function Collection({

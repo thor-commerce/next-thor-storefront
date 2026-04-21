@@ -1,0 +1,22 @@
+.button {
+	padding: 6px;
+	border-radius: 4px;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	width: calc(40px - 6px);
+	height: calc(40px - 6px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	transition:
+		border-color var(--duration-fast) var(--ease-standard),
+		background-color var(--duration-fast) var(--ease-standard),
+		box-shadow var(--duration-fast) var(--ease-standard);
+	@media (hover: hover) {
+		&:hover {
+			background: #e5e5e5;
+		}
+	}
+}

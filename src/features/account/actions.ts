@@ -1,6 +1,7 @@
 "use server";
 
 import { auth } from "@/lib/auth";
+import { getRequestContext } from "@/lib/request-context";
 import {
 	customerActivate,
 	customerPasswordReset,
@@ -14,8 +15,10 @@ export type LoginState = { error?: string; success?: boolean } | null;
 export async function login(_currentState: unknown, formData: FormData): Promise<LoginState> {
 	const email = formData.get("email") as string;
 	const password = formData.get("password") as string;
+	const { country } = await getRequestContext();
 
 	try {
+
 		const response = await auth.api.customerSignIn({
 			body: { email, password },
 		});
@@ -23,12 +26,12 @@ export async function login(_currentState: unknown, formData: FormData): Promise
 		if ("error" in response) {
 			return { error: response.error };
 		}
-
-		redirect("/account");
 	} catch (err) {
 		console.error(err);
 		return { error: "Something went wrong, please try again." };
 	}
+
+	return redirect(`/${country.toLowerCase()}/account`);
 }
 
 

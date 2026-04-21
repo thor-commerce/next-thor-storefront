@@ -30,5 +30,8 @@
 		"**/src/__generated__/**": true,
 		"**/node_modules": true,
 		"**/.next": true
+	},
+	"files.associations": {
+		"postcss-media/*.css": "postcss"
 	}
 }

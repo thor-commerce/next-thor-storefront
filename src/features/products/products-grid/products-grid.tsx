@@ -1,7 +1,7 @@
 "use client";
 import ProductGridHeader from "@/components/product-grid/product-grid-header";
-import ProductListingSort from "@/features/product-listing/product-listing-sort";
-import { PRODUCT_SORT_OPTIONS, formatProductCount } from "@/features/product-listing/sort";
+import ProductListingSort from "@/components/product-list/product-listing-sort";
+import { PRODUCT_SORT_OPTIONS, formatProductCount } from "@/components/product-list/sort";
 import { ProductListTileFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import ProductList from "@/components/product-list/product-list";
 import ProductListTile from "@/components/product-list/product-list-tile";

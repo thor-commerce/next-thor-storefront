@@ -1,0 +1,17 @@
+@define-mixin body-1 {
+	font-family: var(--font-geist-sans);
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+@define-mixin body-2 {
+	font-family: var(--font-geist-sans);
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+@define-mixin body-3 {
+	font-family: var(--font-geist-sans);
+	font-size: 12px;
+	line-height: 1.5;
+}

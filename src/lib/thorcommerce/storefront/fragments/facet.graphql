@@ -1,0 +1,8 @@
+fragment Facet on Facet {
+	field
+	name
+	values {
+		name
+		count
+	}
+}

@@ -1,0 +1,8 @@
+query CurrentCustomer {
+	customer {
+		id
+		email
+		firstName
+		lastName
+	}
+}

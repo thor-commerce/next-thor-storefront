@@ -1,0 +1,60 @@
+.text {
+	font-weight: 400;
+
+	&:where([data-size="body-1"]) {
+		@mixin body-1;
+	}
+	&:where([data-size="body-2"]) {
+		@mixin body-2;
+	}
+	&:where([data-size="body-3"]) {
+		@mixin body-3;
+	}
+	/* 
+	&:where([data-size="small"]) {
+		@mixin text-small;
+	}
+
+	&:where([data-size="medium"]) {
+		@mixin text-medium;
+	}
+
+	&:where([data-size="large"]) {
+		@mixin text-large;
+	}
+
+	&:where([data-size="caption"]) {
+		@mixin text-caption;
+
+		a {
+			text-decoration: none;
+		}
+
+		@media (hover: hover) {
+			&:hover a {
+				color: var(--color-gray-40);
+				text-decoration: none;
+			}
+		}
+	} */
+
+	&:where([data-weight="normal"]) {
+		font-weight: 400;
+	}
+
+	&:where([data-weight="medium"]) {
+		font-weight: 500;
+	}
+
+	&:where([data-weight="semibold"]) {
+		font-weight: 600;
+	}
+
+	&.muted {
+		color: var(--color-gray-40);
+	}
+
+	&:not([data-size="caption"]) a {
+		text-decoration: underline;
+	}
+}

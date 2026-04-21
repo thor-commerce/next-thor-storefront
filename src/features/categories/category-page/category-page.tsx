@@ -1,40 +1,40 @@
 "use client";
-import ProductGridHeader from "@/components/product-grid/product-grid-header";
-import ProductGrid from "@/components/product-grid/product-grid";
-import ProductListingSort from "@/features/product-listing/product-listing-sort";
-import { TAXONOMY_SORT_OPTIONS, formatProductCount } from "@/features/product-listing/sort";
-import { ProductListTileFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
-import ProductListTile from "@/components/product-list/product-list-tile";
+import { TAXONOMY_SORT_OPTIONS } from "@/components/product-list/sort";
+import {
+	FacetFragment,
+	ProductListTileFragment,
+} from "@/lib/thorcommerce/storefront/generated/types.generated";
+import ProductList from "@/components/product-list/product-list";
 
 type Props = {
 	sortValue: string;
 	name: string;
 	products: ProductListTileFragment[];
 	totalCount: number;
+	breadcrumbs?: { label: string; href: string }[];
+	facets: FacetFragment[];
+	currency: string;
 };
 
-export default function CategoryPage({ name, products, totalCount, sortValue }: Props) {
+export default function CategoryPage({ name, products, breadcrumbs, facets, totalCount, sortValue, currency }: Props) {
 	return (
 		<>
-			<ProductGridHeader
-				heading={name}
-				meta={formatProductCount(totalCount)}
-				actions={
-					<ProductListingSort
-						value={sortValue}
-						defaultValue="featured"
-						options={TAXONOMY_SORT_OPTIONS.map((option) => ({
-							value: option.value,
-							label: option.label,
-						}))}
-					/>
-				}
+			<ProductList
+				products={products}
+				title={name}
+				breadcrumbs={breadcrumbs}
+				sorting={{
+					value: sortValue,
+					defaultValue: "featured",
+					options: TAXONOMY_SORT_OPTIONS.map((option) => ({
+						value: option.value,
+						label: option.label,
+					})),
+				}}
+				facets={facets}
+				totalCount={totalCount}
+				currency={currency}
 			/>
-			<ProductGrid>
-				{products.map((product) => (
-					<ProductListTile key={product.id} item={product} />
-				))}
-			</ProductGrid>
 		</>
 	);
 }

@@ -4,7 +4,7 @@ import { CACHE_TAGS } from "@/constants";
 import { getCartIdFromCookies } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import { headers } from "next/headers";
@@ -104,7 +104,7 @@ export async function getCategories() {
     return removeEdgesAndNodes(data.categories);
 }
 
-export async function getCategoryList({ slug, sortDirection, sortKey }: Pick<CategoryListQueryVariables, "slug" | "sortDirection" | "sortKey">) {
+export async function getCategoryList({ slug, sortDirection, query, sortKey }: Pick<CategoryListQueryVariables, "slug" | "sortDirection" | "sortKey" | "query">) {
     const context = await getRequestContext();
 
     const data = await storefrontFetch({
@@ -114,19 +114,41 @@ export async function getCategoryList({ slug, sortDirection, sortKey }: Pick<Cat
             currency: context.currency,
             sortDirection: sortDirection,
             sortKey: sortKey,
-            slug: slug
+            slug: slug,
+            query: query
         },
     })
 
     if (!data.category)
-        return { name: "", products: [], totalCount: 0 };
+        return { name: "", products: [], totalCount: 0, breadcrumbs: [], facets: [] };
+
+    //generate breadcrumbs from category ancestors, accumulating slugs so each href includes its parents
+    const ancestorCrumbs = data.category.ancestors.reduce<{ label: string; href: string }[]>(
+        (acc, ancestor) => {
+            const parentPath = acc.length > 0 ? acc[acc.length - 1].href : "/categories";
+            acc.push({
+                label: ancestor.name,
+                href: `${parentPath}/${ancestor.slug}`,
+            });
+            return acc;
+        },
+        []
+    );
+
+    const lastAncestorPath = ancestorCrumbs.length > 0 ? ancestorCrumbs[ancestorCrumbs.length - 1].href : "/categories";
+
+    const breadcrumbs = [
+        { label: "Home", href: "/" },
+        ...ancestorCrumbs,
+        { label: data.category.name, href: `${lastAncestorPath}/${data.category.slug}` },
+    ];
 
     return {
-        name: data.category.name, products: removeEdgesAndNodes(data.category.products), totalCount: data.category.products.totalCount
+        name: data.category.name, facets: data.category.products.facets, products: removeEdgesAndNodes(data.category.products), totalCount: data.category.products.totalCount, breadcrumbs
     };
 }
 
-export const getProductList = async ({ sortDirection, sortKey }: Pick<ProductListQueryVariables, "sortDirection" | "sortKey">) => {
+export const getProductList = async ({ sortDirection, sortKey, query }: Pick<ProductListQueryVariables, "sortDirection" | "sortKey" | "query">) => {
 
     const context = await getRequestContext();
 
@@ -136,14 +158,15 @@ export const getProductList = async ({ sortDirection, sortKey }: Pick<ProductLis
             storeId: context.store,
             currency: context.currency,
             sortDirection: sortDirection,
-            sortKey: sortKey
+            sortKey: sortKey,
+            query: query
         },
     })
 
     if (!data.products)
-        return { products: [], totalCount: 0 };
+        return { products: [], totalCount: 0, facets: [] };
 
-    return { products: removeEdgesAndNodes(data.products), totalCount: data.products.totalCount };
+    return { products: removeEdgesAndNodes(data.products), totalCount: data.products.totalCount, facets: data.products.facets };
 }
 
 export const getProductDetail = async ({ slug }: { slug: string }) => {
@@ -300,4 +323,13 @@ export async function removeFromCart(lineIds: string[]) {
     })
 
     return response.cartLineItemsRemove;
+}
+
+
+export async function getUser() {
+    const data = await storefrontFetch({
+        query: CurrentCustomerDocument,
+    })
+
+    return data.customer;
 }

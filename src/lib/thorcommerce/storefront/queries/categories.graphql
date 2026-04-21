@@ -21,10 +21,16 @@ query CategoryList(
 	$after: String
 	$sortDirection: SortDirection!
 	$sortKey: ProductCategorySortKeys!
+	$query: String
 ) {
 	category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
 		id
 		name
+		slug
+		ancestors {
+			slug
+			name
+		}
 		products(
 			first: 15
 			after: $after
@@ -32,7 +38,11 @@ query CategoryList(
 			sortKey: $sortKey
 			priceCurrency: $currency
 			storeId: $storeId
+			query: $query
 		) {
+			facets {
+				...Facet
+			}
 			edges {
 				node {
 					id

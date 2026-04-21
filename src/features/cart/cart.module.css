@@ -8,28 +8,12 @@
 	border-radius: var(--radius-m);
 	background: var(--color-surface);
 	color: var(--foreground);
-	transition:
-		border-color var(--duration-fast) var(--ease-standard),
-		background-color var(--duration-fast) var(--ease-standard),
-		box-shadow var(--duration-fast) var(--ease-standard);
-
-	@media (hover: hover) {
-		&:hover {
-			background: var(--color-surface-muted);
-			border-color: var(--color-border-strong);
-		}
-	}
 
 	&:focus-visible {
 		outline: none;
 		box-shadow:
 			var(--shadow-s),
 			0 0 0 4px var(--color-focus-ring);
-	}
-
-	svg {
-		inline-size: 1.25rem;
-		block-size: 1.25rem;
 	}
 }
 

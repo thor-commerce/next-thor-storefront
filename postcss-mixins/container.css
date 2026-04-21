@@ -1,0 +1,9 @@
+@define-mixin container {
+	max-width: 1920px;
+	margin: 0 auto;
+	padding: 0 24px;
+
+	@media (--bp-lg-up) {
+		padding: 0 48px;
+	}
+}

@@ -1,0 +1,4 @@
+.topBarHidden {
+	-webkit-transform: translateY(var(--top-bar-offset));
+	transform: translateY(var(--top-bar-offset));
+}

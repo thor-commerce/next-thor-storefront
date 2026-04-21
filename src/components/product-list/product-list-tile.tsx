@@ -4,6 +4,7 @@ import Navigation from "../navigation/navigation";
 import ThorImage from "../thor-image/thor-image";
 import s from "./product-list.module.css";
 import { ProductListTileFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import Text from "@/components/text/text";
 
 type Props = {
 	item: ProductListTileFragment;
@@ -56,7 +57,9 @@ export default function ProductListTile({ item }: Props) {
 						className={s.productImage}
 					/>
 				</div>
-				<div className={s.productInfo}>{item.name}</div>
+				<Text size={"body-2"} weight={"medium"} as="div" className={s.productInfo}>
+					{item.name}
+				</Text>
 
 				{minPrice && (
 					<div className={s.productPriceInfo}>

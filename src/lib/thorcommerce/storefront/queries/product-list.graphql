@@ -4,6 +4,7 @@ query ProductList(
 	$sortDirection: SortDirection!
 	$sortKey: ProductSortKeys!
 	$priceChannel: ID
+	$query: String
 ) {
 	products(
 		first: 100
@@ -12,7 +13,11 @@ query ProductList(
 		storeId: $storeId
 		priceCurrency: $currency
 		priceChannelId: $priceChannel
+		query: $query
 	) {
+		facets {
+			...Facet
+		}
 		edges {
 			node {
 				id

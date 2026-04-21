@@ -2,8 +2,8 @@
 
 import ProductGridHeader from "@/components/product-grid/product-grid-header";
 import ProductGrid from "@/components/product-grid/product-grid";
-import ProductListingSort from "@/features/product-listing/product-listing-sort";
-import { TAXONOMY_SORT_OPTIONS, formatProductCount } from "@/features/product-listing/sort";
+import ProductListingSort from "@/components/product-list/product-listing-sort";
+import { TAXONOMY_SORT_OPTIONS, formatProductCount } from "@/components/product-list/sort";
 import { ProductListTileFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import ProductListTile from "@/components/product-list/product-list-tile";
 

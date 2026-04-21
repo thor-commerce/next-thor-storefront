@@ -1,0 +1,79 @@
+.topBar {
+	position: relative;
+	z-index: 9999;
+	background: #f5f5f5;
+	pointer-events: all;
+	display: none;
+	height: 0;
+	@media (--bp-md-up) {
+		display: block;
+		height: inherit;
+	}
+}
+
+.content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: var(--top-bar-height);
+	@mixin container;
+	@media (--bp-md-up) {
+		display: grid;
+		grid-template-columns: 1fr auto 1fr;
+	}
+}
+
+.left {
+	display: none;
+	@media (--bp-md-up) {
+		display: flex;
+		align-items: center;
+		gap: var(--spacing-s);
+		justify-self: start;
+	}
+}
+
+.center {
+	justify-self: center;
+	display: flex;
+	align-items: center;
+}
+
+.right {
+	display: none;
+	@media (--bp-md-up) {
+		display: flex;
+		align-items: flex-end;
+		justify-self: end;
+		gap: var(--spacing-s);
+	}
+}
+
+.siteVariantionBtn {
+	background: transparent;
+	cursor: pointer;
+	&[data-active="true"] {
+		text-decoration: underline;
+	}
+}
+
+.separator {
+	width: 1px;
+	height: 14px;
+	background: var(--core-dim-medium);
+}
+
+.link {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs);
+	@media (hover: hover) {
+		&:hover {
+			color: #707072;
+		}
+	}
+}
+
+.loginLink {
+	padding-right: 12px;
+}
