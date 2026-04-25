@@ -20,18 +20,19 @@
 		"@graphql-typed-document-node/core": "^3.2.0",
 		"@gsap/react": "^2.1.2",
 		"@hookform/resolvers": "^5.2.2",
-		"@next/env": "16.2.2",
-		"@opennextjs/cloudflare": "^1.18.1",
+		"@next/env": "16.2.4",
+		"@opennextjs/cloudflare": "^1.19.3",
 		"@stripe/react-stripe-js": "^5.3.0",
 		"@stripe/stripe-js": "^8.2.0",
 		"@thor-commerce/better-auth-thor": "^0.2.0",
 		"better-auth": "^1.6.0",
 		"clsx": "^2.1.1",
+		"embla-carousel-react": "9.0.0-rc02",
 		"graphql": "^16.11.0",
 		"gsap": "^3.15.0",
 		"lodash-es": "^4.17.21",
 		"lucide-react": "^0.552.0",
-		"next": "16.2.2",
+		"next": "16.2.4",
 		"path-to-regexp": "^8.3.0",
 		"react": "^19",
 		"react-aria-components": "^1.16.0",
@@ -64,7 +65,7 @@
 		"postcss-pxtorem": "^6.1.0",
 		"prettier": "^3.8.3",
 		"typescript": "^5",
-		"wrangler": "^4.71.0"
+		"wrangler": "^4.84.0"
 	},
 	"lint-staged": {
 		"*.{js,jsx,ts,tsx}": [

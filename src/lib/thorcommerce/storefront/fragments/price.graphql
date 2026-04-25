@@ -6,6 +6,7 @@ fragment Price on Price {
 			validFrom
 			validUntil
 			value {
+				__typename
 				... on ProductDiscountAbsoluteValue {
 					value {
 						...Money

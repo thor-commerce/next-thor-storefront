@@ -36,6 +36,8 @@ export default function ProductList({
 	currency,
 	fractionDigits,
 }: Props) {
+	const useMaxPrice = sorting.value === "price-desc";
+
 	return (
 		<div className={s.wrapper}>
 			<div className={s.container}>
@@ -60,7 +62,7 @@ export default function ProductList({
 										aria-current={isActive ? "page" : undefined}
 									>
 										{isActive ? (
-											<Text size="body-3" weight={"medium"}>
+											<Text size="body-3" weight={"medium"} className={s.breadcrumbLink}>
 												{item.label}
 											</Text>
 										) : (
@@ -85,7 +87,7 @@ export default function ProductList({
 					</div>
 					<ul className={s.grid}>
 						{products.map((product) => (
-							<ProductListTile key={product.id} item={product} />
+							<ProductListTile key={product.id} item={product} useMaxPrice={useMaxPrice} />
 						))}
 					</ul>
 				</div>

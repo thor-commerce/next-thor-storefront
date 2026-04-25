@@ -15,8 +15,6 @@ export default async function AllProductsPage({ searchParams }: PageProps<"/[cou
 		query: buildFacetQuery(resolvedSearchParams),
 	});
 
-	console.log(buildFacetQuery(resolvedSearchParams));
-
 	return (
 		<ProductList
 			title="All products"

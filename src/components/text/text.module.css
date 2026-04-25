@@ -10,6 +10,19 @@
 	&:where([data-size="body-3"]) {
 		@mixin body-3;
 	}
+
+	/* &:where([data-size="heading-1"]) {
+		@mixin heading-1;
+	}
+	&:where([data-size="heading-2"]) {
+		@mixin heading-2;
+	}
+	&:where([data-size="heading-3"]) {
+		@mixin heading-3;
+	} */
+	&:where([data-size="heading-4"]) {
+		@mixin heading-4;
+	}
 	/* 
 	&:where([data-size="small"]) {
 		@mixin text-small;

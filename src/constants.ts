@@ -4,4 +4,4 @@ export const CACHE_TAGS = {
     order: "order",
 } as const;
 
-export const getCartCacheTag = (cartId: string) => `${CACHE_TAGS.cart}:${cartId}`;
+

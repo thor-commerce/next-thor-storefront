@@ -11,5 +11,8 @@ fragment ProductListTile on Product {
 		minPrice {
 			...Price
 		}
+		maxPrice {
+			...Price
+		}
 	}
 }

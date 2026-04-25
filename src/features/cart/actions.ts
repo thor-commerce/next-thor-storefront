@@ -2,12 +2,12 @@
 
 import { CACHE_TAGS } from "@/constants";
 import { updateTag } from "next/cache";
-import { addToCart, getCart, removeFromCart, updateCartLineItems } from "@/lib/thorcommerce/storefront";
+import { addToCart, findOrCreateCart, removeFromCart, updateCartLineItems } from "@/lib/thorcommerce/storefront";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 
 export async function addItem(prev: unknown, selectedVariantId: string) {
 	try {
-		const cart = await getCart();
+		const cart = await findOrCreateCart();
 
 		if (!cart) {
 			return "Error fetching cart";
@@ -17,9 +17,11 @@ export async function addItem(prev: unknown, selectedVariantId: string) {
 			return "Error adding item to cart";
 		}
 
+
 		await addToCart([{ variantId: selectedVariantId, quantity: 1 }]);
 		updateTag(CACHE_TAGS.cart);
-	} catch {
+	} catch (e) {
+		console.log("error adding item to cart", e);
 		return "Error adding item to cart";
 	}
 
@@ -34,7 +36,7 @@ export async function updateItemQuantity(
 ) {
 	const { lineItemId, quantity } = payload;
 	try {
-		const cart = await getCart();
+		const cart = await findOrCreateCart();
 
 		if (!cart) {
 			return "Error fetching cart";
@@ -61,7 +63,7 @@ export async function updateItemQuantity(
 export async function removeLineItem(prevState: unknown, lineItemId: string) {
 
 	try {
-		const cart = await getCart();
+		const cart = await findOrCreateCart();
 
 		if (!cart) {
 			return "Error fetching cart";

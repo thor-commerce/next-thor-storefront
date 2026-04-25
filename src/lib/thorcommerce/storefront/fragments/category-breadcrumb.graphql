@@ -1,0 +1,10 @@
+fragment CategoryBreadcrumb on Category {
+	id
+	name
+	slug
+	ancestors {
+		id
+		name
+		slug
+	}
+}

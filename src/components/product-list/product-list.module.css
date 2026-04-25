@@ -192,7 +192,9 @@
 .breadcrumbs {
 	padding: var(--spacing-l) var(--spacing-2xl) var(--spacing-s) var(--spacing-2xl);
 }
-
+.breadcrumbLink {
+	line-height: 1;
+}
 .breadcrumbList {
 	display: flex;
 	align-items: center;

@@ -1,3 +1,10 @@
+@define-mixin heading-4 {
+	/* 500 1.25rem/1.5 'Helvetica Now Display Medium',Helvetica,Arial,sans-serif; */
+	font-family: var(--font-geist-sans);
+	font-size: 20px;
+	line-height: 1.5;
+}
+
 @define-mixin body-1 {
 	font-family: var(--font-geist-sans);
 	font-size: 16px;

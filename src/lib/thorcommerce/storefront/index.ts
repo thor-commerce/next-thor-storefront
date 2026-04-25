@@ -1,7 +1,7 @@
 "use server";
 
 import { CACHE_TAGS } from "@/constants";
-import { getCartIdFromCookies } from "@/features/cart/utils";
+import { getCartIdFromCookies, saveCartIdToCookie } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
 import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
@@ -228,20 +228,23 @@ export const customerPasswordReset = async (variables: CustomerResetPasswordMuta
 
 
 
-const createCart = async (variables: CartCreateMutationVariables) =>
-    storefrontFetch({
+const createCart = async (variables: CartCreateMutationVariables) => {
+    const res = await storefrontFetch({
         query: CartCreateDocument,
         variables: variables
     });
 
+    if (res.cartCreate.cart?.id) {
+        await saveCartIdToCookie(res.cartCreate.cart.id);
+    }
+    return res;
+};
 
 
-export async function getCart() {
-    "use cache: private";
-    cacheTag(CACHE_TAGS.cart);
-    cacheLife("seconds");
+export async function findOrCreateCart() {
     const context = await getRequestContext();
     const cartId = await getCartIdFromCookies();
+
 
     //if the cart dosn't exist, create a new one, this can happen if the user is visiting for the first time or if the cart has been cleared from cookies, in both cases we want to create a new cart for the user
     if (!cartId) {
@@ -273,10 +276,30 @@ export async function getCart() {
     })).cartCreate?.cart;
 }
 
+export async function getCart() {
+    "use cache: private";
+    cacheTag(CACHE_TAGS.cart);
+    cacheLife("seconds");
+
+    const cartId = await getCartIdFromCookies();
+
+    if (!cartId) {
+        return null;
+    }
+
+    const response = await storefrontFetch({
+        query: CartDocument,
+        variables: {
+            id: cartId,
+        },
+    });
+
+    return response?.cart;
+}
+
 
 export async function addToCart(lines: { variantId: string; quantity: number }[]) {
     const cartId = await getCartIdFromCookies();
-
     const response = await storefrontFetch({
         query: CartLineItemsAddDocument,
         variables: {

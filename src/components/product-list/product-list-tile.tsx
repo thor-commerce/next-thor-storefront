@@ -5,45 +5,19 @@ import ThorImage from "../thor-image/thor-image";
 import s from "./product-list.module.css";
 import { ProductListTileFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import Text from "@/components/text/text";
+import { getPriceDetails } from "@/utils/price";
 
 type Props = {
 	item: ProductListTileFragment;
+	useMaxPrice?: boolean;
 };
 
-export default function ProductListTile({ item }: Props) {
+export default function ProductListTile({ item, useMaxPrice = false }: Props) {
 	const minPrice = item.priceRange?.minPrice;
-	const discountedPrice = minPrice?.discountedPrice;
-	const discountValue = discountedPrice?.discount?.value;
+	const maxPrice = item.priceRange?.maxPrice;
+	const selectedPrice = useMaxPrice ? (maxPrice ?? minPrice) : (minPrice ?? maxPrice);
 
-	let discountLabel: string | null = null;
-
-	if (discountedPrice && minPrice?.value) {
-		switch (discountValue?.__typename) {
-			case "ProductDiscountAbsoluteValue": {
-				const formattedDiscount = formatMoney({
-					money: {
-						centAmount: minPrice.value.centAmount - discountedPrice.value.centAmount,
-						currencyCode: minPrice.value.currencyCode,
-						fractionDigits: minPrice.value.fractionDigits,
-					},
-				});
-				if (formattedDiscount) {
-					discountLabel = `${formattedDiscount} off`;
-				}
-				break;
-			}
-			case "ProductDiscountRelativeValue": {
-				const factor = Number(discountValue.factor);
-				if (Number.isFinite(factor) && factor > 0) {
-					const percentOff = Math.round(factor * 100);
-					if (percentOff > 0) {
-						discountLabel = `${percentOff}% off`;
-					}
-				}
-				break;
-			}
-		}
-	}
+	const priceDetails = selectedPrice ? getPriceDetails(selectedPrice) : null;
 
 	return (
 		<li className={s.tile}>
@@ -61,23 +35,23 @@ export default function ProductListTile({ item }: Props) {
 					{item.name}
 				</Text>
 
-				{minPrice && (
+				{priceDetails && (
 					<div className={s.productPriceInfo}>
 						<div className={s.productPriceWrapper}>
 							<div aria-hidden="true" className={clsx(s.productPrice, s.isCurrentPrice)}>
 								{formatMoney({
-									money: discountedPrice ? discountedPrice.value : minPrice.value,
+									money: priceDetails.currentPrice,
 								})}
 							</div>
-							{discountedPrice && (
+							{priceDetails.isDiscounted && (
 								<div className={clsx(s.productPrice, s.isStrikedOut)} aria-hidden="true">
 									{formatMoney({
-										money: minPrice.value,
+										money: priceDetails.initialPrice,
 									})}
 								</div>
 							)}
 						</div>
-						{discountLabel && <div className={s.discountLabel}>{discountLabel}</div>}
+						{priceDetails.isDiscounted && <div className={s.discountLabel}>{priceDetails.discountLabel}</div>}
 					</div>
 				)}
 			</Navigation>

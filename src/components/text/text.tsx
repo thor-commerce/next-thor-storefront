@@ -3,7 +3,7 @@ import React, { ComponentPropsWithoutRef, ElementType, forwardRef, Ref } from "r
 import classes from "./text.module.css";
 import { ResponsiveProp, generateResponsiveClasses, isResponsiveProp } from "@/utils/responsive-props";
 
-type TextSize = "body-1" | "body-2" | "body-3";
+type TextSize = "body-1" | "body-2" | "body-3" | "heading-1" | "heading-2" | "heading-3" | "heading-4";
 type TextWeight = "normal" | "medium" | "semibold";
 
 type TextProps<T extends ElementType = "span"> = {

@@ -15,6 +15,7 @@ export default {
           config: {
             strict: true,
             useTypeImports: true,
+            skipTypename: true,
             scalars: {
               Long: "number",
             }

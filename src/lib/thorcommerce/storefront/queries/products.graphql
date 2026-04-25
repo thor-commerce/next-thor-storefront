@@ -1,0 +1,69 @@
+query ProductList(
+	$storeId: ID!
+	$currency: String!
+	$sortDirection: SortDirection!
+	$sortKey: ProductSortKeys!
+	$priceChannel: ID
+	$query: String
+) {
+	products(
+		first: 100
+		sortDirection: $sortDirection
+		sortKey: $sortKey
+		storeId: $storeId
+		priceCurrency: $currency
+		priceChannelId: $priceChannel
+		query: $query
+	) {
+		facets {
+			...Facet
+		}
+		edges {
+			node {
+				id
+				...ProductListTile
+			}
+		}
+		totalCount
+		pageInfo {
+			endCursor
+			hasNextPage
+		}
+	}
+}
+
+query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChannel: ID) {
+	product(slug: $slug, priceCurrency: $currency, storeId: $store, priceChannelId: $priceChannel) {
+		id
+		name
+		description
+		#A product can be in multiple categories, but for the sake of this demo, we take the deepest level category to build the breadcrumb.
+		categories(first: 1, sortDirection: DESC, sortKey: LEVEL) {
+			edges {
+				node {
+					...CategoryBreadcrumb
+				}
+			}
+		}
+		variants(first: 100) {
+			edges {
+				node {
+					id
+					name
+					sku
+					media(first: 5) {
+						edges {
+							node {
+								id
+								src
+							}
+						}
+					}
+					price {
+						...Price
+					}
+				}
+			}
+		}
+	}
+}

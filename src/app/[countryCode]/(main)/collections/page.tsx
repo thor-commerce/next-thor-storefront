@@ -1,4 +1,3 @@
-import ProductGridHeader from "@/components/product-grid/product-grid-header";
 import TaxonomyGrid from "@/components/taxonomy-grid/taxonomy-grid";
 import { getCollections } from "@/lib/thorcommerce/storefront";
 
@@ -14,7 +13,6 @@ export default async function CollectionsPage({}: PageProps<"/[countryCode]/coll
 
 	return (
 		<>
-			<ProductGridHeader heading="Collections" />
 			<TaxonomyGrid items={collections} />
 		</>
 	);

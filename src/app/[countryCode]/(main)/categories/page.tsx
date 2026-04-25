@@ -1,4 +1,3 @@
-import ProductGridHeader from "@/components/product-grid/product-grid-header";
 import TaxonomyGrid from "@/components/taxonomy-grid/taxonomy-grid";
 import { getCategories } from "@/lib/thorcommerce/storefront";
 
@@ -22,7 +21,6 @@ export default async function CategoriesPage({}: PageProps<"/[countryCode]/categ
 
 	return (
 		<>
-			<ProductGridHeader heading="Categories" />
 			<TaxonomyGrid items={categories} />;
 		</>
 	);

@@ -1,4 +1,4 @@
-import ProductBlock from "@/features/products/product-block/product-block";
+import ProductDetailPage from "@/features/products/product-detail-page/product-detail-page";
 import { getProductDetail } from "@/lib/thorcommerce/storefront";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { notFound } from "next/navigation";
@@ -25,5 +25,5 @@ export default async function ProductPage({
 	//no variants found.
 	if (!selectedVariant) return notFound();
 
-	return <ProductBlock product={product} selectedVariant={selectedVariant} />;
+	return <ProductDetailPage product={product} selectedVariant={selectedVariant} />;
 }

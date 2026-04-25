@@ -21,24 +21,20 @@ export type Scalars = {
 };
 
 export type AbsoluteShippingMethodRate = CartAvailableShippingMethodRate & {
-	__typename?: "AbsoluteShippingMethodRate";
 	/** The unique identifier for the shipping method rate. */
 	id: Scalars["ID"]["output"];
 	price: Money;
 };
 
 export type AddressAlreadyExistsError = UserError & {
-	__typename?: "AddressAlreadyExistsError";
 	message: Scalars["String"]["output"];
 };
 
 export type AddressNotFoundError = UserError & {
-	__typename?: "AddressNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
 export type Attribute = Node & {
-	__typename?: "Attribute";
 	/** The unique identifier of the attribute. */
 	id: Scalars["ID"]["output"];
 	metadata: Array<MetadataItem>;
@@ -58,7 +54,6 @@ export type AttributeMetadataArgs = {
  * Each attribute assignment includes the unique identifier of the attribute, its name, and the values assigned to the product. This allows for flexible and dynamic product attributes that can be used across different products and variants.
  */
 export type AttributeAssignment = {
-	__typename?: "AttributeAssignment";
 	attribute: Attribute;
 	/** Gets the unique identifier of the attribute. */
 	id: Scalars["ID"]["output"];
@@ -93,7 +88,6 @@ export type AttributeValueMetadataArgs = {
 
 /** A connection to a list of items. */
 export type AttributeValueConnection = {
-	__typename?: "AttributeValueConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<AttributeValueEdge>>;
 	/** A flattened list of the nodes */
@@ -105,7 +99,6 @@ export type AttributeValueConnection = {
 };
 
 export type AttributeValueEdge = {
-	__typename?: "AttributeValueEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -151,7 +144,6 @@ export type BaseAddressMetadataArgs = {
  * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
  */
 export type Cart = Node & {
-	__typename?: "Cart";
 	availableShippingMethods: Array<CartAvailableShippingMethod>;
 	/** Gets the billing address associated with the cart. This may be the same as the shipping address. */
 	billingAddress?: Maybe<CartAddress>;
@@ -214,12 +206,10 @@ export type CartMetadataArgs = {
 };
 
 export type CartAddDiscountCodeNotFoundError = UserError & {
-	__typename?: "CartAddDiscountCodeNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
 export type CartAddress = BaseAddress & {
-	__typename?: "CartAddress";
 	/** The first line of the address. Typically the street address or PO Box number. */
 	address1?: Maybe<Scalars["String"]["output"]>;
 	/** The second line of the address. Typically the number of the apartment, suite, or unit. */
@@ -268,17 +258,14 @@ export type CartAddressInput = {
 };
 
 export type CartAuthenticationFailedError = UserError & {
-	__typename?: "CartAuthenticationFailedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CartAuthorizationFailedError = UserError & {
-	__typename?: "CartAuthorizationFailedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CartAvailableShippingMethod = {
-	__typename?: "CartAvailableShippingMethod";
 	/** The description of the shipping method. */
 	description?: Maybe<Scalars["String"]["output"]>;
 	/** The unique identifier of the shipping method. */
@@ -311,18 +298,15 @@ export type CartCompleteInput = {
 };
 
 export type CartCompletePayload = {
-	__typename?: "CartCompletePayload";
 	errors?: Maybe<Array<CartCompleteError>>;
 	order?: Maybe<Order>;
 };
 
 export type CartCompletionDiscountCodeAlreadyUsedError = UserError & {
-	__typename?: "CartCompletionDiscountCodeAlreadyUsedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CartCompletionDiscrepancyError = UserError & {
-	__typename?: "CartCompletionDiscrepancyError";
 	message: Scalars["String"]["output"];
 };
 
@@ -352,7 +336,6 @@ export type CartCreateInput = {
 };
 
 export type CartCreatePayload = {
-	__typename?: "CartCreatePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartCreateError>>;
 };
@@ -368,13 +351,11 @@ export type CartDiscountCodeAddInput = {
 };
 
 export type CartDiscountCodeAddPayload = {
-	__typename?: "CartDiscountCodeAddPayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartDiscountCodeAddError>>;
 };
 
 export type CartDiscountCodeMaxApplicationsReachedError = UserError & {
-	__typename?: "CartDiscountCodeMaxApplicationsReachedError";
 	message: Scalars["String"]["output"];
 };
 
@@ -386,7 +367,6 @@ export type CartDiscountCodeRemoveInput = {
 };
 
 export type CartDiscountCodeRemovePayload = {
-	__typename?: "CartDiscountCodeRemovePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartDiscountCodeRemoveError>>;
 };
@@ -397,7 +377,6 @@ export type CartDiscountCodeRemovePayload = {
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
 export type CartLineItem = Node & {
-	__typename?: "CartLineItem";
 	discountApplications: DiscountApplicationConnection;
 	/** The unique identifier of the line item */
 	id: Scalars["ID"]["output"];
@@ -455,7 +434,6 @@ export type CartLineItemMetadataArgs = {
 
 /** A connection to a list of items. */
 export type CartLineItemConnection = {
-	__typename?: "CartLineItemConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<CartLineItemEdge>>;
 	/** A flattened list of the nodes */
@@ -467,7 +445,6 @@ export type CartLineItemConnection = {
 };
 
 export type CartLineItemEdge = {
-	__typename?: "CartLineItemEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -481,7 +458,6 @@ export type CartLineItemInput = {
 };
 
 export type CartLineItemPriceNotFoundError = UserError & {
-	__typename?: "CartLineItemPriceNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -503,18 +479,15 @@ export type CartLineItemsAddInput = {
 };
 
 export type CartLineItemsAddPayload = {
-	__typename?: "CartLineItemsAddPayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartLineItemsAddError>>;
 };
 
 export type CartLineItemsInsufficientStockError = UserError & {
-	__typename?: "CartLineItemsInsufficientStockError";
 	message: Scalars["String"]["output"];
 };
 
 export type CartLineItemsNotFoundError = UserError & {
-	__typename?: "CartLineItemsNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -526,7 +499,6 @@ export type CartLineItemsRemoveInput = {
 };
 
 export type CartLineItemsRemovePayload = {
-	__typename?: "CartLineItemsRemovePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartLineItemsRemoveError>>;
 };
@@ -542,13 +514,11 @@ export type CartLineItemsUpdateInput = {
 };
 
 export type CartLineItemsUpdatePayload = {
-	__typename?: "CartLineItemsUpdatePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartLineItemsUpdateError>>;
 };
 
 export type CartNotFoundError = UserError & {
-	__typename?: "CartNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -564,7 +534,6 @@ export type CartPaymentSessionInitializeInput = {
 };
 
 export type CartPaymentSessionInitializePayload = {
-	__typename?: "CartPaymentSessionInitializePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartPaymentSessionInitializeError>>;
 };
@@ -580,13 +549,11 @@ export type CartReplicateInput = {
 };
 
 export type CartReplicatePayload = {
-	__typename?: "CartReplicatePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartReplicateError>>;
 };
 
 export type CartReplicateStockChangeError = {
-	__typename?: "CartReplicateStockChangeError";
 	lineItemId: Scalars["ID"]["output"];
 	newStock: Scalars["Int"]["output"];
 	variantId: Scalars["ID"]["output"];
@@ -594,21 +561,18 @@ export type CartReplicateStockChangeError = {
 };
 
 export type CartReplicateStrictValidationFailedError = UserError & {
-	__typename?: "CartReplicateStrictValidationFailedError";
 	message: Scalars["String"]["output"];
 	stockChanges: Array<CartReplicateStockChangeError>;
 	variantsNotFound: Array<CartReplicateVariantNotFoundError>;
 };
 
 export type CartReplicateVariantNotFoundError = {
-	__typename?: "CartReplicateVariantNotFoundError";
 	lineItemId: Scalars["ID"]["output"];
 	variantId: Scalars["ID"]["output"];
 };
 
 /** Represents a shipping line on a cart, including method and totals. */
 export type CartShippingLine = Node & {
-	__typename?: "CartShippingLine";
 	/** The unique identifier of the cart shipping line. */
 	id: Scalars["ID"]["output"];
 	/** The shipping method selected for this shipping line. */
@@ -631,13 +595,11 @@ export type CartShippingLineAddInput = {
 };
 
 export type CartShippingLineAddPayload = {
-	__typename?: "CartShippingLineAddPayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartShippingLineAddError>>;
 };
 
 export type CartShippingLineNotFoundError = UserError & {
-	__typename?: "CartShippingLineNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -649,7 +611,6 @@ export type CartShippingLineRemoveInput = {
 };
 
 export type CartShippingLineRemovePayload = {
-	__typename?: "CartShippingLineRemovePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartShippingLineRemoveError>>;
 };
@@ -662,7 +623,6 @@ export type CartShippingLinesSetInput = {
 };
 
 export type CartShippingLinesSetPayload = {
-	__typename?: "CartShippingLinesSetPayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartShippingLinesSetError>>;
 };
@@ -689,13 +649,11 @@ export type CartUpdateInput = {
 };
 
 export type CartUpdatePayload = {
-	__typename?: "CartUpdatePayload";
 	cart?: Maybe<Cart>;
 	errors?: Maybe<Array<CartUpdateError>>;
 };
 
 export type CartUpdatePriceChannelNotFoundError = UserError & {
-	__typename?: "CartUpdatePriceChannelNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -705,7 +663,6 @@ export type CartUpdatePriceChannelNotFoundError = UserError & {
  * Each category includes core details such as title, description, and associated products. Categories can be organized hierarchically to create a structured navigation experience for customers.
  */
 export type Category = Node & {
-	__typename?: "Category";
 	ancestors: Array<Category>;
 	children: Array<Category>;
 	childrenCount: Scalars["Long"]["output"];
@@ -713,9 +670,12 @@ export type Category = Node & {
 	descendantsCount: Scalars["Long"]["output"];
 	/** The ID of the category. */
 	id: Scalars["ID"]["output"];
+	/** The level of the category. Root categories have a level of 0, their direct children have a level of 1, and so on. */
+	level: Scalars["Int"]["output"];
 	/** The name of the category. */
 	name: Scalars["String"]["output"];
 	parent?: Maybe<Category>;
+	path: Scalars["String"]["output"];
 	products: ProductsConnection;
 	productsCount: Scalars["Long"]["output"];
 	/** The slug of the category. */
@@ -743,7 +703,6 @@ export type CategoryProductsArgs = {
 
 /** A connection to a list of items. */
 export type CategoryConnection = {
-	__typename?: "CategoryConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<CategoryEdge>>;
 	/** A flattened list of the nodes */
@@ -755,12 +714,17 @@ export type CategoryConnection = {
 };
 
 export type CategoryEdge = {
-	__typename?: "CategoryEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
 	node: Category;
 };
+
+export enum CategorySortKeys {
+	Id = "ID",
+	Level = "LEVEL",
+	Name = "NAME",
+}
 
 /**
  * Represents a collection, encapsulating all information required to display and manage collections across storefronts and sales channels.
@@ -768,7 +732,6 @@ export type CategoryEdge = {
  *  Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
  */
 export type Collection = Node & {
-	__typename?: "Collection";
 	/** The ID of the collection. */
 	id: Scalars["ID"]["output"];
 	/** The name of the collection. */
@@ -799,7 +762,6 @@ export type CollectionProductsArgs = {
 
 /** A connection to a list of items. */
 export type CollectionConnection = {
-	__typename?: "CollectionConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<CollectionEdge>>;
 	/** A flattened list of the nodes */
@@ -811,7 +773,6 @@ export type CollectionConnection = {
 };
 
 export type CollectionEdge = {
-	__typename?: "CollectionEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -819,7 +780,6 @@ export type CollectionEdge = {
 };
 
 export type CountryInfo = {
-	__typename?: "CountryInfo";
 	code: Scalars["String"]["output"];
 	name: Scalars["String"]["output"];
 	postalCode?: Maybe<PostalCodeInfo>;
@@ -827,63 +787,53 @@ export type CountryInfo = {
 };
 
 export type CreateCartAddressDoesNotHaveCountryCodeError = UserError & {
-	__typename?: "CreateCartAddressDoesNotHaveCountryCodeError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartAuthenticationFailedError = UserError & {
-	__typename?: "CreateCartAuthenticationFailedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartAuthorizationFailedError = UserError & {
-	__typename?: "CreateCartAuthorizationFailedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartChannelDoesNotSupportCountryError = UserError & {
-	__typename?: "CreateCartChannelDoesNotSupportCountryError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartChannelDoesNotSupportCurrencyError = UserError & {
-	__typename?: "CreateCartChannelDoesNotSupportCurrencyError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartChannelHasNoCountriesError = UserError & {
-	__typename?: "CreateCartChannelHasNoCountriesError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartChannelNotFoundError = UserError & {
-	__typename?: "CreateCartChannelNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartFailedNotAllLineItemsCouldBeAddedError = UserError & {
-	__typename?: "CreateCartFailedNotAllLineItemsCouldBeAddedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartPriceChannelNotFoundError = UserError & {
-	__typename?: "CreateCartPriceChannelNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartShippingAddressDoesNotHaveShippingZonesError = UserError & {
-	__typename?: "CreateCartShippingAddressDoesNotHaveShippingZonesError";
 	message: Scalars["String"]["output"];
 };
 
 export type CreateCartStoreNotFoundError = UserError & {
-	__typename?: "CreateCartStoreNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
 export type Customer = Node & {
-	__typename?: "Customer";
 	addresses: CustomerAddressConnection;
+	/** The date the customer was created. */
+	createdAt: Scalars["DateTime"]["output"];
 	customerGroups: CustomerGroupConnection;
 	defaultBillingAddress?: Maybe<CustomerAddress>;
 	defaultShippingAddress?: Maybe<CustomerAddress>;
@@ -928,7 +878,6 @@ export type CustomerOrdersArgs = {
 };
 
 export type CustomerAccessToken = {
-	__typename?: "CustomerAccessToken";
 	/** The opaque bearer token to send as part of the Authorization request header. */
 	accessToken: Scalars["String"]["output"];
 	/** The number of seconds before the access token expires. */
@@ -945,7 +894,6 @@ export type CustomerAccessTokenCreateInput = {
 };
 
 export type CustomerAccessTokenCreatePayload = {
-	__typename?: "CustomerAccessTokenCreatePayload";
 	customerAccessToken?: Maybe<CustomerAccessToken>;
 	errors?: Maybe<Array<CustomerAccessTokenCreateError>>;
 };
@@ -957,7 +905,6 @@ export type CustomerAccessTokenRefreshInput = {
 };
 
 export type CustomerAccessTokenRefreshPayload = {
-	__typename?: "CustomerAccessTokenRefreshPayload";
 	customerAccessToken?: Maybe<CustomerAccessToken>;
 	errors?: Maybe<Array<CustomerAccessTokenRefreshError>>;
 };
@@ -977,14 +924,12 @@ export type CustomerActivateInput = {
 };
 
 export type CustomerActivatePayload = {
-	__typename?: "CustomerActivatePayload";
 	customer?: Maybe<Customer>;
 	customerAccessToken?: Maybe<CustomerAccessToken>;
 	errors?: Maybe<Array<CustomerActivateError>>;
 };
 
 export type CustomerAddress = BaseAddress & {
-	__typename?: "CustomerAddress";
 	/** The first line of the address. */
 	address1?: Maybe<Scalars["String"]["output"]>;
 	/** The second line of the address. */
@@ -1022,7 +967,6 @@ export type CustomerAddressMetadataArgs = {
 
 /** A connection to a list of items. */
 export type CustomerAddressConnection = {
-	__typename?: "CustomerAddressConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<CustomerAddressEdge>>;
 	/** A flattened list of the nodes */
@@ -1040,7 +984,6 @@ export type CustomerAddressCreateInput = {
 };
 
 export type CustomerAddressCreatePayload = {
-	__typename?: "CustomerAddressCreatePayload";
 	customerAddress?: Maybe<CustomerAddress>;
 	errors?: Maybe<Array<CustomerAddressCreateError>>;
 };
@@ -1052,13 +995,11 @@ export type CustomerAddressDeleteInput = {
 };
 
 export type CustomerAddressDeletePayload = {
-	__typename?: "CustomerAddressDeletePayload";
 	customer?: Maybe<Customer>;
 	errors?: Maybe<Array<CustomerAddressDeleteError>>;
 };
 
 export type CustomerAddressEdge = {
-	__typename?: "CustomerAddressEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1094,18 +1035,15 @@ export type CustomerAddressUpdateInput = {
 };
 
 export type CustomerAddressUpdatePayload = {
-	__typename?: "CustomerAddressUpdatePayload";
 	customerAddress?: Maybe<CustomerAddress>;
 	errors?: Maybe<Array<CustomerAddressUpdateError>>;
 };
 
 export type CustomerEmailAlreadyConfirmedError = UserError & {
-	__typename?: "CustomerEmailAlreadyConfirmedError";
 	message: Scalars["String"]["output"];
 };
 
 export type CustomerGroup = Node & {
-	__typename?: "CustomerGroup";
 	/** The unique identifier for the customer. */
 	id: Scalars["ID"]["output"];
 	/** The name of the customer group. */
@@ -1114,7 +1052,6 @@ export type CustomerGroup = Node & {
 
 /** A connection to a list of items. */
 export type CustomerGroupConnection = {
-	__typename?: "CustomerGroupConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<CustomerGroupEdge>>;
 	/** A flattened list of the nodes */
@@ -1126,7 +1063,6 @@ export type CustomerGroupConnection = {
 };
 
 export type CustomerGroupEdge = {
-	__typename?: "CustomerGroupEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1134,17 +1070,14 @@ export type CustomerGroupEdge = {
 };
 
 export type CustomerInvalidActivationTokenError = UserError & {
-	__typename?: "CustomerInvalidActivationTokenError";
 	message: Scalars["String"]["output"];
 };
 
 export type CustomerInvalidPasswordError = UserError & {
-	__typename?: "CustomerInvalidPasswordError";
 	message: Scalars["String"]["output"];
 };
 
 export type CustomerNotFoundError = UserError & {
-	__typename?: "CustomerNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -1157,7 +1090,6 @@ export type CustomerPasswordResetInput = {
 };
 
 export type CustomerPasswordResetPayload = {
-	__typename?: "CustomerPasswordResetPayload";
 	customer?: Maybe<Customer>;
 	customerAccessToken?: Maybe<CustomerAccessToken>;
 	errors?: Maybe<Array<CustomerPasswordResetError>>;
@@ -1170,14 +1102,12 @@ export type CustomerPasswordResetTokenInput = {
 };
 
 export type CustomerPasswordResetTokenPayload = {
-	__typename?: "CustomerPasswordResetTokenPayload";
 	errors?: Maybe<Array<CustomerPasswordResetTokenError>>;
 };
 
 export type CustomerRegisterError = CustomerRegisterFailedError;
 
 export type CustomerRegisterFailedError = UserError & {
-	__typename?: "CustomerRegisterFailedError";
 	message: Scalars["String"]["output"];
 };
 
@@ -1186,7 +1116,6 @@ export type CustomerRegisterInput = {
 };
 
 export type CustomerRegisterPayload = {
-	__typename?: "CustomerRegisterPayload";
 	errors?: Maybe<Array<CustomerRegisterError>>;
 };
 
@@ -1197,12 +1126,10 @@ export type CustomerUpdateInput = {
 };
 
 export type CustomerUpdatePayload = {
-	__typename?: "CustomerUpdatePayload";
 	customer?: Maybe<Customer>;
 };
 
 export type DiscountApplication = {
-	__typename?: "DiscountApplication";
 	/** The code of the discount that was applied. If it was an automatic discount, this field is null. */
 	discountCode?: Maybe<Scalars["String"]["output"]>;
 	/** The discounted amount. */
@@ -1215,7 +1142,6 @@ export type DiscountApplication = {
 
 /** A connection to a list of items. */
 export type DiscountApplicationConnection = {
-	__typename?: "DiscountApplicationConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<DiscountApplicationEdge>>;
 	/** A flattened list of the nodes */
@@ -1227,7 +1153,6 @@ export type DiscountApplicationConnection = {
 };
 
 export type DiscountApplicationEdge = {
-	__typename?: "DiscountApplicationEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1238,7 +1163,6 @@ export type DiscountApplicationEdge = {
 export type DiscountApplicationValue = Money | RelativeValue;
 
 export type DiscountCode = {
-	__typename?: "DiscountCode";
 	code: Scalars["String"]["output"];
 	error?: Maybe<DiscountCodeError>;
 };
@@ -1255,14 +1179,12 @@ export enum DiscountCodeError {
 
 /** Represents a discounted price for a product variant. */
 export type DiscountedPrice = {
-	__typename?: "DiscountedPrice";
 	discount?: Maybe<ProductDiscount>;
 	/** Money value of the discounted price. */
 	value: Money;
 };
 
 export type Facet = {
-	__typename?: "Facet";
 	/** The field of the facet. */
 	field: FacetField;
 	/** The name of the facet. */
@@ -1278,7 +1200,6 @@ export enum FacetField {
 }
 
 export type FacetValue = {
-	__typename?: "FacetValue";
 	/** The count of the facet value, representing how many products are associated with this facet value. */
 	count: Scalars["Long"]["output"];
 	/** The name of the facet value. */
@@ -1286,22 +1207,18 @@ export type FacetValue = {
 };
 
 export type InvalidCredentialsError = UserError & {
-	__typename?: "InvalidCredentialsError";
 	message: Scalars["String"]["output"];
 };
 
 export type InvalidPasswordError = UserError & {
-	__typename?: "InvalidPasswordError";
 	message: Scalars["String"]["output"];
 };
 
 export type InvalidRefreshTokenError = UserError & {
-	__typename?: "InvalidRefreshTokenError";
 	message: Scalars["String"]["output"];
 };
 
 export type InvalidTokenError = UserError & {
-	__typename?: "InvalidTokenError";
 	message: Scalars["String"]["output"];
 };
 
@@ -1312,7 +1229,6 @@ export type KeyValuePairOfStringAndStringInput = {
 
 /** Represents the shipping method associated with a cart shipping line. */
 export type LineShippingMethod = {
-	__typename?: "LineShippingMethod";
 	id: Scalars["ID"]["output"];
 	metadata: Array<MetadataItem>;
 	name: Scalars["String"]["output"];
@@ -1325,14 +1241,12 @@ export type LineShippingMethodMetadataArgs = {
 };
 
 export type ManualPaymentGateway = PaymentGateway & {
-	__typename?: "ManualPaymentGateway";
 	channelIds: Array<Scalars["ID"]["output"]>;
 	id: Scalars["ID"]["output"];
 	name: Scalars["String"]["output"];
 };
 
 export type Media = Node & {
-	__typename?: "Media";
 	/** The content type of the media. */
 	contentType: Scalars["String"]["output"];
 	/** The file extension of the media. */
@@ -1346,7 +1260,6 @@ export type Media = Node & {
 
 /** A connection to a list of items. */
 export type MediaConnection = {
-	__typename?: "MediaConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<MediaEdge>>;
 	/** A flattened list of the nodes */
@@ -1358,7 +1271,6 @@ export type MediaConnection = {
 };
 
 export type MediaEdge = {
-	__typename?: "MediaEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1367,7 +1279,6 @@ export type MediaEdge = {
 
 /** Represents a key-value pair of metadata associated with an entity, providing additional information or attributes that can be used for various purposes such as filtering, categorization, or display. */
 export type MetadataItem = {
-	__typename?: "MetadataItem";
 	/** Gets the key of the metadata item, which serves as an identifier for the type of metadata being represented. */
 	key: Scalars["String"]["output"];
 	/** Gets the value of the metadata item, which contains the specific information or attribute associated with the key. */
@@ -1376,7 +1287,6 @@ export type MetadataItem = {
 
 /** The monetary value in the smallest unit of the currency. */
 export type Money = {
-	__typename?: "Money";
 	/** The amount of money in the smallest unit of the currency. For example, 100 cents in USD. */
 	centAmount: Scalars["Long"]["output"];
 	/** The three-letter currency code that represents a world currency used in a store. Currency codes include standard ISO 4217 codes, legacy codes, and non-standard codes. For example, USD. */
@@ -1386,7 +1296,6 @@ export type Money = {
 };
 
 export type Mutation = {
-	__typename?: "Mutation";
 	cartComplete: CartCompletePayload;
 	cartCreate: CartCreatePayload;
 	cartDiscountCodeAdd: CartDiscountCodeAddPayload;
@@ -1510,7 +1419,6 @@ export type Node = {
 };
 
 export type Order = Node & {
-	__typename?: "Order";
 	/** Gets the billing address associated with the order. This may be the same as the shipping address. */
 	billingAddress?: Maybe<OrderAddress>;
 	/** The date and time when the order was created. */
@@ -1570,7 +1478,6 @@ export type OrderPaymentsArgs = {
 };
 
 export type OrderAddress = BaseAddress & {
-	__typename?: "OrderAddress";
 	/** The first line of the address. Typically the street address or PO Box number. */
 	address1?: Maybe<Scalars["String"]["output"]>;
 	/** The second line of the address. Typically the number of the apartment, suite, or unit. */
@@ -1606,7 +1513,6 @@ export type OrderAddressMetadataArgs = {
 
 /** A connection to a list of items. */
 export type OrderConnection = {
-	__typename?: "OrderConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<OrderEdge>>;
 	/** A flattened list of the nodes */
@@ -1618,7 +1524,6 @@ export type OrderConnection = {
 };
 
 export type OrderEdge = {
-	__typename?: "OrderEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1631,7 +1536,6 @@ export type OrderEdge = {
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
 export type OrderLineItem = Node & {
-	__typename?: "OrderLineItem";
 	discountApplications: DiscountApplicationConnection;
 	/** The unique identifier of the line item */
 	id: Scalars["ID"]["output"];
@@ -1689,7 +1593,6 @@ export type OrderLineItemMetadataArgs = {
 
 /** A connection to a list of items. */
 export type OrderLineItemConnection = {
-	__typename?: "OrderLineItemConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<OrderLineItemEdge>>;
 	/** A flattened list of the nodes */
@@ -1701,7 +1604,6 @@ export type OrderLineItemConnection = {
 };
 
 export type OrderLineItemEdge = {
-	__typename?: "OrderLineItemEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1710,7 +1612,6 @@ export type OrderLineItemEdge = {
 
 /** Represents a shipping line applied to an order. */
 export type OrderShippingLine = Node & {
-	__typename?: "OrderShippingLine";
 	/** The unique identifier of the order shipping line. */
 	id: Scalars["ID"]["output"];
 	/** The shipping method associated with this shipping line. */
@@ -1742,7 +1643,6 @@ export enum OrderState {
 
 /** A cursor that points to a specific page. */
 export type PageCursor = {
-	__typename?: "PageCursor";
 	/** The cursor. */
 	cursor: Scalars["String"]["output"];
 	/** The page number. */
@@ -1751,7 +1651,6 @@ export type PageCursor = {
 
 /** Information about pagination in a connection. */
 export type PageInfo = {
-	__typename?: "PageInfo";
 	/** A list of cursors to continue paginating backwards. */
 	backwardCursors: Array<PageCursor>;
 	/** When paginating forwards, the cursor to continue. */
@@ -1767,7 +1666,6 @@ export type PageInfo = {
 };
 
 export type Payment = Node & {
-	__typename?: "Payment";
 	id: Scalars["ID"]["output"];
 	intendedAmount: Money;
 	paidAmount: Money;
@@ -1776,7 +1674,6 @@ export type Payment = Node & {
 
 /** A connection to a list of items. */
 export type PaymentConnection = {
-	__typename?: "PaymentConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<PaymentEdge>>;
 	/** A flattened list of the nodes */
@@ -1788,7 +1685,6 @@ export type PaymentConnection = {
 };
 
 export type PaymentEdge = {
-	__typename?: "PaymentEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1801,13 +1697,11 @@ export type PaymentGateway = {
 };
 
 export type PaymentGatewayChannelMismatchError = UserError & {
-	__typename?: "PaymentGatewayChannelMismatchError";
 	message: Scalars["String"]["output"];
 };
 
 /** A connection to a list of items. */
 export type PaymentGatewayConnection = {
-	__typename?: "PaymentGatewayConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<PaymentGatewayEdge>>;
 	/** A flattened list of the nodes */
@@ -1819,7 +1713,6 @@ export type PaymentGatewayConnection = {
 };
 
 export type PaymentGatewayEdge = {
-	__typename?: "PaymentGatewayEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -1827,12 +1720,10 @@ export type PaymentGatewayEdge = {
 };
 
 export type PaymentGatewayNotFoundError = UserError & {
-	__typename?: "PaymentGatewayNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
 export type PaymentGatewaySessionInitializeFailedError = UserError & {
-	__typename?: "PaymentGatewaySessionInitializeFailedError";
 	message: Scalars["String"]["output"];
 };
 
@@ -1855,7 +1746,6 @@ export enum PaymentState {
 }
 
 export type PostalCodeInfo = {
-	__typename?: "PostalCodeInfo";
 	exampleList: Array<Scalars["String"]["output"]>;
 	examples: Scalars["String"]["output"];
 	fieldName: Scalars["String"]["output"];
@@ -1864,7 +1754,6 @@ export type PostalCodeInfo = {
 };
 
 export type Price = Node & {
-	__typename?: "Price";
 	/** The discounted price, if applicable. This is the price after any discounts have been applied. */
 	discountedPrice?: Maybe<DiscountedPrice>;
 	/** The unique identifier of the price. */
@@ -1884,7 +1773,6 @@ export type Price = Node & {
  * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
  */
 export type Product = Node & {
-	__typename?: "Product";
 	attributeAssignments: Array<AttributeAssignment>;
 	categories: CategoryConnection;
 	collections: CollectionConnection;
@@ -1915,6 +1803,8 @@ export type ProductCategoriesArgs = {
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
+	sortDirection?: SortDirection;
+	sortKey?: CategorySortKeys;
 };
 
 /**
@@ -1970,7 +1860,6 @@ export enum ProductCollectionSortKeys {
 
 /** Represents a discounted price for a product variant. */
 export type ProductDiscount = Node & {
-	__typename?: "ProductDiscount";
 	/** Gets the ID of the product discount. */
 	id: Scalars["ID"]["output"];
 	/** The name of the product discount. */
@@ -1984,13 +1873,11 @@ export type ProductDiscount = Node & {
 
 /** Represents an absolute discount value for a product variant. */
 export type ProductDiscountAbsoluteValue = {
-	__typename?: "ProductDiscountAbsoluteValue";
 	value?: Maybe<Money>;
 };
 
 /** Represents a relative discount value for a product variant. */
 export type ProductDiscountRelativeValue = {
-	__typename?: "ProductDiscountRelativeValue";
 	/** Gets the factor of the relative discount value. */
 	factor: Scalars["Decimal"]["output"];
 };
@@ -1998,7 +1885,6 @@ export type ProductDiscountRelativeValue = {
 export type ProductDiscountValue = ProductDiscountAbsoluteValue | ProductDiscountRelativeValue;
 
 export type ProductPriceRange = {
-	__typename?: "ProductPriceRange";
 	/** Gets the maximum price of the product in the specified currency. */
 	maxPrice: Price;
 	/** Gets the minimum price of the product in the specified currency. */
@@ -2013,7 +1899,6 @@ export enum ProductSortKeys {
 }
 
 export type ProductVariant = Node & {
-	__typename?: "ProductVariant";
 	availability?: Maybe<ProductVariantAvailability>;
 	/** The barcode (for example, ISBN, UPC, or GTIN) associated with the variant. */
 	barcode?: Maybe<Scalars["String"]["output"]>;
@@ -2043,7 +1928,6 @@ export type ProductVariantMetadataArgs = {
 };
 
 export type ProductVariantAvailability = {
-	__typename?: "ProductVariantAvailability";
 	/** Indicates whether the variant is available for purchase in the current channel. If `Channel`, isn't specified, it will throw an exception. */
 	availableForPurchase: Scalars["Boolean"]["output"];
 	/** Number of items of the Product Variant that are in stock. */
@@ -2054,7 +1938,6 @@ export type ProductVariantAvailability = {
 
 /** A connection to a list of items. */
 export type ProductVariantConnection = {
-	__typename?: "ProductVariantConnection";
 	/** A list of edges. */
 	edges?: Maybe<Array<ProductVariantEdge>>;
 	/** A flattened list of the nodes */
@@ -2066,7 +1949,6 @@ export type ProductVariantConnection = {
 };
 
 export type ProductVariantEdge = {
-	__typename?: "ProductVariantEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -2074,7 +1956,6 @@ export type ProductVariantEdge = {
 };
 
 export type ProductVariantNotFoundError = UserError & {
-	__typename?: "ProductVariantNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -2085,7 +1966,6 @@ export enum ProductVariantSortKeys {
 }
 
 export type ProductsConnection = {
-	__typename?: "ProductsConnection";
 	aggregates: Array<Facet>;
 	/** A list of edges. */
 	edges?: Maybe<Array<ProductsEdge>>;
@@ -2099,7 +1979,6 @@ export type ProductsConnection = {
 };
 
 export type ProductsEdge = {
-	__typename?: "ProductsEdge";
 	/** A cursor for use in pagination. */
 	cursor: Scalars["String"]["output"];
 	/** The item at the end of the edge. */
@@ -2107,7 +1986,6 @@ export type ProductsEdge = {
 };
 
 export type Query = {
-	__typename?: "Query";
 	cart?: Maybe<Cart>;
 	categories: CategoryConnection;
 	category?: Maybe<Category>;
@@ -2135,11 +2013,14 @@ export type QueryCategoriesArgs = {
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
+	sortDirection?: SortDirection;
+	sortKey?: CategorySortKeys;
 	storeId?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 export type QueryCategoryArgs = {
 	id?: InputMaybe<Scalars["ID"]["input"]>;
+	path?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -2217,14 +2098,12 @@ export type QueryProductsArgs = {
 };
 
 export type RelativeShippingMethodRate = CartAvailableShippingMethodRate & {
-	__typename?: "RelativeShippingMethodRate";
 	/** The unique identifier for the shipping method rate. */
 	id: Scalars["ID"]["output"];
 	rate: Scalars["Float"]["output"];
 };
 
 export type RelativeValue = {
-	__typename?: "RelativeValue";
 	/** The percentage value of the relative value. */
 	percentage: Scalars["Decimal"]["output"];
 };
@@ -2236,7 +2115,6 @@ export enum ReplicationStrategy {
 }
 
 export type SelectedAttribute = {
-	__typename?: "SelectedAttribute";
 	attribute: Attribute;
 	attributeValue: AttributeValue;
 	name: Scalars["String"]["output"];
@@ -2252,7 +2130,6 @@ export enum ShipmentState {
 }
 
 export type ShippingMethod = Node & {
-	__typename?: "ShippingMethod";
 	/** The description of the shipping method. */
 	description?: Maybe<Scalars["String"]["output"]>;
 	/** The unique identifier of the shipping method. */
@@ -2269,7 +2146,6 @@ export type ShippingMethodMetadataArgs = {
 };
 
 export type ShippingMethodNotFoundError = UserError & {
-	__typename?: "ShippingMethodNotFoundError";
 	message: Scalars["String"]["output"];
 };
 
@@ -2284,12 +2160,10 @@ export enum StockPolicy {
 }
 
 export type Store = {
-	__typename?: "Store";
 	id: Scalars["ID"]["output"];
 };
 
 export type StripeConnectPaymentGateway = PaymentGateway & {
-	__typename?: "StripeConnectPaymentGateway";
 	connectedAccountId?: Maybe<Scalars["String"]["output"]>;
 	id: Scalars["ID"]["output"];
 	liveMode: Scalars["Boolean"]["output"];
@@ -2298,7 +2172,6 @@ export type StripeConnectPaymentGateway = PaymentGateway & {
 };
 
 export type StripePaymentGateway = PaymentGateway & {
-	__typename?: "StripePaymentGateway";
 	id: Scalars["ID"]["output"];
 	isTest: Scalars["Boolean"]["output"];
 	name: Scalars["String"]["output"];
@@ -2306,7 +2179,6 @@ export type StripePaymentGateway = PaymentGateway & {
 };
 
 export type StripePaymentSession = PaymentSession & {
-	__typename?: "StripePaymentSession";
 	clientSecret: Scalars["String"]["output"];
 	/** The unique identifier of the payment session. */
 	id: Scalars["ID"]["output"];
@@ -2315,7 +2187,6 @@ export type StripePaymentSession = PaymentSession & {
 };
 
 export type SwatchAttributeValue = AttributeValue & {
-	__typename?: "SwatchAttributeValue";
 	color?: Maybe<Scalars["String"]["output"]>;
 	id: Scalars["ID"]["output"];
 	media?: Maybe<Media>;
@@ -2335,7 +2206,6 @@ export enum TaxBehavior {
 
 /** Represents a portion of a tax rate applied to a cart or line item, detailing the specific tax amount and its type. */
 export type TaxPortion = {
-	__typename?: "TaxPortion";
 	/** Gets the name of the tax portion, which describes the type of tax applied (e.g., VAT, sales tax). */
 	name: Scalars["String"]["output"];
 	/** Gets the amount of the tax portion, which is the specific tax amount applied to the cart or line item. */
@@ -2344,7 +2214,6 @@ export type TaxPortion = {
 
 /** Represents the tax rate applied to a cart or line item, including the rate and any applicable tax portions. */
 export type TaxRate = {
-	__typename?: "TaxRate";
 	/** Gets the tax composition of the tax rate, which includes details about how the tax is structured. */
 	composition: TaxRateComposition;
 	/** The tax portions of the tax rate, which detail how the tax is divided among different components. */
@@ -2361,7 +2230,6 @@ export enum TaxRateComposition {
 
 /** This type represents the taxed price of an item. If it is set to null, it means that the item has not had its taxed price calculated yet. */
 export type TaxedPrice = {
-	__typename?: "TaxedPrice";
 	/** The total price including tax. */
 	gross: Money;
 	/** The total price excluding tax. */
@@ -2371,7 +2239,6 @@ export type TaxedPrice = {
 };
 
 export type TextAttributeValue = AttributeValue & {
-	__typename?: "TextAttributeValue";
 	id: Scalars["ID"]["output"];
 	metadata: Array<MetadataItem>;
 	/** The value of the attribute. */
@@ -2388,7 +2255,6 @@ export type TextAttributeValueMetadataArgs = {
  * The unit price is expressed in the smallest unit of the currency, allowing for precise calculations and display of product pricing.
  */
 export type UnitPrice = {
-	__typename?: "UnitPrice";
 	discountedPrice?: Maybe<DiscountedPrice>;
 	/** Gets the tax behavior of the unit price. */
 	taxBehavior: TaxBehavior;
@@ -2397,7 +2263,6 @@ export type UnitPrice = {
 };
 
 export type UpdateCartLineItemsInsufficientStockError = UserError & {
-	__typename?: "UpdateCartLineItemsInsufficientStockError";
 	message: Scalars["String"]["output"];
 };
 
@@ -2406,24 +2271,19 @@ export type UserError = {
 };
 
 export type ZoneInfo = {
-	__typename?: "ZoneInfo";
 	code: Scalars["String"]["output"];
 	name: Scalars["String"]["output"];
 	postalCodeRegex?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type CartFragment = {
-	__typename?: "Cart";
 	id: string;
 	customerId?: string | null;
 	lineItemsQuantity: number;
-	shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+	shippingAddress?: { countryCode?: string | null } | null;
 	lineItems: {
-		__typename?: "CartLineItemConnection";
 		edges?: Array<{
-			__typename?: "CartLineItemEdge";
 			node: {
-				__typename?: "CartLineItem";
 				id: string;
 				taxBehavior: TaxBehavior;
 				variantName: string;
@@ -2432,131 +2292,114 @@ export type CartFragment = {
 				quantity: number;
 				productSlug: string;
 				variant?: {
-					__typename?: "ProductVariant";
 					id: string;
-					image?: { __typename?: "Media"; src: string } | null;
-					selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+					image?: { src: string } | null;
+					selectedAttributes: Array<{ value: string }>;
 					availability?: {
-						__typename?: "ProductVariantAvailability";
 						availableForPurchase: boolean;
 						availableQuantity: number;
 						stockPolicy: StockPolicy;
 					} | null;
 				} | null;
 				unitPrice: {
-					__typename?: "UnitPrice";
-					value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+					value: { centAmount: number; currencyCode: string; fractionDigits: number };
 					discountedPrice?: {
-						__typename?: "DiscountedPrice";
-						value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
 					} | null;
 				};
 				discountApplications: {
-					__typename?: "DiscountApplicationConnection";
 					edges?: Array<{
-						__typename?: "DiscountApplicationEdge";
 						node: {
-							__typename?: "DiscountApplication";
 							label: string;
-							discountedAmount: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 						};
 					}> | null;
 				};
-				total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+				total: { centAmount: number; currencyCode: string; fractionDigits: number };
 			};
 		}> | null;
 	};
-	discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-	subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-	taxedPrice?: {
-		__typename?: "TaxedPrice";
-		tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-	} | null;
-	total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+	discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+	subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+	taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+	total: { centAmount: number; currencyCode: string; fractionDigits: number };
+};
+
+export type CategoryBreadcrumbFragment = {
+	id: string;
+	name: string;
+	slug: string;
+	ancestors: Array<{ id: string; name: string; slug: string }>;
 };
 
 export type FacetFragment = {
-	__typename?: "Facet";
 	field: FacetField;
 	name: string;
-	values: Array<{ __typename?: "FacetValue"; name: string; count: number }>;
+	values: Array<{ name: string; count: number }>;
 };
 
-export type MoneyFragment = {
-	__typename?: "Money";
-	centAmount: number;
-	currencyCode: string;
-	fractionDigits: number;
-};
+export type MoneyFragment = { centAmount: number; currencyCode: string; fractionDigits: number };
 
 export type PriceFragment = {
-	__typename?: "Price";
 	validFrom?: any | null;
 	validUntil?: any | null;
 	discountedPrice?: {
-		__typename?: "DiscountedPrice";
 		discount?: {
-			__typename?: "ProductDiscount";
 			validFrom?: any | null;
 			validUntil?: any | null;
 			value:
 				| {
-						__typename?: "ProductDiscountAbsoluteValue";
-						value?: {
-							__typename?: "Money";
-							centAmount: number;
-							currencyCode: string;
-							fractionDigits: number;
-						} | null;
+						__typename: "ProductDiscountAbsoluteValue";
+						value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
 				  }
-				| { __typename?: "ProductDiscountRelativeValue"; factor: any };
+				| { __typename: "ProductDiscountRelativeValue"; factor: any };
 		} | null;
-		value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+		value: { centAmount: number; currencyCode: string; fractionDigits: number };
 	} | null;
-	value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+	value: { centAmount: number; currencyCode: string; fractionDigits: number };
 };
 
 export type ProductListTileFragment = {
-	__typename?: "Product";
 	id: string;
 	name: string;
 	slug: string;
-	heroVariant?: {
-		__typename?: "ProductVariant";
-		image?: { __typename?: "Media"; src: string } | null;
-	} | null;
+	heroVariant?: { image?: { src: string } | null } | null;
 	priceRange?: {
-		__typename?: "ProductPriceRange";
 		minPrice: {
-			__typename?: "Price";
 			validFrom?: any | null;
 			validUntil?: any | null;
 			discountedPrice?: {
-				__typename?: "DiscountedPrice";
 				discount?: {
-					__typename?: "ProductDiscount";
 					validFrom?: any | null;
 					validUntil?: any | null;
 					value:
 						| {
-								__typename?: "ProductDiscountAbsoluteValue";
-								value?: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								} | null;
+								__typename: "ProductDiscountAbsoluteValue";
+								value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
 						  }
-						| { __typename?: "ProductDiscountRelativeValue"; factor: any };
+						| { __typename: "ProductDiscountRelativeValue"; factor: any };
 				} | null;
-				value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+				value: { centAmount: number; currencyCode: string; fractionDigits: number };
 			} | null;
-			value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			value: { centAmount: number; currencyCode: string; fractionDigits: number };
+		};
+		maxPrice: {
+			validFrom?: any | null;
+			validUntil?: any | null;
+			discountedPrice?: {
+				discount?: {
+					validFrom?: any | null;
+					validUntil?: any | null;
+					value:
+						| {
+								__typename: "ProductDiscountAbsoluteValue";
+								value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
+						  }
+						| { __typename: "ProductDiscountRelativeValue"; factor: any };
+				} | null;
+				value: { centAmount: number; currencyCode: string; fractionDigits: number };
+			} | null;
+			value: { centAmount: number; currencyCode: string; fractionDigits: number };
 		};
 	} | null;
 };
@@ -2566,21 +2409,15 @@ export type CartCreateMutationVariables = Exact<{
 }>;
 
 export type CartCreateMutation = {
-	__typename?: "Mutation";
 	cartCreate: {
-		__typename?: "CartCreatePayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -2589,62 +2426,37 @@ export type CartCreateMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 	};
 };
@@ -2654,21 +2466,15 @@ export type CartUpdateMutationVariables = Exact<{
 }>;
 
 export type CartUpdateMutation = {
-	__typename?: "Mutation";
 	cartUpdate: {
-		__typename?: "CartUpdatePayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -2677,62 +2483,37 @@ export type CartUpdateMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 	};
 };
@@ -2742,21 +2523,15 @@ export type CartReplicateMutationVariables = Exact<{
 }>;
 
 export type CartReplicateMutation = {
-	__typename?: "Mutation";
 	cartReplicate: {
-		__typename?: "CartReplicatePayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -2765,62 +2540,37 @@ export type CartReplicateMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 	};
 };
@@ -2830,21 +2580,15 @@ export type CartDiscountCodeAddMutationVariables = Exact<{
 }>;
 
 export type CartDiscountCodeAddMutation = {
-	__typename?: "Mutation";
 	cartDiscountCodeAdd: {
-		__typename?: "CartDiscountCodeAddPayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -2853,70 +2597,42 @@ export type CartDiscountCodeAddMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 		errors?: Array<
-			| { __typename?: "CartAddDiscountCodeNotFoundError"; code: "CartAddDiscountCodeNotFoundError" }
-			| {
-					__typename?: "CartDiscountCodeMaxApplicationsReachedError";
-					code: "CartDiscountCodeMaxApplicationsReachedError";
-			  }
-			| { __typename?: "CartNotFoundError"; code: "CartNotFoundError" }
+			| { code: "CartAddDiscountCodeNotFoundError" }
+			| { code: "CartDiscountCodeMaxApplicationsReachedError" }
+			| { code: "CartNotFoundError" }
 		> | null;
 	};
 };
@@ -2926,21 +2642,15 @@ export type CartDiscountCodeRemoveMutationVariables = Exact<{
 }>;
 
 export type CartDiscountCodeRemoveMutation = {
-	__typename?: "Mutation";
 	cartDiscountCodeRemove: {
-		__typename?: "CartDiscountCodeRemovePayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -2949,62 +2659,37 @@ export type CartDiscountCodeRemoveMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 	};
 };
@@ -3014,21 +2699,15 @@ export type CartLineItemsAddMutationVariables = Exact<{
 }>;
 
 export type CartLineItemsAddMutation = {
-	__typename?: "Mutation";
 	cartLineItemsAdd: {
-		__typename?: "CartLineItemsAddPayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -3037,62 +2716,37 @@ export type CartLineItemsAddMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 		errors?: Array<
 			| { __typename: "CartLineItemPriceNotFoundError" }
@@ -3108,21 +2762,15 @@ export type CartLineItemsUpdateMutationVariables = Exact<{
 }>;
 
 export type CartLineItemsUpdateMutation = {
-	__typename?: "Mutation";
 	cartLineItemsUpdate: {
-		__typename?: "CartLineItemsUpdatePayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -3131,62 +2779,37 @@ export type CartLineItemsUpdateMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 	};
 };
@@ -3196,21 +2819,15 @@ export type CartLineItemsRemoveMutationVariables = Exact<{
 }>;
 
 export type CartLineItemsRemoveMutation = {
-	__typename?: "Mutation";
 	cartLineItemsRemove: {
-		__typename?: "CartLineItemsRemovePayload";
 		cart?: {
-			__typename?: "Cart";
 			id: string;
 			customerId?: string | null;
 			lineItemsQuantity: number;
-			shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
-				__typename?: "CartLineItemConnection";
 				edges?: Array<{
-					__typename?: "CartLineItemEdge";
 					node: {
-						__typename?: "CartLineItem";
 						id: string;
 						taxBehavior: TaxBehavior;
 						variantName: string;
@@ -3219,62 +2836,37 @@ export type CartLineItemsRemoveMutation = {
 						quantity: number;
 						productSlug: string;
 						variant?: {
-							__typename?: "ProductVariant";
 							id: string;
-							image?: { __typename?: "Media"; src: string } | null;
-							selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+							image?: { src: string } | null;
+							selectedAttributes: Array<{ value: string }>;
 							availability?: {
-								__typename?: "ProductVariantAvailability";
 								availableForPurchase: boolean;
 								availableQuantity: number;
 								stockPolicy: StockPolicy;
 							} | null;
 						} | null;
 						unitPrice: {
-							__typename?: "UnitPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
 						};
 						discountApplications: {
-							__typename?: "DiscountApplicationConnection";
 							edges?: Array<{
-								__typename?: "DiscountApplicationEdge";
 								node: {
-									__typename?: "DiscountApplication";
 									label: string;
-									discountedAmount: {
-										__typename?: "Money";
-										centAmount: number;
-										currencyCode: string;
-										fractionDigits: number;
-									};
+									discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 								};
 							}> | null;
 						};
-						total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						total: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				}> | null;
 			};
-			discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-			subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			taxedPrice?: {
-				__typename?: "TaxedPrice";
-				tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-			} | null;
-			total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+			discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+			subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
 	};
 };
@@ -3284,14 +2876,12 @@ export type CustomerActivateMutationVariables = Exact<{
 }>;
 
 export type CustomerActivateMutation = {
-	__typename?: "Mutation";
 	customerActivate: {
-		__typename?: "CustomerActivatePayload";
-		customer?: { __typename?: "Customer"; id: string } | null;
+		customer?: { id: string } | null;
 		errors?: Array<
-			| { __typename?: "CustomerEmailAlreadyConfirmedError"; code: "CustomerEmailAlreadyConfirmedError" }
-			| { __typename?: "CustomerInvalidActivationTokenError"; code: "CustomerInvalidActivationTokenError" }
-			| { __typename?: "CustomerInvalidPasswordError"; code: "CustomerInvalidPasswordError" }
+			| { code: "CustomerEmailAlreadyConfirmedError" }
+			| { code: "CustomerInvalidActivationTokenError" }
+			| { code: "CustomerInvalidPasswordError" }
 		> | null;
 	};
 };
@@ -3301,14 +2891,7 @@ export type CustomerRegisterMutationVariables = Exact<{
 }>;
 
 export type CustomerRegisterMutation = {
-	__typename?: "Mutation";
-	customerRegister: {
-		__typename?: "CustomerRegisterPayload";
-		errors?: Array<{
-			__typename?: "CustomerRegisterFailedError";
-			code: "CustomerRegisterFailedError";
-		}> | null;
-	};
+	customerRegister: { errors?: Array<{ code: "CustomerRegisterFailedError" }> | null };
 };
 
 export type CustomerResetPasswordTokenMutationVariables = Exact<{
@@ -3316,11 +2899,7 @@ export type CustomerResetPasswordTokenMutationVariables = Exact<{
 }>;
 
 export type CustomerResetPasswordTokenMutation = {
-	__typename?: "Mutation";
-	customerPasswordResetToken: {
-		__typename?: "CustomerPasswordResetTokenPayload";
-		errors?: Array<{ __typename?: "InvalidCredentialsError"; code: "InvalidCredentialsError" }> | null;
-	};
+	customerPasswordResetToken: { errors?: Array<{ code: "InvalidCredentialsError" }> | null };
 };
 
 export type CustomerResetPasswordMutationVariables = Exact<{
@@ -3328,13 +2907,8 @@ export type CustomerResetPasswordMutationVariables = Exact<{
 }>;
 
 export type CustomerResetPasswordMutation = {
-	__typename?: "Mutation";
 	customerPasswordReset: {
-		__typename?: "CustomerPasswordResetPayload";
-		errors?: Array<
-			| { __typename?: "InvalidPasswordError"; code: "InvalidPasswordError" }
-			| { __typename?: "InvalidTokenError"; code: "InvalidTokenError" }
-		> | null;
+		errors?: Array<{ code: "InvalidPasswordError" } | { code: "InvalidTokenError" }> | null;
 	};
 };
 
@@ -3343,19 +2917,14 @@ export type CartQueryVariables = Exact<{
 }>;
 
 export type CartQuery = {
-	__typename?: "Query";
 	cart?: {
-		__typename?: "Cart";
 		id: string;
 		customerId?: string | null;
 		lineItemsQuantity: number;
-		shippingAddress?: { __typename?: "CartAddress"; countryCode?: string | null } | null;
+		shippingAddress?: { countryCode?: string | null } | null;
 		lineItems: {
-			__typename?: "CartLineItemConnection";
 			edges?: Array<{
-				__typename?: "CartLineItemEdge";
 				node: {
-					__typename?: "CartLineItem";
 					id: string;
 					taxBehavior: TaxBehavior;
 					variantName: string;
@@ -3364,57 +2933,37 @@ export type CartQuery = {
 					quantity: number;
 					productSlug: string;
 					variant?: {
-						__typename?: "ProductVariant";
 						id: string;
-						image?: { __typename?: "Media"; src: string } | null;
-						selectedAttributes: Array<{ __typename?: "SelectedAttribute"; value: string }>;
+						image?: { src: string } | null;
+						selectedAttributes: Array<{ value: string }>;
 						availability?: {
-							__typename?: "ProductVariantAvailability";
 							availableForPurchase: boolean;
 							availableQuantity: number;
 							stockPolicy: StockPolicy;
 						} | null;
 					} | null;
 					unitPrice: {
-						__typename?: "UnitPrice";
-						value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
 						discountedPrice?: {
-							__typename?: "DiscountedPrice";
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 						} | null;
 					};
 					discountApplications: {
-						__typename?: "DiscountApplicationConnection";
 						edges?: Array<{
-							__typename?: "DiscountApplicationEdge";
 							node: {
-								__typename?: "DiscountApplication";
 								label: string;
-								discountedAmount: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
 							};
 						}> | null;
 					};
-					total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+					total: { centAmount: number; currencyCode: string; fractionDigits: number };
 				};
 			}> | null;
 		};
-		discountCodes: Array<{ __typename?: "DiscountCode"; code: string; error?: DiscountCodeError | null }>;
-		subtotal: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-		taxedPrice?: {
-			__typename?: "TaxedPrice";
-			tax: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
-		} | null;
-		total: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+		discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+		subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+		taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+		total: { centAmount: number; currencyCode: string; fractionDigits: number };
 	} | null;
 };
 
@@ -3424,18 +2973,14 @@ export type CategoriesQueryVariables = Exact<{
 }>;
 
 export type CategoriesQuery = {
-	__typename?: "Query";
 	categories: {
-		__typename?: "CategoryConnection";
 		edges?: Array<{
-			__typename?: "CategoryEdge";
 			node: {
-				__typename?: "Category";
 				id: string;
 				name: string;
 				slug: string;
 				childrenCount: number;
-				products: { __typename?: "ProductsConnection"; totalCount: number };
+				products: { totalCount: number };
 			};
 		}> | null;
 	};
@@ -3452,75 +2997,61 @@ export type CategoryListQueryVariables = Exact<{
 }>;
 
 export type CategoryListQuery = {
-	__typename?: "Query";
 	category?: {
-		__typename?: "Category";
 		id: string;
 		name: string;
 		slug: string;
-		ancestors: Array<{ __typename?: "Category"; slug: string; name: string }>;
+		ancestors: Array<{ slug: string; name: string }>;
 		products: {
-			__typename?: "ProductsConnection";
 			totalCount: number;
-			facets: Array<{
-				__typename?: "Facet";
-				field: FacetField;
-				name: string;
-				values: Array<{ __typename?: "FacetValue"; name: string; count: number }>;
-			}>;
+			facets: Array<{ field: FacetField; name: string; values: Array<{ name: string; count: number }> }>;
 			edges?: Array<{
-				__typename?: "ProductsEdge";
 				node: {
-					__typename?: "Product";
 					id: string;
 					name: string;
 					slug: string;
-					heroVariant?: {
-						__typename?: "ProductVariant";
-						image?: { __typename?: "Media"; src: string } | null;
-					} | null;
+					heroVariant?: { image?: { src: string } | null } | null;
 					priceRange?: {
-						__typename?: "ProductPriceRange";
 						minPrice: {
-							__typename?: "Price";
 							validFrom?: any | null;
 							validUntil?: any | null;
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
 								discount?: {
-									__typename?: "ProductDiscount";
 									validFrom?: any | null;
 									validUntil?: any | null;
 									value:
 										| {
-												__typename?: "ProductDiscountAbsoluteValue";
-												value?: {
-													__typename?: "Money";
-													centAmount: number;
-													currencyCode: string;
-													fractionDigits: number;
-												} | null;
+												__typename: "ProductDiscountAbsoluteValue";
+												value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
 										  }
-										| { __typename?: "ProductDiscountRelativeValue"; factor: any };
+										| { __typename: "ProductDiscountRelativeValue"; factor: any };
 								} | null;
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						};
+						maxPrice: {
+							validFrom?: any | null;
+							validUntil?: any | null;
+							discountedPrice?: {
+								discount?: {
+									validFrom?: any | null;
+									validUntil?: any | null;
+									value:
+										| {
+												__typename: "ProductDiscountAbsoluteValue";
+												value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
+										  }
+										| { __typename: "ProductDiscountRelativeValue"; factor: any };
+								} | null;
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
+							} | null;
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 						};
 					} | null;
 				};
 			}> | null;
-			pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+			pageInfo: { endCursor?: string | null; hasNextPage: boolean };
 		};
 	} | null;
 };
@@ -3531,18 +3062,9 @@ export type CollectionsQueryVariables = Exact<{
 }>;
 
 export type CollectionsQuery = {
-	__typename?: "Query";
 	collections: {
-		__typename?: "CollectionConnection";
 		edges?: Array<{
-			__typename?: "CollectionEdge";
-			node: {
-				__typename?: "Collection";
-				id: string;
-				name: string;
-				slug: string;
-				products: { __typename?: "ProductsConnection"; totalCount: number };
-			};
+			node: { id: string; name: string; slug: string; products: { totalCount: number } };
 		}> | null;
 	};
 };
@@ -3557,67 +3079,58 @@ export type CollectionListQueryVariables = Exact<{
 }>;
 
 export type CollectionListQuery = {
-	__typename?: "Query";
 	collection?: {
-		__typename?: "Collection";
 		id: string;
 		name: string;
 		products: {
-			__typename?: "ProductsConnection";
 			totalCount: number;
 			edges?: Array<{
-				__typename?: "ProductsEdge";
 				node: {
-					__typename?: "Product";
 					id: string;
 					name: string;
 					slug: string;
-					heroVariant?: {
-						__typename?: "ProductVariant";
-						image?: { __typename?: "Media"; src: string } | null;
-					} | null;
+					heroVariant?: { image?: { src: string } | null } | null;
 					priceRange?: {
-						__typename?: "ProductPriceRange";
 						minPrice: {
-							__typename?: "Price";
 							validFrom?: any | null;
 							validUntil?: any | null;
 							discountedPrice?: {
-								__typename?: "DiscountedPrice";
 								discount?: {
-									__typename?: "ProductDiscount";
 									validFrom?: any | null;
 									validUntil?: any | null;
 									value:
 										| {
-												__typename?: "ProductDiscountAbsoluteValue";
-												value?: {
-													__typename?: "Money";
-													centAmount: number;
-													currencyCode: string;
-													fractionDigits: number;
-												} | null;
+												__typename: "ProductDiscountAbsoluteValue";
+												value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
 										  }
-										| { __typename?: "ProductDiscountRelativeValue"; factor: any };
+										| { __typename: "ProductDiscountRelativeValue"; factor: any };
 								} | null;
-								value: {
-									__typename?: "Money";
-									centAmount: number;
-									currencyCode: string;
-									fractionDigits: number;
-								};
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
 							} | null;
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						};
+						maxPrice: {
+							validFrom?: any | null;
+							validUntil?: any | null;
+							discountedPrice?: {
+								discount?: {
+									validFrom?: any | null;
+									validUntil?: any | null;
+									value:
+										| {
+												__typename: "ProductDiscountAbsoluteValue";
+												value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
+										  }
+										| { __typename: "ProductDiscountRelativeValue"; factor: any };
+								} | null;
+								value: { centAmount: number; currencyCode: string; fractionDigits: number };
+							} | null;
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 						};
 					} | null;
 				};
 			}> | null;
-			pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+			pageInfo: { endCursor?: string | null; hasNextPage: boolean };
 		};
 	} | null;
 };
@@ -3625,62 +3138,11 @@ export type CollectionListQuery = {
 export type CurrentCustomerQueryVariables = Exact<{ [key: string]: never }>;
 
 export type CurrentCustomerQuery = {
-	__typename?: "Query";
 	customer?: {
-		__typename?: "Customer";
 		id: string;
 		email?: string | null;
 		firstName?: string | null;
 		lastName?: string | null;
-	} | null;
-};
-
-export type ProductDetailQueryVariables = Exact<{
-	slug: Scalars["String"]["input"];
-	currency?: InputMaybe<Scalars["String"]["input"]>;
-	store: Scalars["ID"]["input"];
-	priceChannel?: InputMaybe<Scalars["ID"]["input"]>;
-}>;
-
-export type ProductDetailQuery = {
-	__typename?: "Query";
-	product?: {
-		__typename?: "Product";
-		id: string;
-		name: string;
-		description?: string | null;
-		categories: {
-			__typename?: "CategoryConnection";
-			edges?: Array<{
-				__typename?: "CategoryEdge";
-				node: {
-					__typename?: "Category";
-					id: string;
-					name: string;
-					slug: string;
-					ancestors: Array<{ __typename?: "Category"; id: string; name: string; slug: string }>;
-				};
-			}> | null;
-		};
-		variants: {
-			__typename?: "ProductVariantConnection";
-			edges?: Array<{
-				__typename?: "ProductVariantEdge";
-				node: {
-					__typename?: "ProductVariant";
-					id: string;
-					name: string;
-					sku?: string | null;
-					media: {
-						__typename?: "MediaConnection";
-						edges?: Array<{
-							__typename?: "MediaEdge";
-							node: { __typename?: "Media"; id: string; src: string };
-						}> | null;
-					};
-				};
-			}> | null;
-		};
 	} | null;
 };
 
@@ -3694,65 +3156,110 @@ export type ProductListQueryVariables = Exact<{
 }>;
 
 export type ProductListQuery = {
-	__typename?: "Query";
 	products: {
-		__typename?: "ProductsConnection";
 		totalCount: number;
-		facets: Array<{
-			__typename?: "Facet";
-			field: FacetField;
-			name: string;
-			values: Array<{ __typename?: "FacetValue"; name: string; count: number }>;
-		}>;
+		facets: Array<{ field: FacetField; name: string; values: Array<{ name: string; count: number }> }>;
 		edges?: Array<{
-			__typename?: "ProductsEdge";
 			node: {
-				__typename?: "Product";
 				id: string;
 				name: string;
 				slug: string;
-				heroVariant?: {
-					__typename?: "ProductVariant";
-					image?: { __typename?: "Media"; src: string } | null;
-				} | null;
+				heroVariant?: { image?: { src: string } | null } | null;
 				priceRange?: {
-					__typename?: "ProductPriceRange";
 					minPrice: {
-						__typename?: "Price";
 						validFrom?: any | null;
 						validUntil?: any | null;
 						discountedPrice?: {
-							__typename?: "DiscountedPrice";
 							discount?: {
-								__typename?: "ProductDiscount";
 								validFrom?: any | null;
 								validUntil?: any | null;
 								value:
 									| {
-											__typename?: "ProductDiscountAbsoluteValue";
-											value?: {
-												__typename?: "Money";
-												centAmount: number;
-												currencyCode: string;
-												fractionDigits: number;
-											} | null;
+											__typename: "ProductDiscountAbsoluteValue";
+											value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
 									  }
-									| { __typename?: "ProductDiscountRelativeValue"; factor: any };
+									| { __typename: "ProductDiscountRelativeValue"; factor: any };
 							} | null;
-							value: {
-								__typename?: "Money";
-								centAmount: number;
-								currencyCode: string;
-								fractionDigits: number;
-							};
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
 						} | null;
-						value: { __typename?: "Money"; centAmount: number; currencyCode: string; fractionDigits: number };
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
+					};
+					maxPrice: {
+						validFrom?: any | null;
+						validUntil?: any | null;
+						discountedPrice?: {
+							discount?: {
+								validFrom?: any | null;
+								validUntil?: any | null;
+								value:
+									| {
+											__typename: "ProductDiscountAbsoluteValue";
+											value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
+									  }
+									| { __typename: "ProductDiscountRelativeValue"; factor: any };
+							} | null;
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						} | null;
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
 					};
 				} | null;
 			};
 		}> | null;
-		pageInfo: { __typename?: "PageInfo"; endCursor?: string | null; hasNextPage: boolean };
+		pageInfo: { endCursor?: string | null; hasNextPage: boolean };
 	};
+};
+
+export type ProductDetailQueryVariables = Exact<{
+	slug: Scalars["String"]["input"];
+	currency?: InputMaybe<Scalars["String"]["input"]>;
+	store: Scalars["ID"]["input"];
+	priceChannel?: InputMaybe<Scalars["ID"]["input"]>;
+}>;
+
+export type ProductDetailQuery = {
+	product?: {
+		id: string;
+		name: string;
+		description?: string | null;
+		categories: {
+			edges?: Array<{
+				node: {
+					id: string;
+					name: string;
+					slug: string;
+					ancestors: Array<{ id: string; name: string; slug: string }>;
+				};
+			}> | null;
+		};
+		variants: {
+			edges?: Array<{
+				node: {
+					id: string;
+					name: string;
+					sku?: string | null;
+					media: { edges?: Array<{ node: { id: string; src: string } }> | null };
+					price?: {
+						validFrom?: any | null;
+						validUntil?: any | null;
+						discountedPrice?: {
+							discount?: {
+								validFrom?: any | null;
+								validUntil?: any | null;
+								value:
+									| {
+											__typename: "ProductDiscountAbsoluteValue";
+											value?: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
+									  }
+									| { __typename: "ProductDiscountRelativeValue"; factor: any };
+							} | null;
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						} | null;
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
+					} | null;
+				};
+			}> | null;
+		};
+	} | null;
 };
 
 export class TypedDocumentString<TResult, TVariables>
@@ -3865,6 +3372,21 @@ export const CartFragmentDoc = new TypedDocumentString(
 }`,
 	{ fragmentName: "Cart" },
 ) as unknown as TypedDocumentString<CartFragment, unknown>;
+export const CategoryBreadcrumbFragmentDoc = new TypedDocumentString(
+	`
+    fragment CategoryBreadcrumb on Category {
+  id
+  name
+  slug
+  ancestors {
+    id
+    name
+    slug
+  }
+}
+    `,
+	{ fragmentName: "CategoryBreadcrumb" },
+) as unknown as TypedDocumentString<CategoryBreadcrumbFragment, unknown>;
 export const FacetFragmentDoc = new TypedDocumentString(
 	`
     fragment Facet on Facet {
@@ -3888,6 +3410,7 @@ export const PriceFragmentDoc = new TypedDocumentString(
       validFrom
       validUntil
       value {
+        __typename
         ... on ProductDiscountAbsoluteValue {
           value {
             ...Money
@@ -3928,6 +3451,9 @@ export const ProductListTileFragmentDoc = new TypedDocumentString(
     minPrice {
       ...Price
     }
+    maxPrice {
+      ...Price
+    }
   }
 }
     fragment Money on Money {
@@ -3943,6 +3469,7 @@ fragment Price on Price {
       validFrom
       validUntil
       value {
+        __typename
         ... on ProductDiscountAbsoluteValue {
           value {
             ...Money
@@ -4863,6 +4390,7 @@ fragment Price on Price {
       validFrom
       validUntil
       value {
+        __typename
         ... on ProductDiscountAbsoluteValue {
           value {
             ...Money
@@ -4892,6 +4420,9 @@ fragment ProductListTile on Product {
   }
   priceRange {
     minPrice {
+      ...Price
+    }
+    maxPrice {
       ...Price
     }
   }
@@ -4952,6 +4483,7 @@ fragment Price on Price {
       validFrom
       validUntil
       value {
+        __typename
         ... on ProductDiscountAbsoluteValue {
           value {
             ...Money
@@ -4983,6 +4515,9 @@ fragment ProductListTile on Product {
     minPrice {
       ...Price
     }
+    maxPrice {
+      ...Price
+    }
   }
 }`) as unknown as TypedDocumentString<CollectionListQuery, CollectionListQueryVariables>;
 export const CurrentCustomerDocument = new TypedDocumentString(`
@@ -4995,51 +4530,6 @@ export const CurrentCustomerDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<CurrentCustomerQuery, CurrentCustomerQueryVariables>;
-export const ProductDetailDocument = new TypedDocumentString(`
-    query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChannel: ID) {
-  product(
-    slug: $slug
-    priceCurrency: $currency
-    storeId: $store
-    priceChannelId: $priceChannel
-  ) {
-    id
-    name
-    description
-    categories(first: 1) {
-      edges {
-        node {
-          id
-          name
-          slug
-          ancestors {
-            id
-            name
-            slug
-          }
-        }
-      }
-    }
-    variants(first: 100) {
-      edges {
-        node {
-          id
-          name
-          sku
-          media(first: 5) {
-            edges {
-              node {
-                id
-                src
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `) as unknown as TypedDocumentString<ProductDetailQuery, ProductDetailQueryVariables>;
 export const ProductListDocument = new TypedDocumentString(`
     query ProductList($storeId: ID!, $currency: String!, $sortDirection: SortDirection!, $sortKey: ProductSortKeys!, $priceChannel: ID, $query: String) {
   products(
@@ -5088,6 +4578,7 @@ fragment Price on Price {
       validFrom
       validUntil
       value {
+        __typename
         ... on ProductDiscountAbsoluteValue {
           value {
             ...Money
@@ -5119,5 +4610,90 @@ fragment ProductListTile on Product {
     minPrice {
       ...Price
     }
+    maxPrice {
+      ...Price
+    }
   }
 }`) as unknown as TypedDocumentString<ProductListQuery, ProductListQueryVariables>;
+export const ProductDetailDocument = new TypedDocumentString(`
+    query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChannel: ID) {
+  product(
+    slug: $slug
+    priceCurrency: $currency
+    storeId: $store
+    priceChannelId: $priceChannel
+  ) {
+    id
+    name
+    description
+    categories(first: 1, sortDirection: DESC, sortKey: LEVEL) {
+      edges {
+        node {
+          ...CategoryBreadcrumb
+        }
+      }
+    }
+    variants(first: 100) {
+      edges {
+        node {
+          id
+          name
+          sku
+          media(first: 5) {
+            edges {
+              node {
+                id
+                src
+              }
+            }
+          }
+          price {
+            ...Price
+          }
+        }
+      }
+    }
+  }
+}
+    fragment CategoryBreadcrumb on Category {
+  id
+  name
+  slug
+  ancestors {
+    id
+    name
+    slug
+  }
+}
+fragment Money on Money {
+  centAmount
+  currencyCode
+  fractionDigits
+}
+fragment Price on Price {
+  validFrom
+  validUntil
+  discountedPrice {
+    discount {
+      validFrom
+      validUntil
+      value {
+        __typename
+        ... on ProductDiscountAbsoluteValue {
+          value {
+            ...Money
+          }
+        }
+        ... on ProductDiscountRelativeValue {
+          factor
+        }
+      }
+    }
+    value {
+      ...Money
+    }
+  }
+  value {
+    ...Money
+  }
+}`) as unknown as TypedDocumentString<ProductDetailQuery, ProductDetailQueryVariables>;
