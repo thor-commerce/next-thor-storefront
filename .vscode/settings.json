@@ -10,8 +10,8 @@
 	},
 
 	// === TypeScript ===
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"typescript.preferences.importModuleSpecifier": "non-relative",
+	"js/ts.tsdk.path": "node_modules/typescript/lib",
+	"js/ts.preferences.importModuleSpecifier": "non-relative",
 
 	// === ESLint ===
 	"eslint.run": "onSave",
