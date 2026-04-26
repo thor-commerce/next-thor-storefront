@@ -24,11 +24,9 @@ export const config = {
 };
 
 export async function proxy(request: NextRequest) {
-	const { origin, pathname, searchParams, search } = request.nextUrl;
+	const { origin, pathname, searchParams } = request.nextUrl;
 
-	const routeValue = pathname + search;
 	const requestHeaders = new Headers(request.headers);
-	requestHeaders.set("x-route", routeValue);
 
 	// Let static files pass through
 	if (pathname.includes(".")) {
