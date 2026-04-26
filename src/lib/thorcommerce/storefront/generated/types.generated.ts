@@ -2874,6 +2874,22 @@ export type CartLineItemsRemoveMutation = {
 	};
 };
 
+export type CartPaymentSessionInitializeMutationVariables = Exact<{
+	input: CartPaymentSessionInitializeInput;
+}>;
+
+export type CartPaymentSessionInitializeMutation = {
+	cartPaymentSessionInitialize: {
+		cart?: { id: string } | null;
+		errors?: Array<
+			| { message: string; code: "CartNotFoundError" }
+			| { message: string; code: "PaymentGatewayChannelMismatchError" }
+			| { message: string; code: "PaymentGatewayNotFoundError" }
+			| { message: string; code: "PaymentGatewaySessionInitializeFailedError" }
+		> | null;
+	};
+};
+
 export type CustomerActivateMutationVariables = Exact<{
 	input: CustomerActivateInput;
 }>;
@@ -3057,6 +3073,77 @@ export type CategoryListQuery = {
 			pageInfo: { endCursor?: string | null; hasNextPage: boolean };
 		};
 	} | null;
+};
+
+export type CheckoutCartQueryVariables = Exact<{
+	id: Scalars["ID"]["input"];
+}>;
+
+export type CheckoutCartQuery = {
+	cart?: {
+		id: string;
+		customerId?: string | null;
+		lineItemsQuantity: number;
+		shippingAddress?: { countryCode?: string | null } | null;
+		paymentSession?: { __typename: "StripePaymentSession"; id: string } | null;
+		lineItems: {
+			edges?: Array<{
+				node: {
+					id: string;
+					taxBehavior: TaxBehavior;
+					variantName: string;
+					variantId: string;
+					productName: string;
+					quantity: number;
+					productSlug: string;
+					variant?: {
+						id: string;
+						image?: { src: string } | null;
+						selectedAttributes: Array<{ value: string }>;
+						availability?: {
+							availableForPurchase: boolean;
+							availableQuantity: number;
+							stockPolicy: StockPolicy;
+						} | null;
+					} | null;
+					unitPrice: {
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						discountedPrice?: {
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						} | null;
+					};
+					discountApplications: {
+						edges?: Array<{
+							node: {
+								label: string;
+								discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
+							};
+						}> | null;
+					};
+					total: { centAmount: number; currencyCode: string; fractionDigits: number };
+				};
+			}> | null;
+		};
+		discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
+		subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+		taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+		total: { centAmount: number; currencyCode: string; fractionDigits: number };
+	} | null;
+};
+
+export type PaymentGatewaysQueryVariables = Exact<{
+	cartId: Scalars["ID"]["input"];
+}>;
+
+export type PaymentGatewaysQuery = {
+	paymentGateways: {
+		edges?: Array<{
+			node:
+				| { id: string; name: string; type: "ManualPaymentGateway" }
+				| { id: string; name: string; type: "StripeConnectPaymentGateway" }
+				| { id: string; name: string; type: "StripePaymentGateway" };
+		}> | null;
+	};
 };
 
 export type CollectionsQueryVariables = Exact<{
@@ -4224,6 +4311,24 @@ fragment Money on Money {
   currencyCode
   fractionDigits
 }`) as unknown as TypedDocumentString<CartLineItemsRemoveMutation, CartLineItemsRemoveMutationVariables>;
+export const CartPaymentSessionInitializeDocument = new TypedDocumentString(`
+    mutation CartPaymentSessionInitialize($input: CartPaymentSessionInitializeInput!) {
+  cartPaymentSessionInitialize(input: $input) {
+    cart {
+      id
+    }
+    errors {
+      code: __typename
+      ... on UserError {
+        message
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<
+	CartPaymentSessionInitializeMutation,
+	CartPaymentSessionInitializeMutationVariables
+>;
 export const CustomerActivateDocument = new TypedDocumentString(`
     mutation CustomerActivate($input: CustomerActivateInput!) {
   customerActivate(input: $input) {
@@ -4464,6 +4569,104 @@ fragment ProductListTile on Product {
     }
   }
 }`) as unknown as TypedDocumentString<CategoryListQuery, CategoryListQueryVariables>;
+export const CheckoutCartDocument = new TypedDocumentString(`
+    query CheckoutCart($id: ID!) {
+  cart(id: $id) {
+    id
+    customerId
+    shippingAddress {
+      countryCode
+    }
+    paymentSession {
+      id
+      __typename
+    }
+    lineItemsQuantity
+    lineItems(first: 100) {
+      edges {
+        node {
+          id
+          taxBehavior
+          variantName
+          variantId
+          productName
+          quantity
+          productSlug
+          variant {
+            id
+            image {
+              src
+            }
+            selectedAttributes {
+              value
+            }
+            availability {
+              availableForPurchase
+              availableQuantity
+              stockPolicy
+            }
+          }
+          unitPrice {
+            value {
+              ...Money
+            }
+            discountedPrice {
+              value {
+                ...Money
+              }
+            }
+          }
+          discountApplications {
+            edges {
+              node {
+                label
+                discountedAmount {
+                  ...Money
+                }
+              }
+            }
+          }
+          total {
+            ...Money
+          }
+        }
+      }
+    }
+    discountCodes {
+      code
+      error
+    }
+    subtotal {
+      ...Money
+    }
+    taxedPrice {
+      tax {
+        ...Money
+      }
+    }
+    total {
+      ...Money
+    }
+  }
+}
+    fragment Money on Money {
+  centAmount
+  currencyCode
+  fractionDigits
+}`) as unknown as TypedDocumentString<CheckoutCartQuery, CheckoutCartQueryVariables>;
+export const PaymentGatewaysDocument = new TypedDocumentString(`
+    query PaymentGateways($cartId: ID!) {
+  paymentGateways(cartId: $cartId) {
+    edges {
+      node {
+        id
+        name
+        type: __typename
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<PaymentGatewaysQuery, PaymentGatewaysQueryVariables>;
 export const CollectionsDocument = new TypedDocumentString(`
     query Collections($storeId: ID!, $currency: String!) {
   collections(first: 48) {

@@ -146,9 +146,9 @@ export default function CartDrawer() {
 										</div>
 									</div>
 									<Button
-										// as={Navigation}
-										// href={`/checkout?checkout_id=${cart.id}&step=${CheckoutStepEnum.Customer}`}
-										// onClick={() => setOpen(false)}
+										as={Navigation}
+										href={`/checkout/${cart.id}`}
+										onClick={() => setOpen(false)}
 										className={s.drawerCheckoutButton}
 										disabled
 									>

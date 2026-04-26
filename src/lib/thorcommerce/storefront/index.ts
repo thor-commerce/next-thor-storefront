@@ -3,7 +3,7 @@
 import { getCartIdFromCookies, saveCartIdToCookie } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { headers } from "next/headers";
 
@@ -363,4 +363,41 @@ export async function getUser() {
     })
 
     return data.customer;
+}
+
+export async function getCheckoutCart(id: string) {
+    const data = await storefrontFetch({
+        query: CheckoutCartDocument,
+        variables: {
+            id
+        }
+    })
+
+    return data.cart;
+}
+
+export async function getPaymentGateways(cartId: string) {
+
+    const data = await storefrontFetch({
+        query: PaymentGatewaysDocument,
+        variables: {
+            cartId
+        }
+    })
+
+    return removeEdgesAndNodes(data.paymentGateways);
+}
+
+export async function CartPaymentSessionIntialize({ cartId, gatewayId }: { cartId: string, gatewayId: string }) {
+    const data = await storefrontFetch({
+        query: CartPaymentSessionInitializeDocument,
+        variables: {
+            input: {
+                cartId: cartId,
+                gatewayId: gatewayId
+            }
+        }
+    })
+
+    return data.cartPaymentSessionInitialize;
 }
