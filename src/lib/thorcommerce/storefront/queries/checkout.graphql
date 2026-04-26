@@ -2,12 +2,42 @@ query CheckoutCart($id: ID!) {
 	cart(id: $id) {
 		id
 		customerId
+		metadata {
+			key
+			value
+		}
 		shippingAddress {
 			countryCode
+		}
+		shippingLines {
+			id
+			taxBehavior
+			taxedPrice {
+				gross {
+					...Money
+				}
+				net {
+					...Money
+				}
+				tax {
+					...Money
+				}
+			}
+			total {
+				...Money
+			}
 		}
 		paymentSession {
 			id
 			__typename
+			paymentGateway {
+				id
+				name
+				type: __typename
+			}
+			... on StripePaymentSession {
+				clientSecret
+			}
 		}
 		lineItemsQuantity
 		lineItems(first: 100) {
@@ -54,6 +84,17 @@ query CheckoutCart($id: ID!) {
 							}
 						}
 					}
+					taxedPrice {
+						gross {
+							...Money
+						}
+						net {
+							...Money
+						}
+						tax {
+							...Money
+						}
+					}
 					total {
 						...Money
 					}
@@ -69,6 +110,12 @@ query CheckoutCart($id: ID!) {
 		}
 		taxedPrice {
 			tax {
+				...Money
+			}
+			net {
+				...Money
+			}
+			gross {
 				...Money
 			}
 		}

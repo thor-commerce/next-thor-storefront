@@ -1,0 +1,1 @@
+export const CHECKOUT_SELECTED_PAYMENT_GATEWAY_METADATA_KEY = "selected_payment_gateway_id";

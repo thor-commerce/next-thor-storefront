@@ -2518,6 +2518,12 @@ export type CartUpdateMutation = {
 			taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
 			total: { centAmount: number; currencyCode: string; fractionDigits: number };
 		} | null;
+		errors?: Array<
+			| { message: string; code: "CartAuthenticationFailedError" }
+			| { message: string; code: "CartAuthorizationFailedError" }
+			| { message: string; code: "CartNotFoundError" }
+			| { message: string; code: "CartUpdatePriceChannelNotFoundError" }
+		> | null;
 	};
 };
 
@@ -2880,7 +2886,18 @@ export type CartPaymentSessionInitializeMutationVariables = Exact<{
 
 export type CartPaymentSessionInitializeMutation = {
 	cartPaymentSessionInitialize: {
-		cart?: { id: string } | null;
+		cart?: {
+			id: string;
+			paymentSession?: {
+				__typename: "StripePaymentSession";
+				clientSecret: string;
+				id: string;
+				paymentGateway:
+					| { id: string; name: string; type: "ManualPaymentGateway" }
+					| { id: string; name: string; type: "StripeConnectPaymentGateway" }
+					| { id: string; name: string; type: "StripePaymentGateway" };
+			} | null;
+		} | null;
 		errors?: Array<
 			| { message: string; code: "CartNotFoundError" }
 			| { message: string; code: "PaymentGatewayChannelMismatchError" }
@@ -3084,8 +3101,27 @@ export type CheckoutCartQuery = {
 		id: string;
 		customerId?: string | null;
 		lineItemsQuantity: number;
+		metadata: Array<{ key: string; value: string }>;
 		shippingAddress?: { countryCode?: string | null } | null;
-		paymentSession?: { __typename: "StripePaymentSession"; id: string } | null;
+		shippingLines: Array<{
+			id: string;
+			taxBehavior: TaxBehavior;
+			taxedPrice?: {
+				gross: { centAmount: number; currencyCode: string; fractionDigits: number };
+				net: { centAmount: number; currencyCode: string; fractionDigits: number };
+				tax: { centAmount: number; currencyCode: string; fractionDigits: number };
+			} | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
+		}>;
+		paymentSession?: {
+			__typename: "StripePaymentSession";
+			clientSecret: string;
+			id: string;
+			paymentGateway:
+				| { id: string; name: string; type: "ManualPaymentGateway" }
+				| { id: string; name: string; type: "StripeConnectPaymentGateway" }
+				| { id: string; name: string; type: "StripePaymentGateway" };
+		} | null;
 		lineItems: {
 			edges?: Array<{
 				node: {
@@ -3120,13 +3156,22 @@ export type CheckoutCartQuery = {
 							};
 						}> | null;
 					};
+					taxedPrice?: {
+						gross: { centAmount: number; currencyCode: string; fractionDigits: number };
+						net: { centAmount: number; currencyCode: string; fractionDigits: number };
+						tax: { centAmount: number; currencyCode: string; fractionDigits: number };
+					} | null;
 					total: { centAmount: number; currencyCode: string; fractionDigits: number };
 				};
 			}> | null;
 		};
 		discountCodes: Array<{ code: string; error?: DiscountCodeError | null }>;
 		subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
-		taxedPrice?: { tax: { centAmount: number; currencyCode: string; fractionDigits: number } } | null;
+		taxedPrice?: {
+			tax: { centAmount: number; currencyCode: string; fractionDigits: number };
+			net: { centAmount: number; currencyCode: string; fractionDigits: number };
+			gross: { centAmount: number; currencyCode: string; fractionDigits: number };
+		} | null;
 		total: { centAmount: number; currencyCode: string; fractionDigits: number };
 	} | null;
 };
@@ -3705,6 +3750,12 @@ export const CartUpdateDocument = new TypedDocumentString(`
   cartUpdate(input: $input) {
     cart {
       ...Cart
+    }
+    errors {
+      code: __typename
+      ... on UserError {
+        message
+      }
     }
   }
 }
@@ -4316,6 +4367,18 @@ export const CartPaymentSessionInitializeDocument = new TypedDocumentString(`
   cartPaymentSessionInitialize(input: $input) {
     cart {
       id
+      paymentSession {
+        id
+        __typename
+        paymentGateway {
+          id
+          name
+          type: __typename
+        }
+        ... on StripePaymentSession {
+          clientSecret
+        }
+      }
     }
     errors {
       code: __typename
@@ -4574,12 +4637,42 @@ export const CheckoutCartDocument = new TypedDocumentString(`
   cart(id: $id) {
     id
     customerId
+    metadata {
+      key
+      value
+    }
     shippingAddress {
       countryCode
+    }
+    shippingLines {
+      id
+      taxBehavior
+      taxedPrice {
+        gross {
+          ...Money
+        }
+        net {
+          ...Money
+        }
+        tax {
+          ...Money
+        }
+      }
+      total {
+        ...Money
+      }
     }
     paymentSession {
       id
       __typename
+      paymentGateway {
+        id
+        name
+        type: __typename
+      }
+      ... on StripePaymentSession {
+        clientSecret
+      }
     }
     lineItemsQuantity
     lineItems(first: 100) {
@@ -4626,6 +4719,17 @@ export const CheckoutCartDocument = new TypedDocumentString(`
               }
             }
           }
+          taxedPrice {
+            gross {
+              ...Money
+            }
+            net {
+              ...Money
+            }
+            tax {
+              ...Money
+            }
+          }
           total {
             ...Money
           }
@@ -4641,6 +4745,12 @@ export const CheckoutCartDocument = new TypedDocumentString(`
     }
     taxedPrice {
       tax {
+        ...Money
+      }
+      net {
+        ...Money
+      }
+      gross {
         ...Money
       }
     }

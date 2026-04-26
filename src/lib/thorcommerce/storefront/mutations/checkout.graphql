@@ -2,6 +2,18 @@ mutation CartPaymentSessionInitialize($input: CartPaymentSessionInitializeInput!
 	cartPaymentSessionInitialize(input: $input) {
 		cart {
 			id
+			paymentSession {
+				id
+				__typename
+				paymentGateway {
+					id
+					name
+					type: __typename
+				}
+				... on StripePaymentSession {
+					clientSecret
+				}
+			}
 		}
 		errors {
 			code: __typename

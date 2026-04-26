@@ -1,7 +1,10 @@
 import { CheckoutStepEnum } from "@/features/checkout/types";
+import { getSelectedPaymentGatewayId } from "@/features/checkout/utils";
+import CheckoutContainer from "@/features/checkout/components/checkout-container/checkout-container";
+import PaymentProvider from "@/features/checkout/components/payment-provider/payment-provider";
 import { getCheckoutCart } from "@/lib/thorcommerce/storefront";
-import { CheckCheck } from "lucide-react";
 import { redirect } from "next/navigation";
+import CheckoutSummary from "@/features/checkout/components/checkout-summary/checkout-summary";
 
 /**
  *
@@ -29,14 +32,46 @@ export default async function CheckoutPage({
 
 	const checkoutCart = await getCheckoutCart(id);
 
-	if (!step) {
-		//try to set the best step based on the cart details, if step is not set in the query params:
+	if (!checkoutCart) {
+		redirect(`/${countryCode}`);
 	}
 
-	if (checkoutCart?.paymentSession == null) {
-		//redirect to gateway selection step if the cart does not have a payment session
+	if (!step) {
+		redirect(`/${countryCode}/checkout/${id}?step=${getBestCheckoutStep(checkoutCart)}`);
+	}
+
+	const selectedGatewayId = getSelectedPaymentGatewayId(checkoutCart);
+
+	if (!checkoutCart.paymentSession && !selectedGatewayId && step !== CheckoutStepEnum.GatewaySelection) {
 		redirect(`/${countryCode}/checkout/${id}?step=${CheckoutStepEnum.GatewaySelection}`);
 	}
 
-	return <div>Checkout</div>;
+	return (
+		<CheckoutContainer
+			mainArea={
+				<PaymentProvider cart={checkoutCart} countryCode={countryCode} step={step}>
+					{/* <CheckoutStep cartId={id} countryCode={countryCode} step={step} /> */}
+				</PaymentProvider>
+			}
+			summaryArea={<CheckoutSummary cart={checkoutCart} />}
+		/>
+	);
+}
+
+function getBestCheckoutStep(cart: NonNullable<Awaited<ReturnType<typeof getCheckoutCart>>>) {
+	if (!getSelectedPaymentGatewayId(cart)) {
+		return CheckoutStepEnum.GatewaySelection;
+	}
+
+	//add some more intelligence here in the future to determine the best step to start on based on the cart details, e.g. if the shipping address is missing, start on the shipping step, etc.
+	//we should check for required fields like address1 etc...
+	if (!cart.shippingAddress?.countryCode) {
+		return CheckoutStepEnum.Customer;
+	}
+
+	if (!cart.paymentSession) {
+		return CheckoutStepEnum.Payment;
+	}
+
+	return CheckoutStepEnum.Payment;
 }

@@ -13,6 +13,7 @@ const eslintConfig = defineConfig([
 		"build/**",
 		"next-env.d.ts",
 		"src/__generated__/**",
+		"src/lib/thorcommerce/storefront/generated/**",
 		".open-next/**",
 	]),
 	{

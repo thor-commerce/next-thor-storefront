@@ -1,4 +1,4 @@
-import { CheckoutCartQuery } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CheckoutCartQuery, PaymentGatewaysQuery } from "@/lib/thorcommerce/storefront/generated/types.generated";
 
 export enum CheckoutStepEnum {
   GatewaySelection = "gateway-selection",
@@ -12,4 +12,8 @@ export type CheckoutCart = NonNullable<CheckoutCartQuery["cart"]>;
 
 export type CheckoutCartLineItem = NonNullable<
   CheckoutCart["lineItems"]["edges"]
+>[number]["node"];
+
+export type PaymentGateway = NonNullable<
+  PaymentGatewaysQuery["paymentGateways"]["edges"]
 >[number]["node"];
