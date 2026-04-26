@@ -15,8 +15,11 @@ export type Scalars = {
 	Boolean: { input: boolean; output: boolean };
 	Int: { input: number; output: number };
 	Float: { input: number; output: number };
+	/** The `DateTime` scalar type represents a date and time with time zone offset information. */
 	DateTime: { input: any; output: any };
+	/** The `Decimal` scalar type represents a decimal floating-point number with high precision. */
 	Decimal: { input: any; output: any };
+	/** The `Long` scalar type represents a signed 64-bit integer. */
 	Long: { input: number; output: number };
 };
 
@@ -3146,6 +3149,40 @@ export type CurrentCustomerQuery = {
 	} | null;
 };
 
+export type HomePageQueryVariables = Exact<{
+	storeId: Scalars["ID"]["input"];
+	currency: Scalars["String"]["input"];
+}>;
+
+export type HomePageQuery = {
+	categories: {
+		edges?: Array<{ node: { id: string; name: string; slug: string; productsCount: number } }> | null;
+	};
+	collections: {
+		edges?: Array<{
+			node: { id: string; name: string; slug: string; products: { totalCount: number } };
+		}> | null;
+	};
+	products: {
+		edges?: Array<{
+			node: {
+				id: string;
+				name: string;
+				slug: string;
+				heroVariant?: { image?: { src: string } | null } | null;
+				priceRange?: {
+					minPrice: {
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						discountedPrice?: {
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						} | null;
+					};
+				} | null;
+			};
+		}> | null;
+	};
+};
+
 export type ProductListQueryVariables = Exact<{
 	storeId: Scalars["ID"]["input"];
 	currency: Scalars["String"]["input"];
@@ -4530,6 +4567,68 @@ export const CurrentCustomerDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<CurrentCustomerQuery, CurrentCustomerQueryVariables>;
+export const HomePageDocument = new TypedDocumentString(`
+    query HomePage($storeId: ID!, $currency: String!) {
+  categories(first: 6, storeId: $storeId, priceCurrency: $currency) {
+    edges {
+      node {
+        id
+        name
+        slug
+        productsCount
+      }
+    }
+  }
+  collections(first: 4) {
+    edges {
+      node {
+        id
+        name
+        slug
+        products(first: 0, storeId: $storeId, priceCurrency: $currency) {
+          totalCount
+        }
+      }
+    }
+  }
+  products(
+    first: 8
+    sortKey: ID
+    sortDirection: DESC
+    storeId: $storeId
+    priceCurrency: $currency
+  ) {
+    edges {
+      node {
+        id
+        name
+        slug
+        heroVariant {
+          image {
+            src
+          }
+        }
+        priceRange {
+          minPrice {
+            value {
+              centAmount
+              currencyCode
+              fractionDigits
+            }
+            discountedPrice {
+              value {
+                centAmount
+                currencyCode
+                fractionDigits
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<HomePageQuery, HomePageQueryVariables>;
 export const ProductListDocument = new TypedDocumentString(`
     query ProductList($storeId: ID!, $currency: String!, $sortDirection: SortDirection!, $sortKey: ProductSortKeys!, $priceChannel: ID, $query: String) {
   products(

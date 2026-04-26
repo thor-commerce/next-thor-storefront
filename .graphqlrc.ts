@@ -7,7 +7,7 @@ loadEnvConfig(process.cwd());
 export default {
   projects: {
     default: {
-      schema: "https://api.thorcommerce.io/storefront/graphql",
+      schema: "https://api.thorcommerce.io/storefront/graphql/schema.graphql",
       documents: "src/lib/thorcommerce/storefront/**/*.graphql",
       extensions: {
         codegen: {

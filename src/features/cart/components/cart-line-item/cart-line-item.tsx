@@ -40,7 +40,7 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 			<div className={s.lineRow}>
 				<div className={s.productThumbnail}>
 					<div className={s.thumbnailWrapper}>
-						<ThorImage src={line.variant?.image?.src ?? ""} alt={line.variantName} fill />
+						<ThorImage src={line.variant?.image?.src ?? ""} alt={line.variantName} fill sizes="144px" />
 					</div>
 				</div>
 				<div className={s.productInfo}>

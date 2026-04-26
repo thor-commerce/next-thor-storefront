@@ -1,12 +1,10 @@
 "use server";
 
-import { CACHE_TAGS } from "@/constants";
 import { getCartIdFromCookies, saveCartIdToCookie } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
-import { cacheLife, cacheTag } from "next/cache";
 import { headers } from "next/headers";
 
 const endpoint = `https://api.thorcommerce.io/${process.env.THOR_PROJECT}/storefront/graphql`;
@@ -52,6 +50,20 @@ export async function storefrontFetch<TData, TVariables>({
     }
 
     return json.data as TData;
+}
+
+export async function getHomePageData() {
+    const context = await getRequestContext();
+
+    const data = await storefrontFetch({
+        query: HomePageDocument,
+        variables: {
+            storeId: context.store,
+            currency: context.currency
+        },
+    })
+
+    return data;
 }
 
 export async function getCollections() {
@@ -277,10 +289,6 @@ export async function findOrCreateCart() {
 }
 
 export async function getCart() {
-    "use cache: private";
-    cacheTag(CACHE_TAGS.cart);
-    cacheLife("seconds");
-
     const cartId = await getCartIdFromCookies();
 
     if (!cartId) {

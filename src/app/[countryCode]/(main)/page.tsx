@@ -1,21 +1,9 @@
-import { HomePageQuery, HomePageQueryVariables } from "@/__generated__/thor/graphql";
 import Homepage from "@/features/home/homepage";
-import { HOME_PAGE_QUERY } from "@/features/home/queries";
-import { getClient } from "@/lib/thorcommerce/apollo-client";
-import { getCountryByCountryCode } from "@/utils/countries";
+import { getHomePageData } from "@/lib/thorcommerce/storefront";
 import { notFound } from "next/navigation";
 
-export default async function HomePage({ params }: PageProps<"/[countryCode]">) {
-	const { countryCode } = await params;
-	const country = getCountryByCountryCode(countryCode);
-
-	const { data } = await getClient().query<HomePageQuery, HomePageQueryVariables>({
-		query: HOME_PAGE_QUERY,
-		variables: {
-			currency: country.currencies[0],
-			storeId: country.store,
-		},
-	});
+export default async function HomePage({}: PageProps<"/[countryCode]">) {
+	const data = await getHomePageData();
 
 	if (!data) {
 		return notFound();

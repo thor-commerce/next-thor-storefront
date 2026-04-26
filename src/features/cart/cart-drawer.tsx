@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { XIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Dialog, DialogTrigger, Heading, Modal, ModalOverlay } from "react-aria-components";
+import { Dialog, DialogTrigger, Heading, Modal, ModalOverlay, Pressable } from "react-aria-components";
 import CartLineItem from "./components/cart-line-item/cart-line-item";
 import s from "./cart.module.css";
 import { useCart } from "@/features/cart/cart-context";
@@ -52,22 +52,23 @@ export default function CartDrawer() {
 
 	return (
 		<DialogTrigger>
-			{/* <AriaButton className={s.cartButton} onPress={() => setOpen(true)}> */}
-			<IconButton
-				onClick={() => setOpen(true)}
-				icon={
-					<>
-						<ShoppingCart />
-						{hasItems ? (
-							<span className={clsx(s.cartCount)}>
-								<span className={s.number}>
-									{cart!.lineItemsQuantity > 9 ? "+9" : cart!.lineItemsQuantity}
+			<Pressable>
+				<IconButton
+					onClick={() => setOpen(true)}
+					icon={
+						<>
+							<ShoppingCart />
+							{hasItems ? (
+								<span className={clsx(s.cartCount)}>
+									<span className={s.number}>
+										{cart!.lineItemsQuantity > 9 ? "+9" : cart!.lineItemsQuantity}
+									</span>
 								</span>
-							</span>
-						) : null}
-					</>
-				}
-			/>
+							) : null}
+						</>
+					}
+				/>
+			</Pressable>
 			{/* <ShoppingCart /> */}
 
 			{/* </AriaButton> */}

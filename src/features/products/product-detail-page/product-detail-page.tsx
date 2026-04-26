@@ -78,7 +78,14 @@ export default function ProductDetailPage({ product, selectedVariant }: Props) {
 									onChange={() => onThumbClick(index)}
 								/>
 								<label role="button" htmlFor={`thumb-${index}`} className={s.thumbnailLabel}>
-									<ThorImage src={item.src} alt={selectedVariant.name} fill className={s.image} />
+									<ThorImage
+										src={item.src}
+										alt={selectedVariant.name}
+										fill
+										className={s.image}
+										priority
+										sizes="144px"
+									/>
 								</label>
 							</div>
 						))}

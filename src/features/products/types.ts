@@ -1,4 +1,4 @@
-import { ProductDetailQuery } from "@/__generated__/thor/graphql";
+import { ProductDetailQuery } from "@/lib/thorcommerce/storefront/generated/types.generated";
 
 export type ProductDetailProduct = NonNullable<ProductDetailQuery["product"]>;
 

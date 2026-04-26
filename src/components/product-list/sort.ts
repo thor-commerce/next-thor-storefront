@@ -1,9 +1,5 @@
-import {
-  ProductCategorySortKeys,
-  ProductCollectionSortKeys,
-  ProductSortKeys,
-  SortDirection,
-} from "@/__generated__/thor/graphql";
+import { ProductCategorySortKeys, ProductCollectionSortKeys, ProductSortKeys, SortDirection } from "@/lib/thorcommerce/storefront/generated/types.generated";
+
 
 export const PRODUCT_SORT_OPTIONS = [
   { value: "newest", label: "Newest first" },

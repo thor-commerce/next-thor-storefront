@@ -1,5 +1,5 @@
-import { Money } from "@/__generated__/thor/graphql";
 import { LOCALE } from "@/lib/thorcommerce/config";
+import { Money } from "@/lib/thorcommerce/storefront/generated/types.generated";
 export const centToAmount = (money: Money) => money.centAmount / 10 ** money.fractionDigits;
 
 export const formatMoney = ({
