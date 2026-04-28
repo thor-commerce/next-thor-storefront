@@ -33,7 +33,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "be",
@@ -41,7 +41,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "bg",
@@ -49,7 +49,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "hr",
@@ -57,7 +57,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "cy",
@@ -65,7 +65,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "cz",
@@ -73,7 +73,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "dk",
@@ -89,7 +89,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "fi",
@@ -97,7 +97,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "fr",
@@ -105,7 +105,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "de",
@@ -113,7 +113,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "gr",
@@ -121,7 +121,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "hu",
@@ -129,7 +129,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
 
   {
@@ -138,7 +138,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "it",
@@ -146,7 +146,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "lv",
@@ -154,7 +154,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "lt",
@@ -162,7 +162,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "lu",
@@ -170,7 +170,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "nl",
@@ -178,7 +178,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "pl",
@@ -186,7 +186,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "pt",
@@ -194,7 +194,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "ro",
@@ -202,7 +202,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "sk",
@@ -210,7 +210,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "si",
@@ -218,7 +218,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "es",
@@ -226,7 +226,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
   {
     code: "se",
@@ -234,7 +234,7 @@ export const COUNTRIES: Country[] = [
     languages: ["en"],
     store: STORE.DEFAULT,
     region: "Europe",
-    currencies: [CURRENCY.EUR],
+    currencies: [CURRENCY.USD],
   },
 ];
 
