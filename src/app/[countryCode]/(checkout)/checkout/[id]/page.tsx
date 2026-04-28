@@ -1,10 +1,16 @@
+import CheckoutCustomerStep from "@/features/checkout/components/customer-step/checkout-customer-step";
+import CheckoutDeliveryStep from "@/features/checkout/components/delivery-step/checkout-delivery-step";
+import CheckoutDetails from "@/features/checkout/components/checkout-details/checkout-details";
+import CheckoutPaymentProcessing from "@/features/checkout/components/payment-step/checkout-payment-processing";
+import CheckoutPaymentStep from "@/features/checkout/components/payment-step/checkout-payment-step";
 import { CheckoutStepEnum } from "@/features/checkout/types";
 import { getSelectedPaymentGatewayId } from "@/features/checkout/utils";
 import CheckoutContainer from "@/features/checkout/components/checkout-container/checkout-container";
 import PaymentProvider from "@/features/checkout/components/payment-provider/payment-provider";
-import { getCheckoutCart } from "@/lib/thorcommerce/storefront";
+import { getCheckoutCart, getPaymentGateways, getUser } from "@/lib/thorcommerce/storefront";
 import { redirect } from "next/navigation";
 import CheckoutSummary from "@/features/checkout/components/checkout-summary/checkout-summary";
+import s from "./page.module.css";
 
 /**
  *
@@ -18,6 +24,8 @@ export default async function CheckoutPage({
 	const { id, countryCode } = await params;
 
 	const {
+		payment_intent_client_secret,
+		processing_payment,
 		step,
 	}: {
 		step?: CheckoutStepEnum;
@@ -46,11 +54,75 @@ export default async function CheckoutPage({
 		redirect(`/${countryCode}/checkout/${id}?step=${CheckoutStepEnum.GatewaySelection}`);
 	}
 
+	if (
+		(step === CheckoutStepEnum.Delivery || step === CheckoutStepEnum.Payment) &&
+		!hasRequiredCustomerDetails(checkoutCart)
+	) {
+		redirect(`/${countryCode}/checkout/${id}?step=${CheckoutStepEnum.Customer}`);
+	}
+
+	if (step === CheckoutStepEnum.Payment && !hasSelectedShippingMethod(checkoutCart)) {
+		redirect(`/${countryCode}/checkout/${id}?step=${CheckoutStepEnum.Delivery}`);
+	}
+
+	const customer = step === CheckoutStepEnum.Customer ? await getUser() : null;
+	const selectedPaymentGateway =
+		step !== CheckoutStepEnum.GatewaySelection
+			? await getSelectedPaymentGateway(checkoutCart)
+			: undefined;
+
+	if (processing_payment && payment_intent_client_secret) {
+		return (
+			<CheckoutContainer
+				mainArea={
+					<CheckoutPaymentProcessing
+						cart={checkoutCart}
+						countryCode={countryCode}
+						paymentIntentClientSecret={payment_intent_client_secret}
+					/>
+				}
+				summaryArea={<CheckoutSummary cart={checkoutCart} />}
+			/>
+		);
+	}
+
 	return (
 		<CheckoutContainer
 			mainArea={
 				<PaymentProvider cart={checkoutCart} countryCode={countryCode} step={step}>
-					{/* <CheckoutStep cartId={id} countryCode={countryCode} step={step} /> */}
+					{step !== CheckoutStepEnum.GatewaySelection && (
+						<div className={s.mainStack}>
+							<CheckoutDetails
+								cart={checkoutCart}
+								countryCode={countryCode}
+								currentStep={step}
+								paymentGateway={selectedPaymentGateway}
+							/>
+							{step === CheckoutStepEnum.Customer && (
+								<CheckoutCustomerStep
+									cart={checkoutCart}
+									className={s.stepContent}
+									countryCode={countryCode}
+									customer={customer}
+								/>
+							)}
+							{step === CheckoutStepEnum.Delivery && (
+								<CheckoutDeliveryStep
+									cart={checkoutCart}
+									className={s.stepContent}
+									countryCode={countryCode}
+								/>
+							)}
+							{step === CheckoutStepEnum.Payment && (
+								<CheckoutPaymentStep
+									cart={checkoutCart}
+									className={s.stepContent}
+									countryCode={countryCode}
+									selectedGateway={selectedPaymentGateway}
+								/>
+							)}
+						</div>
+					)}
 				</PaymentProvider>
 			}
 			summaryArea={<CheckoutSummary cart={checkoutCart} />}
@@ -63,10 +135,12 @@ function getBestCheckoutStep(cart: NonNullable<Awaited<ReturnType<typeof getChec
 		return CheckoutStepEnum.GatewaySelection;
 	}
 
-	//add some more intelligence here in the future to determine the best step to start on based on the cart details, e.g. if the shipping address is missing, start on the shipping step, etc.
-	//we should check for required fields like address1 etc...
-	if (!cart.shippingAddress?.countryCode) {
+	if (!hasRequiredCustomerDetails(cart)) {
 		return CheckoutStepEnum.Customer;
+	}
+
+	if (!hasSelectedShippingMethod(cart)) {
+		return CheckoutStepEnum.Delivery;
 	}
 
 	if (!cart.paymentSession) {
@@ -74,4 +148,38 @@ function getBestCheckoutStep(cart: NonNullable<Awaited<ReturnType<typeof getChec
 	}
 
 	return CheckoutStepEnum.Payment;
+}
+
+function hasRequiredCustomerDetails(cart: NonNullable<Awaited<ReturnType<typeof getCheckoutCart>>>) {
+	const address = cart.shippingAddress;
+
+	return Boolean(
+		cart.customerEmail &&
+			address?.firstName &&
+			address.lastName &&
+			address.address1 &&
+			address.city &&
+			address.postalCode &&
+			address.countryCode &&
+			address.phone,
+	);
+}
+
+function hasSelectedShippingMethod(cart: NonNullable<Awaited<ReturnType<typeof getCheckoutCart>>>) {
+	return Boolean(cart.shippingLines.find(Boolean)?.shippingMethod.id);
+}
+
+async function getSelectedPaymentGateway(cart: NonNullable<Awaited<ReturnType<typeof getCheckoutCart>>>) {
+	if (cart.paymentSession?.paymentGateway) {
+		return cart.paymentSession.paymentGateway;
+	}
+
+	const selectedGatewayId = getSelectedPaymentGatewayId(cart);
+
+	if (!selectedGatewayId) {
+		return undefined;
+	}
+
+	const gateways = await getPaymentGateways(cart.id);
+	return gateways.find((gateway) => gateway.id === selectedGatewayId);
 }

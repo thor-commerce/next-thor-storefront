@@ -1,0 +1,33 @@
+.confirmation {
+	width: 100%;
+	max-width: 560px;
+	padding: 32px 22px;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
+	@media (min-width: 940px) {
+		padding: 48px 40px;
+	}
+}
+
+.eyebrow {
+	margin: 0;
+	color: var(--color-text-muted);
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.title {
+	margin: 0;
+	font-size: 24px;
+	line-height: 1.2;
+	font-weight: 600;
+}
+
+.copy {
+	margin: 0;
+	color: var(--color-text-muted);
+	font-size: 14px;
+	line-height: 1.5;
+}

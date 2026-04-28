@@ -10,9 +10,10 @@ import { getPriceDetails } from "@/utils/price";
 type Props = {
 	item: ProductListTileFragment;
 	useMaxPrice?: boolean;
+	lcp?: boolean;
 };
 
-export default function ProductListTile({ item, useMaxPrice = false }: Props) {
+export default function ProductListTile({ item, useMaxPrice = false, lcp }: Props) {
 	const minPrice = item.priceRange?.minPrice;
 	const maxPrice = item.priceRange?.maxPrice;
 	const selectedPrice = useMaxPrice ? (maxPrice ?? minPrice) : (minPrice ?? maxPrice);
@@ -29,6 +30,7 @@ export default function ProductListTile({ item, useMaxPrice = false }: Props) {
 						sizes="33vw"
 						fill
 						className={s.productImage}
+						priority={lcp}
 					/>
 				</div>
 				<Text size={"body-2"} weight={"medium"} as="div" className={s.productInfo}>

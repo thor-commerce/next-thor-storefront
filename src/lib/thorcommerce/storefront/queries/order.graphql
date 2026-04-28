@@ -1,0 +1,101 @@
+query Order($id: ID!) {
+	order(id: $id) {
+		id
+		orderNumber
+		lineItems(first: 100) {
+			edges {
+				node {
+					id
+					taxBehavior
+					variantName
+					variantId
+					productName
+					quantity
+					productSlug
+					variant {
+						id
+						image {
+							src
+						}
+						selectedAttributes {
+							value
+						}
+					}
+					unitPrice {
+						value {
+							...Money
+						}
+						discountedPrice {
+							value {
+								...Money
+							}
+						}
+					}
+					discountApplications {
+						edges {
+							node {
+								label
+								discountedAmount {
+									...Money
+								}
+							}
+						}
+					}
+					taxedPrice {
+						gross {
+							...Money
+						}
+						net {
+							...Money
+						}
+						tax {
+							...Money
+						}
+					}
+					total {
+						...Money
+					}
+				}
+			}
+		}
+		shippingLines {
+			id
+			shippingMethod {
+				id
+				name
+			}
+			taxBehavior
+			taxedPrice {
+				gross {
+					...Money
+				}
+				net {
+					...Money
+				}
+				tax {
+					...Money
+				}
+			}
+			total {
+				...Money
+			}
+		}
+		subtotal {
+			...Money
+		}
+		taxedPrice {
+			tax {
+				...Money
+			}
+			net {
+				...Money
+			}
+			gross {
+				...Money
+			}
+		}
+		total {
+			...Money
+		}
+	}
+}

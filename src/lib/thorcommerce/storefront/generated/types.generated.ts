@@ -2880,6 +2880,23 @@ export type CartLineItemsRemoveMutation = {
 	};
 };
 
+export type CartShippingLinesSetMutationVariables = Exact<{
+	input: CartShippingLinesSetInput;
+}>;
+
+export type CartShippingLinesSetMutation = {
+	cartShippingLinesSet: {
+		cart?: {
+			id: string;
+			shippingLines: Array<{ id: string; shippingMethod: { id: string; name: string } }>;
+		} | null;
+		errors?: Array<
+			| { message: string; code: "CartNotFoundError" }
+			| { message: string; code: "ShippingMethodNotFoundError" }
+		> | null;
+	};
+};
+
 export type CartPaymentSessionInitializeMutationVariables = Exact<{
 	input: CartPaymentSessionInitializeInput;
 }>;
@@ -2894,8 +2911,14 @@ export type CartPaymentSessionInitializeMutation = {
 				id: string;
 				paymentGateway:
 					| { id: string; name: string; type: "ManualPaymentGateway" }
-					| { id: string; name: string; type: "StripeConnectPaymentGateway" }
-					| { id: string; name: string; type: "StripePaymentGateway" };
+					| {
+							connectedAccountId?: string | null;
+							publishableKey: string;
+							id: string;
+							name: string;
+							type: "StripeConnectPaymentGateway";
+					  }
+					| { publishableKey: string; id: string; name: string; type: "StripePaymentGateway" };
 			} | null;
 		} | null;
 		errors?: Array<
@@ -2903,6 +2926,21 @@ export type CartPaymentSessionInitializeMutation = {
 			| { message: string; code: "PaymentGatewayChannelMismatchError" }
 			| { message: string; code: "PaymentGatewayNotFoundError" }
 			| { message: string; code: "PaymentGatewaySessionInitializeFailedError" }
+		> | null;
+	};
+};
+
+export type CartCompleteMutationVariables = Exact<{
+	input: CartCompleteInput;
+}>;
+
+export type CartCompleteMutation = {
+	cartComplete: {
+		order?: { id: string } | null;
+		errors?: Array<
+			| { message: string; code: "CartCompletionDiscountCodeAlreadyUsedError" }
+			| { message: string; code: "CartCompletionDiscrepancyError" }
+			| { message: string; code: "CartNotFoundError" }
 		> | null;
 	};
 };
@@ -3100,12 +3138,51 @@ export type CheckoutCartQuery = {
 	cart?: {
 		id: string;
 		customerId?: string | null;
+		customerEmail?: string | null;
 		lineItemsQuantity: number;
 		metadata: Array<{ key: string; value: string }>;
-		shippingAddress?: { countryCode?: string | null } | null;
+		shippingAddress?: {
+			firstName?: string | null;
+			lastName?: string | null;
+			company?: string | null;
+			address1?: string | null;
+			address2?: string | null;
+			city?: string | null;
+			postalCode?: string | null;
+			state?: string | null;
+			countryCode?: string | null;
+			phone?: string | null;
+			formatted?: string | null;
+		} | null;
+		billingAddress?: {
+			firstName?: string | null;
+			lastName?: string | null;
+			company?: string | null;
+			address1?: string | null;
+			address2?: string | null;
+			city?: string | null;
+			postalCode?: string | null;
+			state?: string | null;
+			countryCode?: string | null;
+			phone?: string | null;
+			formatted?: string | null;
+		} | null;
+		availableShippingMethods: Array<{
+			id: string;
+			name: string;
+			description?: string | null;
+			rate:
+				| {
+						__typename: "AbsoluteShippingMethodRate";
+						id: string;
+						price: { centAmount: number; currencyCode: string; fractionDigits: number };
+				  }
+				| { __typename: "RelativeShippingMethodRate"; rate: number; id: string };
+		}>;
 		shippingLines: Array<{
 			id: string;
 			taxBehavior: TaxBehavior;
+			shippingMethod: { id: string; name: string };
 			taxedPrice?: {
 				gross: { centAmount: number; currencyCode: string; fractionDigits: number };
 				net: { centAmount: number; currencyCode: string; fractionDigits: number };
@@ -3119,8 +3196,14 @@ export type CheckoutCartQuery = {
 			id: string;
 			paymentGateway:
 				| { id: string; name: string; type: "ManualPaymentGateway" }
-				| { id: string; name: string; type: "StripeConnectPaymentGateway" }
-				| { id: string; name: string; type: "StripePaymentGateway" };
+				| {
+						connectedAccountId?: string | null;
+						publishableKey: string;
+						id: string;
+						name: string;
+						type: "StripeConnectPaymentGateway";
+				  }
+				| { publishableKey: string; id: string; name: string; type: "StripePaymentGateway" };
 		} | null;
 		lineItems: {
 			edges?: Array<{
@@ -3278,6 +3361,49 @@ export type CurrentCustomerQuery = {
 		email?: string | null;
 		firstName?: string | null;
 		lastName?: string | null;
+		defaultShippingAddress?: {
+			id: string;
+			firstName?: string | null;
+			lastName?: string | null;
+			company?: string | null;
+			address1?: string | null;
+			address2?: string | null;
+			city?: string | null;
+			postalCode?: string | null;
+			state?: string | null;
+			countryCode?: string | null;
+			phone?: string | null;
+		} | null;
+		defaultBillingAddress?: {
+			id: string;
+			firstName?: string | null;
+			lastName?: string | null;
+			company?: string | null;
+			address1?: string | null;
+			address2?: string | null;
+			city?: string | null;
+			postalCode?: string | null;
+			state?: string | null;
+			countryCode?: string | null;
+			phone?: string | null;
+		} | null;
+		addresses: {
+			edges?: Array<{
+				node: {
+					id: string;
+					firstName?: string | null;
+					lastName?: string | null;
+					company?: string | null;
+					address1?: string | null;
+					address2?: string | null;
+					city?: string | null;
+					postalCode?: string | null;
+					state?: string | null;
+					countryCode?: string | null;
+					phone?: string | null;
+				};
+			}> | null;
+		};
 	} | null;
 };
 
@@ -3313,6 +3439,73 @@ export type HomePageQuery = {
 			};
 		}> | null;
 	};
+};
+
+export type OrderQueryVariables = Exact<{
+	id: Scalars["ID"]["input"];
+}>;
+
+export type OrderQuery = {
+	order?: {
+		id: string;
+		orderNumber: number;
+		lineItems: {
+			edges?: Array<{
+				node: {
+					id: string;
+					taxBehavior: TaxBehavior;
+					variantName: string;
+					variantId: string;
+					productName: string;
+					quantity: number;
+					productSlug: string;
+					variant?: {
+						id: string;
+						image?: { src: string } | null;
+						selectedAttributes: Array<{ value: string }>;
+					} | null;
+					unitPrice: {
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						discountedPrice?: {
+							value: { centAmount: number; currencyCode: string; fractionDigits: number };
+						} | null;
+					};
+					discountApplications: {
+						edges?: Array<{
+							node: {
+								label: string;
+								discountedAmount: { centAmount: number; currencyCode: string; fractionDigits: number };
+							};
+						}> | null;
+					};
+					taxedPrice?: {
+						gross: { centAmount: number; currencyCode: string; fractionDigits: number };
+						net: { centAmount: number; currencyCode: string; fractionDigits: number };
+						tax: { centAmount: number; currencyCode: string; fractionDigits: number };
+					} | null;
+					total: { centAmount: number; currencyCode: string; fractionDigits: number };
+				};
+			}> | null;
+		};
+		shippingLines: Array<{
+			id: string;
+			taxBehavior: TaxBehavior;
+			shippingMethod: { id: string; name: string };
+			taxedPrice?: {
+				gross: { centAmount: number; currencyCode: string; fractionDigits: number };
+				net: { centAmount: number; currencyCode: string; fractionDigits: number };
+				tax: { centAmount: number; currencyCode: string; fractionDigits: number };
+			} | null;
+			total: { centAmount: number; currencyCode: string; fractionDigits: number };
+		}>;
+		subtotal: { centAmount: number; currencyCode: string; fractionDigits: number };
+		taxedPrice?: {
+			tax: { centAmount: number; currencyCode: string; fractionDigits: number };
+			net: { centAmount: number; currencyCode: string; fractionDigits: number };
+			gross: { centAmount: number; currencyCode: string; fractionDigits: number };
+		} | null;
+		total: { centAmount: number; currencyCode: string; fractionDigits: number };
+	} | null;
 };
 
 export type ProductListQueryVariables = Exact<{
@@ -4362,6 +4555,28 @@ fragment Money on Money {
   currencyCode
   fractionDigits
 }`) as unknown as TypedDocumentString<CartLineItemsRemoveMutation, CartLineItemsRemoveMutationVariables>;
+export const CartShippingLinesSetDocument = new TypedDocumentString(`
+    mutation CartShippingLinesSet($input: CartShippingLinesSetInput!) {
+  cartShippingLinesSet(input: $input) {
+    cart {
+      id
+      shippingLines {
+        id
+        shippingMethod {
+          id
+          name
+        }
+      }
+    }
+    errors {
+      code: __typename
+      ... on UserError {
+        message
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<CartShippingLinesSetMutation, CartShippingLinesSetMutationVariables>;
 export const CartPaymentSessionInitializeDocument = new TypedDocumentString(`
     mutation CartPaymentSessionInitialize($input: CartPaymentSessionInitializeInput!) {
   cartPaymentSessionInitialize(input: $input) {
@@ -4374,6 +4589,13 @@ export const CartPaymentSessionInitializeDocument = new TypedDocumentString(`
           id
           name
           type: __typename
+          ... on StripePaymentGateway {
+            publishableKey
+          }
+          ... on StripeConnectPaymentGateway {
+            connectedAccountId
+            publishableKey
+          }
         }
         ... on StripePaymentSession {
           clientSecret
@@ -4392,6 +4614,21 @@ export const CartPaymentSessionInitializeDocument = new TypedDocumentString(`
 	CartPaymentSessionInitializeMutation,
 	CartPaymentSessionInitializeMutationVariables
 >;
+export const CartCompleteDocument = new TypedDocumentString(`
+    mutation CartComplete($input: CartCompleteInput!) {
+  cartComplete(input: $input) {
+    order {
+      id
+    }
+    errors {
+      code: __typename
+      ... on UserError {
+        message
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<CartCompleteMutation, CartCompleteMutationVariables>;
 export const CustomerActivateDocument = new TypedDocumentString(`
     mutation CustomerActivate($input: CustomerActivateInput!) {
   customerActivate(input: $input) {
@@ -4641,11 +4878,56 @@ export const CheckoutCartDocument = new TypedDocumentString(`
       key
       value
     }
+    customerEmail
     shippingAddress {
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      postalCode
+      state
       countryCode
+      phone
+      formatted
+    }
+    billingAddress {
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      postalCode
+      state
+      countryCode
+      phone
+      formatted
+    }
+    availableShippingMethods {
+      id
+      name
+      description
+      rate {
+        id
+        __typename
+        ... on AbsoluteShippingMethodRate {
+          price {
+            ...Money
+          }
+        }
+        ... on RelativeShippingMethodRate {
+          rate
+        }
+      }
     }
     shippingLines {
       id
+      shippingMethod {
+        id
+        name
+      }
       taxBehavior
       taxedPrice {
         gross {
@@ -4669,6 +4951,13 @@ export const CheckoutCartDocument = new TypedDocumentString(`
         id
         name
         type: __typename
+        ... on StripePaymentGateway {
+          publishableKey
+        }
+        ... on StripeConnectPaymentGateway {
+          connectedAccountId
+          publishableKey
+        }
       }
       ... on StripePaymentSession {
         clientSecret
@@ -4877,6 +5166,49 @@ export const CurrentCustomerDocument = new TypedDocumentString(`
     email
     firstName
     lastName
+    defaultShippingAddress {
+      id
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      postalCode
+      state
+      countryCode
+      phone
+    }
+    defaultBillingAddress {
+      id
+      firstName
+      lastName
+      company
+      address1
+      address2
+      city
+      postalCode
+      state
+      countryCode
+      phone
+    }
+    addresses(first: 20) {
+      edges {
+        node {
+          id
+          firstName
+          lastName
+          company
+          address1
+          address2
+          city
+          postalCode
+          state
+          countryCode
+          phone
+        }
+      }
+    }
   }
 }
     `) as unknown as TypedDocumentString<CurrentCustomerQuery, CurrentCustomerQueryVariables>;
@@ -4942,6 +5274,113 @@ export const HomePageDocument = new TypedDocumentString(`
   }
 }
     `) as unknown as TypedDocumentString<HomePageQuery, HomePageQueryVariables>;
+export const OrderDocument = new TypedDocumentString(`
+    query Order($id: ID!) {
+  order(id: $id) {
+    id
+    orderNumber
+    lineItems(first: 100) {
+      edges {
+        node {
+          id
+          taxBehavior
+          variantName
+          variantId
+          productName
+          quantity
+          productSlug
+          variant {
+            id
+            image {
+              src
+            }
+            selectedAttributes {
+              value
+            }
+          }
+          unitPrice {
+            value {
+              ...Money
+            }
+            discountedPrice {
+              value {
+                ...Money
+              }
+            }
+          }
+          discountApplications {
+            edges {
+              node {
+                label
+                discountedAmount {
+                  ...Money
+                }
+              }
+            }
+          }
+          taxedPrice {
+            gross {
+              ...Money
+            }
+            net {
+              ...Money
+            }
+            tax {
+              ...Money
+            }
+          }
+          total {
+            ...Money
+          }
+        }
+      }
+    }
+    shippingLines {
+      id
+      shippingMethod {
+        id
+        name
+      }
+      taxBehavior
+      taxedPrice {
+        gross {
+          ...Money
+        }
+        net {
+          ...Money
+        }
+        tax {
+          ...Money
+        }
+      }
+      total {
+        ...Money
+      }
+    }
+    subtotal {
+      ...Money
+    }
+    taxedPrice {
+      tax {
+        ...Money
+      }
+      net {
+        ...Money
+      }
+      gross {
+        ...Money
+      }
+    }
+    total {
+      ...Money
+    }
+  }
+}
+    fragment Money on Money {
+  centAmount
+  currencyCode
+  fractionDigits
+}`) as unknown as TypedDocumentString<OrderQuery, OrderQueryVariables>;
 export const ProductListDocument = new TypedDocumentString(`
     query ProductList($storeId: ID!, $currency: String!, $sortDirection: SortDirection!, $sortKey: ProductSortKeys!, $priceChannel: ID, $query: String) {
   products(

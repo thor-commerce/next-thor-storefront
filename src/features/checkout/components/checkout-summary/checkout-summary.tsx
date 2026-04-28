@@ -6,11 +6,11 @@ import { formatMoney } from "@/utils/money";
 import clsx from "clsx";
 import CheckoutSummaryCartLineItem from "./checkout-summary-cart-line-item";
 import s from "./checkout-summary.module.css";
-import { CheckoutCart } from "@/features/checkout/types";
+import { CheckoutSummaryData } from "@/features/checkout/types";
 import { TaxBehavior } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 
-export default function CheckoutSummary({ cart }: { cart: CheckoutCart }) {
+export default function CheckoutSummary({ cart }: { cart: CheckoutSummaryData }) {
 	const lineItems = removeEdgesAndNodes(cart.lineItems);
 
 	//here we assume all line items have the same tax behavior, which is usually the case, but not a limitation in thor commerce.

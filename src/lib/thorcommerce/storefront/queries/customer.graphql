@@ -4,5 +4,48 @@ query CurrentCustomer {
 		email
 		firstName
 		lastName
+		defaultShippingAddress {
+			id
+			firstName
+			lastName
+			company
+			address1
+			address2
+			city
+			postalCode
+			state
+			countryCode
+			phone
+		}
+		defaultBillingAddress {
+			id
+			firstName
+			lastName
+			company
+			address1
+			address2
+			city
+			postalCode
+			state
+			countryCode
+			phone
+		}
+		addresses(first: 20) {
+			edges {
+				node {
+					id
+					firstName
+					lastName
+					company
+					address1
+					address2
+					city
+					postalCode
+					state
+					countryCode
+					phone
+				}
+			}
+		}
 	}
 }

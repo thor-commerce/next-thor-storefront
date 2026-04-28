@@ -6,11 +6,56 @@ query CheckoutCart($id: ID!) {
 			key
 			value
 		}
+		customerEmail
 		shippingAddress {
+			firstName
+			lastName
+			company
+			address1
+			address2
+			city
+			postalCode
+			state
 			countryCode
+			phone
+			formatted
+		}
+		billingAddress {
+			firstName
+			lastName
+			company
+			address1
+			address2
+			city
+			postalCode
+			state
+			countryCode
+			phone
+			formatted
+		}
+		availableShippingMethods {
+			id
+			name
+			description
+			rate {
+				id
+				__typename
+				... on AbsoluteShippingMethodRate {
+					price {
+						...Money
+					}
+				}
+				... on RelativeShippingMethodRate {
+					rate
+				}
+			}
 		}
 		shippingLines {
 			id
+			shippingMethod {
+				id
+				name
+			}
 			taxBehavior
 			taxedPrice {
 				gross {
@@ -34,6 +79,13 @@ query CheckoutCart($id: ID!) {
 				id
 				name
 				type: __typename
+				... on StripePaymentGateway {
+					publishableKey
+				}
+				... on StripeConnectPaymentGateway {
+					connectedAccountId
+					publishableKey
+				}
 			}
 			... on StripePaymentSession {
 				clientSecret

@@ -5,9 +5,9 @@ import clsx from "clsx";
 
 import s from "./checkout-summary.module.css";
 import { TaxBehavior } from "@/lib/thorcommerce/storefront/generated/types.generated";
-import { CheckoutCartLineItem } from "@/features/checkout/types";
+import { CheckoutSummaryLineItem } from "@/features/checkout/types";
 
-export default function CheckoutSummaryCartLineItem({ line }: { line: CheckoutCartLineItem }) {
+export default function CheckoutSummaryCartLineItem({ line }: { line: CheckoutSummaryLineItem }) {
 	const attributesText = line.variant?.selectedAttributes
 		.map((selectedAttr) => selectedAttr.value)
 		.filter(Boolean)

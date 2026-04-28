@@ -95,11 +95,18 @@
 .heroMedia {
 	/* Required embla */
 	background: white;
-	width: 100%;
+	width: auto;
+	height: auto;
 	overflow: hidden;
 	position: relative;
 	border-radius: var(--radius-s);
 	flex-grow: 1;
+
+	@media (--bp-lg-up) {
+		width: 535px;
+		max-width: 535px;
+		height: 669px;
+	}
 }
 
 .productMediaNavigation {

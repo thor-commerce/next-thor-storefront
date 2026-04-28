@@ -3,7 +3,7 @@
 import { getCartIdFromCookies, saveCartIdToCookie } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CartUpdateDocument, CartUpdateMutationVariables, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCompleteDocument, CartCompleteMutationVariables, CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CartShippingLinesSetDocument, CartShippingLinesSetMutationVariables, CartUpdateDocument, CartUpdateMutationVariables, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, OrderDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { headers } from "next/headers";
 
@@ -365,8 +365,23 @@ export async function updateCart(variables: CartUpdateMutationVariables) {
     return response.cartUpdate;
 }
 
+export async function setCartShippingLines(variables: CartShippingLinesSetMutationVariables) {
+    const response = await storefrontFetch({
+        query: CartShippingLinesSetDocument,
+        variables
+    })
+
+    return response.cartShippingLinesSet;
+}
+
 
 export async function getUser() {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+        return null;
+    }
+
     const data = await storefrontFetch({
         query: CurrentCustomerDocument,
     })
@@ -412,3 +427,23 @@ export async function cartPaymentSessionInitialize({ cartId, gatewayId }: { cart
 }
 
 export const CartPaymentSessionIntialize = cartPaymentSessionInitialize;
+
+export async function completeCart(variables: CartCompleteMutationVariables) {
+    const data = await storefrontFetch({
+        query: CartCompleteDocument,
+        variables
+    })
+
+    return data.cartComplete;
+}
+
+export async function getOrder(id: string) {
+    const data = await storefrontFetch({
+        query: OrderDocument,
+        variables: {
+            id
+        }
+    })
+
+    return data.order;
+}

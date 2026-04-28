@@ -37,6 +37,17 @@ export default async function PaymentProvider({
 			redirect(`/${countryCode}/checkout/${cart.id}?step=${CheckoutStepEnum.GatewaySelection}`);
 		}
 
+		const gateways = await getPaymentGateways(cart.id);
+		const selectedGateway = gateways.find((gateway) => gateway.id === selectedGatewayId);
+
+		if (!selectedGateway) {
+			redirect(`/${countryCode}/checkout/${cart.id}?step=${CheckoutStepEnum.GatewaySelection}`);
+		}
+
+		if (selectedGateway.type === "ManualPaymentGateway") {
+			return children;
+		}
+
 		const result = await cartPaymentSessionInitialize({
 			cartId: cart.id,
 			gatewayId: selectedGatewayId,

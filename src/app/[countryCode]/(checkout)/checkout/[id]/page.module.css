@@ -38,3 +38,21 @@
 	color: var(--color-text-muted);
 	font-size: 14px;
 }
+
+.mainStack {
+	width: 100%;
+	max-width: 560px;
+	padding: 32px 22px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+
+	@media (min-width: 940px) {
+		padding: 48px 40px;
+	}
+}
+
+.stepContent {
+	max-width: none;
+	padding: 0;
+}

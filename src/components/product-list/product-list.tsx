@@ -86,8 +86,8 @@ export default function ProductList({
 						<ProductListingSort {...sorting} />
 					</div>
 					<ul className={s.grid}>
-						{products.map((product) => (
-							<ProductListTile key={product.id} item={product} useMaxPrice={useMaxPrice} />
+						{products.map((product, index) => (
+							<ProductListTile key={product.id} item={product} useMaxPrice={useMaxPrice} lcp={index <= 8} />
 						))}
 					</ul>
 				</div>
