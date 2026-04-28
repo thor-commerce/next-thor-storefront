@@ -81,7 +81,7 @@ export default function StripePaymentForm({ cart }: StripePaymentFormProps) {
 					},
 					layout: {
 						defaultCollapsed: false,
-						radios: true,
+						// radios: true,
 						spacedAccordionItems: false,
 						type: "accordion",
 					},

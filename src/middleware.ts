@@ -23,7 +23,7 @@ export const config = {
 	],
 };
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
 	const { origin, pathname, searchParams } = request.nextUrl;
 
 	const requestHeaders = new Headers(request.headers);

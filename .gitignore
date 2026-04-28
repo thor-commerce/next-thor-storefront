@@ -44,3 +44,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.dev.vars*
+!.dev.vars.example
