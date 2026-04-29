@@ -30,14 +30,16 @@
 	justify-content: flex-end;
 	position: sticky;
 	top: 40px;
-	padding-left: 48px;
-	margin-left: 8px;
-	max-height: 669px;
-	min-height: 455px;
+	@media (--bp-lg-up) {
+		padding-left: 48px;
+		margin-left: 8px;
+		max-height: 669px;
+		min-height: 455px;
+	}
 }
 
 .thumbnailList {
-	display: flex;
+	display: none;
 	position: relative;
 	flex-direction: column;
 	flex-grow: 1;
@@ -48,6 +50,9 @@
 	scrollbar-width: none;
 	overflow-y: scroll;
 	overscroll-behavior: none;
+	@media (--bp-lg-up) {
+		display: flex;
+	}
 }
 
 .image {

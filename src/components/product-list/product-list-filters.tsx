@@ -11,6 +11,7 @@ type Props = {
 	facets: FacetFragment[];
 	currency: string;
 	fractionDigits?: number;
+	idPrefix?: string;
 };
 
 const getParamKey = (field: string) => field.toLowerCase();
@@ -32,7 +33,7 @@ function parsePriceBounds(facet: FacetFragment): { min: number; max: number } {
 	return { min: 0, max: 10000 };
 }
 
-export default function ProductListFilters({ facets, currency, fractionDigits }: Props) {
+export default function ProductListFilters({ facets, currency, fractionDigits, idPrefix }: Props) {
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -84,7 +85,7 @@ export default function ProductListFilters({ facets, currency, fractionDigits }:
 					return (
 						<PriceRangeFilter
 							key={facet.field}
-							id={facet.field}
+							id={idPrefix ? `${idPrefix}-${facet.field}` : facet.field}
 							label={facet.name}
 							min={bounds.min}
 							max={bounds.max}
@@ -103,7 +104,7 @@ export default function ProductListFilters({ facets, currency, fractionDigits }:
 				return (
 					<FilterControl
 						key={facet.field}
-						id={facet.field}
+						id={idPrefix ? `${idPrefix}-${facet.field}` : facet.field}
 						label={facet.name}
 						currentValues={currentValues}
 						filterOptions={facet.values.map((v) => ({
