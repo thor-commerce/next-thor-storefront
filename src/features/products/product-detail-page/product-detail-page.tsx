@@ -105,14 +105,16 @@ export default function ProductDetailPage({ product, selectedVariant }: Props) {
 								</div>
 							))}
 						</div>
-						<div className={s.productMediaNavigation}>
-							<button onClick={onPrevClick}>
-								<ChevronLeft size={24} strokeWidth={1.5} />
-							</button>
-							<button onClick={onNextClick}>
-								<ChevronRight size={24} strokeWidth={1.5} />
-							</button>
-						</div>
+						{media.length > 1 && (
+							<div className={s.productMediaNavigation}>
+								<button onClick={onPrevClick}>
+									<ChevronLeft size={24} strokeWidth={1.5} />
+								</button>
+								<button onClick={onNextClick}>
+									<ChevronRight size={24} strokeWidth={1.5} />
+								</button>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

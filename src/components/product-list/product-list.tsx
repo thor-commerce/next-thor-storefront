@@ -10,6 +10,7 @@ import { ChevronRight, SlidersHorizontalIcon } from "lucide-react";
 import Navigation from "@/components/navigation/navigation";
 import ProductListingSort from "@/components/product-list/product-listing-sort";
 import ProductListFilters from "@/components/product-list/product-list-filters";
+import MobileFilterDrawer from "@/components/product-list/mobile-filter-drawer";
 
 type Props = {
 	title: string;
@@ -51,8 +52,8 @@ export default function ProductList({
 					</div>
 				</div>
 				<div className={s.content}>
-					<div className={s.breadcrumbs}>
-						<ul className={s.breadcrumbList}>
+					<nav className={s.breadcrumbs} aria-label="Breadcrumb">
+						<ol className={s.breadcrumbList}>
 							{breadcrumbs.map((item, i) => {
 								const isActive = i === breadcrumbs.length - 1;
 								return (
@@ -76,13 +77,14 @@ export default function ProductList({
 									</li>
 								);
 							})}
-						</ul>
-					</div>
+						</ol>
+					</nav>
 					<div className={s.hero}>
 						<h1 className={s.heading}>{title}</h1>
 						{totalCount !== undefined && <Text size={"body-3"}>{totalCount} items</Text>}
 					</div>
 					<div className={s.header}>
+						<MobileFilterDrawer facets={facets} currency={currency} fractionDigits={fractionDigits} />
 						<ProductListingSort {...sorting} />
 					</div>
 					<ul className={s.grid}>

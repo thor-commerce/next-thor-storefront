@@ -12,16 +12,20 @@
 }
 
 .filters {
-	position: sticky;
-	top: var(--navbar-height);
-	border-right: 1px solid var(--border-color);
-	display: flex;
-	flex-direction: column;
-	align-self: start;
-	height: calc(100svh - var(--navbar-height));
-	max-height: calc(100svh - var(--navbar-height));
-	min-height: 0;
-	overflow: hidden;
+	display: none;
+
+	@media (--bp-lg-up) {
+		position: sticky;
+		top: var(--navbar-height);
+		border-right: 1px solid var(--border-color);
+		display: flex;
+		flex-direction: column;
+		align-self: start;
+		height: calc(100svh - var(--navbar-height));
+		max-height: calc(100svh - var(--navbar-height));
+		min-height: 0;
+		overflow: hidden;
+	}
 }
 
 .filterHeader {
@@ -190,16 +194,29 @@
 }
 
 .breadcrumbs {
-	padding: var(--spacing-l) var(--spacing-2xl) var(--spacing-s) var(--spacing-2xl);
+	padding: 0 var(--spacing-m) var(--spacing-s);
+	overflow-x: auto;
+	overscroll-behavior-inline: contain;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	@media (--bp-lg-up) {
+		padding: var(--spacing-l) var(--spacing-2xl) var(--spacing-s);
+	}
 }
 .breadcrumbLink {
 	line-height: 1;
+	white-space: nowrap;
 }
 .breadcrumbList {
 	display: flex;
 	align-items: center;
 	gap: 10px;
 	list-style: none;
+	width: max-content;
 	font-size: var(--text-sm);
 	color: var(--text-muted);
 }
@@ -214,8 +231,12 @@
 }
 
 .hero {
-	padding: 0 var(--spacing-2xl);
+	padding: 0 var(--spacing-m);
 	margin-bottom: var(--spacing-xl);
+
+	@media (--bp-lg-up) {
+		padding: 0 var(--spacing-2xl);
+	}
 }
 
 .breadcrumbLink {
@@ -228,8 +249,71 @@
 
 .header {
 	display: flex;
-	justify-content: flex-end;
-	padding: 0 var(--spacing-m) var(--spacing-m) 0;
+	align-items: end;
+	justify-content: space-between;
+	gap: var(--spacing-m);
+	padding: 0 var(--spacing-m) var(--spacing-m);
+
+	@media (--bp-lg-up) {
+		justify-content: flex-end;
+		padding: 0 var(--spacing-m) var(--spacing-m) 0;
+	}
+}
+
+.mobileFilters {
+	display: block;
+
+	@media (--bp-lg-up) {
+		display: none;
+	}
+}
+
+.mobileFilterButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--spacing-xs);
+	min-height: var(--control-height-m);
+	padding: 0 var(--spacing-m);
+	border: 1px solid var(--input-border-color);
+	border-radius: var(--input-border-radius);
+	background: var(--color-surface);
+	color: var(--foreground);
+	font: inherit;
+	font-size: var(--text-sm);
+	font-weight: var(--font-weight-medium);
+	cursor: pointer;
+
+	&:focus-visible {
+		outline: none;
+		border-color: var(--input-focus-border-color);
+		box-shadow: 0 0 0 3px var(--focus-ring-color);
+	}
+}
+
+.filterDrawerModal {
+	inset: auto 0 0;
+	top: var(--spacing-l);
+	width: 100%;
+	max-height: calc(100svh - var(--spacing-l));
+	border-radius: 0;
+
+	@media (--bp-sm-up) {
+		top: var(--spacing-s);
+		right: var(--spacing-s);
+		bottom: var(--spacing-s);
+		left: auto;
+		width: min(calc(100vw - (var(--spacing-s) * 2)), 32rem);
+		max-height: none;
+	}
+}
+
+.filterDrawerBody {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	padding-bottom: var(--spacing-l);
 }
 
 .grid {
