@@ -26,9 +26,7 @@ fragment Cart on Cart {
 						value
 					}
 					availability {
-						availableForPurchase
-						availableQuantity
-						stockPolicy
+						...Availability
 					}
 				}
 				unitPrice {

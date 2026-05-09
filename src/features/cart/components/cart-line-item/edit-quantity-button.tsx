@@ -8,6 +8,7 @@ import { useFormStatus } from "react-dom";
 import { updateItemQuantity } from "../../actions";
 import { CartLineItemType } from "../../types";
 import s from "./cart-line-item.module.css";
+import { Availability, getAvailabilityStatus } from "@/lib/thorcommerce/utils";
 
 export default function EditItemQuantityButton({
 	item,
@@ -29,7 +30,12 @@ export default function EditItemQuantityButton({
 		if (!item.variant?.availability) return true;
 		switch (type) {
 			case "increase":
-				return item.variant.availability.availableQuantity <= item.quantity;
+				return (
+					getAvailabilityStatus({
+						availability: item.variant.availability,
+						quantityToAdd: item.quantity + 1,
+					}) !== Availability.InStock
+				);
 			case "decrease":
 				return item.quantity <= 1;
 			default:
