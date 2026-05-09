@@ -3,7 +3,7 @@
 import { getCartIdFromCookies, saveCartIdToCookie } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCompleteDocument, CartCompleteMutationVariables, CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CartShippingLinesSetDocument, CartShippingLinesSetMutationVariables, CartUpdateDocument, CartUpdateMutationVariables, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, OrderDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCompleteDocument, CartCompleteMutationVariables, CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CartShippingLinesSetDocument, CartShippingLinesSetMutationVariables, CartState, CartUpdateDocument, CartUpdateMutationVariables, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, OrderDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { headers } from "next/headers";
 
@@ -156,7 +156,13 @@ export async function getCategoryList({ slug, sortDirection, query, sortKey }: P
     ];
 
     return {
-        name: data.category.name, facets: data.category.products.facets, products: removeEdgesAndNodes(data.category.products), totalCount: data.category.products.totalCount, breadcrumbs
+        name: data.category.name,
+        facets: data.category.products.facets,
+        products: removeEdgesAndNodes(data.category.products)
+            //We filter out products with no variants, as they are not purchasable and likely not intended to be shown in the product listing, this can happen if a product has variants but all of them are out of stock or unpublished, in both cases the product itself is still returned by the API but we don't want to show it in the listing
+            .filter(p => p.variants.totalCount > 0),
+        totalCount: data.category.products.totalCount,
+        breadcrumbs
     };
 }
 
@@ -178,7 +184,13 @@ export const getProductList = async ({ sortDirection, sortKey, query }: Pick<Pro
     if (!data.products)
         return { products: [], totalCount: 0, facets: [] };
 
-    return { products: removeEdgesAndNodes(data.products), totalCount: data.products.totalCount, facets: data.products.facets };
+    return {
+        products: removeEdgesAndNodes(data.products)
+            //We filter out products with no variants, as they are not purchasable and likely not intended to be shown in the product listing, this can happen if a product has variants but all of them are out of stock or unpublished, in both cases the product itself is still returned by the API but we don't want to show it in the listing
+            .filter(p => p.variants.totalCount > 0),
+        totalCount: data.products.totalCount,
+        facets: data.products.facets
+    };
 }
 
 export const getProductDetail = async ({ slug }: { slug: string }) => {
@@ -277,7 +289,7 @@ export async function findOrCreateCart() {
         },
     });
 
-    const cart = response?.cart;
+    const cart = response.cart?.state === CartState.Ordered ? null : response.cart;
 
     // If the cart is not found (e.g., it was cleared from the backend), create a new one. This ensures the user always has a cart to work with.
     return cart || (await createCart({
@@ -301,6 +313,10 @@ export async function getCart() {
             id: cartId,
         },
     });
+
+    if (response.cart?.state === CartState.Ordered) {
+        return null;
+    }
 
     return response?.cart;
 }

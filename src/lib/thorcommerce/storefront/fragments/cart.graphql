@@ -1,9 +1,11 @@
 fragment Cart on Cart {
 	id
 	customerId
+	state
 	shippingAddress {
 		countryCode
 	}
+	checkoutUrl
 	lineItemsQuantity
 	lineItems(first: 100) {
 		edges {
