@@ -1,0 +1,5 @@
+fragment Availability on ProductVariantAvailability {
+	availableForPurchase
+	availableQuantity
+	stockPolicy
+}

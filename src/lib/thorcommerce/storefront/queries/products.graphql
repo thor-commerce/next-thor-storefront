@@ -21,6 +21,9 @@ query ProductList(
 		edges {
 			node {
 				id
+				variants {
+					totalCount
+				}
 				...ProductListTile
 			}
 		}
@@ -51,6 +54,9 @@ query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChanne
 					id
 					name
 					sku
+					availability {
+						...Availability
+					}
 					media(first: 5) {
 						edges {
 							node {

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import AddToCartButton from "../components/add-to-cart-button";
 import s from "./product-detail-page.module.css";
 import { ProductDetail, ProductDetailVariant } from "@/lib/thorcommerce/types";
-import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
+import { Availability, getAvailabilityStatus, removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { generateBreadcrumbs } from "@/features/products/utils";
 import useEmblaCarousel from "embla-carousel-react";
 import Text from "@/components/text/text";
@@ -61,6 +61,12 @@ export default function ProductDetailPage({ product, selectedVariant }: Props) {
 	}, [emblaApi, onSelect]);
 
 	const breadcrumbs = generateBreadcrumbs(removeEdgesAndNodes(product.categories).find(Boolean));
+
+	const availabilityStatus = getAvailabilityStatus({
+		availability: selectedVariant.availability,
+		quantityToAdd: 1,
+	});
+
 	return (
 		<div className={s.container}>
 			<div className={s.productImagery}>
@@ -165,7 +171,15 @@ export default function ProductDetailPage({ product, selectedVariant }: Props) {
 						</>
 					)}
 				</div>
-				<AddToCartButton selectedVariantId={selectedVariant.id} className={s.addToCartButton} />
+				<AddToCartButton
+					selectedVariantId={selectedVariant.id}
+					className={s.addToCartButton}
+					disabled={
+						availabilityStatus === Availability.OutOfStock || availabilityStatus === Availability.Unavailable
+					}
+					outOfStock={availabilityStatus === Availability.OutOfStock}
+					unavailable={availabilityStatus === Availability.Unavailable}
+				/>
 
 				<div className={s.productDescription}>
 					<Text as="p">{product.description}</Text>

@@ -9,25 +9,37 @@ interface Props {
 	selectedVariantId: string;
 	className?: string;
 	disabled?: boolean;
+	outOfStock?: boolean;
+	unavailable?: boolean;
 }
 
-function AddToCartButton({ className, selectedVariantId, disabled }: Props) {
+function AddToCartButton({ className, selectedVariantId, disabled, outOfStock, unavailable }: Props) {
 	const [, formAction] = useActionState(addItem, null);
 	const addItemAction = formAction.bind(null, selectedVariantId);
 
 	return (
 		<form action={addItemAction}>
-			<SubmitButton className={className} disabled={disabled} />
+			<SubmitButton
+				className={className}
+				disabled={disabled}
+				outOfStock={outOfStock}
+				unavailable={unavailable}
+			/>
 		</form>
 	);
 }
 
-function SubmitButton({ className, disabled }: Pick<Props, "className" | "disabled">) {
+function SubmitButton({
+	className,
+	disabled,
+	outOfStock,
+	unavailable,
+}: Pick<Props, "className" | "disabled" | "outOfStock" | "unavailable">) {
 	const { pending } = useFormStatus();
 
 	return (
 		<Button block type="submit" className={className} disabled={disabled} loading={pending}>
-			Add to cart
+			{outOfStock ? "Out of stock" : unavailable ? "Unavailable" : "Add to cart"}
 		</Button>
 	);
 }

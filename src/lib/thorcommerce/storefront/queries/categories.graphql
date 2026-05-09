@@ -46,6 +46,9 @@ query CategoryList(
 			edges {
 				node {
 					id
+					variants {
+						totalCount
+					}
 					...ProductListTile
 				}
 			}

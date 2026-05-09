@@ -21,6 +21,8 @@ export type Scalars = {
 	Decimal: { input: any; output: any };
 	/** The `Long` scalar type represents a signed 64-bit integer. */
 	Long: { input: number; output: number };
+	/** The `URI` scalar type represents a Uniform Resource Identifier (URI) as defined by RFC 3986. */
+	URI: { input: any; output: any };
 };
 
 export type AbsoluteShippingMethodRate = CartAvailableShippingMethodRate & {
@@ -150,6 +152,7 @@ export type Cart = Node & {
 	availableShippingMethods: Array<CartAvailableShippingMethod>;
 	/** Gets the billing address associated with the cart. This may be the same as the shipping address. */
 	billingAddress?: Maybe<CartAddress>;
+	checkoutUrl: Scalars["URI"]["output"];
 	/** Gets the currency of the cart. */
 	currency: Scalars["String"]["output"];
 	/** Gets the customer email associated with the cart, if any. */
@@ -166,6 +169,7 @@ export type Cart = Node & {
 	paymentSession?: Maybe<PaymentSession>;
 	/** Gets the shipping address associated with the cart. */
 	shippingAddress?: Maybe<CartAddress>;
+	shippingCountries: Array<CountryInfo>;
 	shippingLines: Array<CartShippingLine>;
 	/** Gets the current state of the cart. */
 	state: CartState;
@@ -176,6 +180,14 @@ export type Cart = Node & {
 	taxedPrice?: Maybe<TaxedPrice>;
 	/** Gets the total price of the cart after discounts and taxes. */
 	total: Money;
+};
+
+/**
+ * Represents a cart in Thor, encapsulating all information required to display and manage items across storefronts and sales channels.
+ * Each cart includes details such as the total price, line items, shipping address, and available shipping methods. Carts can be used to track items before purchase, allowing customers to review and modify their selections.
+ */
+export type CartCheckoutUrlArgs = {
+	test?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 /**
@@ -314,6 +326,9 @@ export type CartCompletionDiscrepancyError = UserError & {
 };
 
 export type CartCreateError =
+	| CartLineItemPriceNotFoundError
+	| CartLineItemUnavailableForPurchase
+	| CartLineItemsInsufficientStockError
 	| CreateCartAddressDoesNotHaveCountryCodeError
 	| CreateCartAuthenticationFailedError
 	| CreateCartAuthorizationFailedError
@@ -321,10 +336,10 @@ export type CartCreateError =
 	| CreateCartChannelDoesNotSupportCurrencyError
 	| CreateCartChannelHasNoCountriesError
 	| CreateCartChannelNotFoundError
-	| CreateCartFailedNotAllLineItemsCouldBeAddedError
 	| CreateCartPriceChannelNotFoundError
 	| CreateCartShippingAddressDoesNotHaveShippingZonesError
-	| CreateCartStoreNotFoundError;
+	| CreateCartStoreNotFoundError
+	| ProductVariantNotFoundError;
 
 export type CartCreateInput = {
 	billingAddress?: InputMaybe<CartAddressInput>;
@@ -380,9 +395,11 @@ export type CartDiscountCodeRemovePayload = {
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
 export type CartLineItem = Node & {
+	attributes: Array<LineItemAttribute>;
 	discountApplications: DiscountApplicationConnection;
 	/** The unique identifier of the line item */
 	id: Scalars["ID"]["output"];
+	media: MediaConnection;
 	metadata: Array<MetadataItem>;
 	product?: Maybe<Product>;
 	/** The unique identifier of the product associated with the cart line item. */
@@ -431,6 +448,18 @@ export type CartLineItemDiscountApplicationsArgs = {
  *
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
+export type CartLineItemMediaArgs = {
+	after?: InputMaybe<Scalars["String"]["input"]>;
+	before?: InputMaybe<Scalars["String"]["input"]>;
+	first?: InputMaybe<Scalars["Int"]["input"]>;
+	last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/**
+ * Represents a line item in a cart, which includes details about the product, variant, and any associated discounts.
+ *
+ * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
+ */
 export type CartLineItemMetadataArgs = {
 	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
@@ -464,6 +493,10 @@ export type CartLineItemPriceNotFoundError = UserError & {
 	message: Scalars["String"]["output"];
 };
 
+export type CartLineItemUnavailableForPurchase = UserError & {
+	message: Scalars["String"]["output"];
+};
+
 export type CartLineItemUpdateInput = {
 	lineItemId: Scalars["ID"]["input"];
 	metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
@@ -472,6 +505,7 @@ export type CartLineItemUpdateInput = {
 
 export type CartLineItemsAddError =
 	| CartLineItemPriceNotFoundError
+	| CartLineItemUnavailableForPurchase
 	| CartLineItemsInsufficientStockError
 	| CartNotFoundError
 	| ProductVariantNotFoundError;
@@ -729,6 +763,15 @@ export enum CategorySortKeys {
 	Name = "NAME",
 }
 
+/** Data required to display the hosted checkout page. */
+export type CheckoutSession = {
+	favicon?: Maybe<Media>;
+	logo?: Maybe<Media>;
+	redirectUri?: Maybe<Scalars["String"]["output"]>;
+	/** The token of the checkout session. */
+	token: Scalars["String"]["output"];
+};
+
 /**
  * Represents a collection, encapsulating all information required to display and manage collections across storefronts and sales channels.
  *
@@ -814,10 +857,6 @@ export type CreateCartChannelHasNoCountriesError = UserError & {
 };
 
 export type CreateCartChannelNotFoundError = UserError & {
-	message: Scalars["String"]["output"];
-};
-
-export type CreateCartFailedNotAllLineItemsCouldBeAddedError = UserError & {
 	message: Scalars["String"]["output"];
 };
 
@@ -1230,6 +1269,13 @@ export type KeyValuePairOfStringAndStringInput = {
 	value: Scalars["String"]["input"];
 };
 
+export type LineItemAttribute = {
+	/** The name of the line item attribute. */
+	name: Scalars["String"]["output"];
+	/** The value of the line item attribute. */
+	value: Scalars["String"]["output"];
+};
+
 /** Represents the shipping method associated with a cart shipping line. */
 export type LineShippingMethod = {
 	id: Scalars["ID"]["output"];
@@ -1539,9 +1585,11 @@ export type OrderEdge = {
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
 export type OrderLineItem = Node & {
+	attributes: Array<LineItemAttribute>;
 	discountApplications: DiscountApplicationConnection;
 	/** The unique identifier of the line item */
 	id: Scalars["ID"]["output"];
+	media: MediaConnection;
 	metadata: Array<MetadataItem>;
 	product?: Maybe<Product>;
 	/** The unique identifier of the product associated with the order line item. */
@@ -1579,6 +1627,18 @@ export type OrderLineItem = Node & {
  * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
  */
 export type OrderLineItemDiscountApplicationsArgs = {
+	after?: InputMaybe<Scalars["String"]["input"]>;
+	before?: InputMaybe<Scalars["String"]["input"]>;
+	first?: InputMaybe<Scalars["Int"]["input"]>;
+	last?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
+/**
+ * Represents a line item in a order, which includes details about the product, variant, and any associated discounts.
+ *
+ * Each line item contains information such as the product name, variant details, total price, and any applicable discounts. This allows for detailed tracking of items within a cart, including their pricing and discount applications.
+ */
+export type OrderLineItemMediaArgs = {
 	after?: InputMaybe<Scalars["String"]["input"]>;
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
@@ -1917,6 +1977,8 @@ export type ProductVariant = Node & {
 	selectedAttributes: Array<SelectedAttribute>;
 	/** Gets the SKU (Stock Keeping Unit) of the variant. */
 	sku?: Maybe<Scalars["String"]["output"]>;
+	/** The weight of the variant. */
+	weight?: Maybe<Weight>;
 };
 
 export type ProductVariantMediaArgs = {
@@ -1992,6 +2054,7 @@ export type Query = {
 	cart?: Maybe<Cart>;
 	categories: CategoryConnection;
 	category?: Maybe<Category>;
+	checkoutSession?: Maybe<CheckoutSession>;
 	collection?: Maybe<Collection>;
 	collections: CollectionConnection;
 	countries: Array<CountryInfo>;
@@ -2029,6 +2092,10 @@ export type QueryCategoryArgs = {
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
 	slug?: InputMaybe<Scalars["String"]["input"]>;
 	storeId?: InputMaybe<Scalars["ID"]["input"]>;
+};
+
+export type QueryCheckoutSessionArgs = {
+	token: Scalars["String"]["input"];
 };
 
 export type QueryCollectionArgs = {
@@ -2273,15 +2340,35 @@ export type UserError = {
 	message: Scalars["String"]["output"];
 };
 
+export type Weight = {
+	/** The unit of measurement for the weight */
+	unit: WeightUnit;
+	/** The numeric value of the weight */
+	value: Scalars["Decimal"]["output"];
+};
+
+export enum WeightUnit {
+	Gram = "GRAM",
+	Kilogram = "KILOGRAM",
+}
+
 export type ZoneInfo = {
 	code: Scalars["String"]["output"];
 	name: Scalars["String"]["output"];
 	postalCodeRegex?: Maybe<Scalars["String"]["output"]>;
 };
 
+export type AvailabilityFragment = {
+	availableForPurchase: boolean;
+	availableQuantity: number;
+	stockPolicy: StockPolicy;
+};
+
 export type CartFragment = {
 	id: string;
 	customerId?: string | null;
+	state: CartState;
+	checkoutUrl: any;
 	lineItemsQuantity: number;
 	shippingAddress?: { countryCode?: string | null } | null;
 	lineItems: {
@@ -2416,6 +2503,8 @@ export type CartCreateMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2473,6 +2562,8 @@ export type CartUpdateMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2536,6 +2627,8 @@ export type CartReplicateMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2593,6 +2686,8 @@ export type CartDiscountCodeAddMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2655,6 +2750,8 @@ export type CartDiscountCodeRemoveMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2712,6 +2809,8 @@ export type CartLineItemsAddMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2759,6 +2858,7 @@ export type CartLineItemsAddMutation = {
 		} | null;
 		errors?: Array<
 			| { __typename: "CartLineItemPriceNotFoundError" }
+			| { __typename: "CartLineItemUnavailableForPurchase" }
 			| { __typename: "CartLineItemsInsufficientStockError" }
 			| { __typename: "CartNotFoundError" }
 			| { __typename: "ProductVariantNotFoundError" }
@@ -2775,6 +2875,8 @@ export type CartLineItemsUpdateMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2832,6 +2934,8 @@ export type CartLineItemsRemoveMutation = {
 		cart?: {
 			id: string;
 			customerId?: string | null;
+			state: CartState;
+			checkoutUrl: any;
 			lineItemsQuantity: number;
 			shippingAddress?: { countryCode?: string | null } | null;
 			lineItems: {
@@ -2994,6 +3098,8 @@ export type CartQuery = {
 	cart?: {
 		id: string;
 		customerId?: string | null;
+		state: CartState;
+		checkoutUrl: any;
 		lineItemsQuantity: number;
 		shippingAddress?: { countryCode?: string | null } | null;
 		lineItems: {
@@ -3084,6 +3190,7 @@ export type CategoryListQuery = {
 					id: string;
 					name: string;
 					slug: string;
+					variants: { totalCount: number };
 					heroVariant?: { image?: { src: string } | null } | null;
 					priceRange?: {
 						minPrice: {
@@ -3526,6 +3633,7 @@ export type ProductListQuery = {
 				id: string;
 				name: string;
 				slug: string;
+				variants: { totalCount: number };
 				heroVariant?: { image?: { src: string } | null } | null;
 				priceRange?: {
 					minPrice: {
@@ -3599,6 +3707,11 @@ export type ProductDetailQuery = {
 					id: string;
 					name: string;
 					sku?: string | null;
+					availability?: {
+						availableForPurchase: boolean;
+						availableQuantity: number;
+						stockPolicy: StockPolicy;
+					} | null;
 					media: { edges?: Array<{ node: { id: string; src: string } }> | null };
 					price?: {
 						validFrom?: any | null;
@@ -3642,6 +3755,16 @@ export class TypedDocumentString<TResult, TVariables>
 		return this.value;
 	}
 }
+export const AvailabilityFragmentDoc = new TypedDocumentString(
+	`
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+    `,
+	{ fragmentName: "Availability" },
+) as unknown as TypedDocumentString<AvailabilityFragment, unknown>;
 export const MoneyFragmentDoc = new TypedDocumentString(
 	`
     fragment Money on Money {
@@ -3657,9 +3780,11 @@ export const CartFragmentDoc = new TypedDocumentString(
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -3863,9 +3988,11 @@ export const CartCreateDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -3955,9 +4082,11 @@ export const CartUpdateDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4041,9 +4170,11 @@ export const CartReplicateDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4130,9 +4261,11 @@ export const CartDiscountCodeAddDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4216,9 +4349,11 @@ export const CartDiscountCodeRemoveDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4308,9 +4443,11 @@ export const CartLineItemsAddDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4394,9 +4531,11 @@ export const CartLineItemsUpdateDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4480,9 +4619,11 @@ export const CartLineItemsRemoveDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4683,9 +4824,11 @@ export const CartDocument = new TypedDocumentString(`
     fragment Cart on Cart {
   id
   customerId
+  state
   shippingAddress {
     countryCode
   }
+  checkoutUrl
   lineItemsQuantity
   lineItems(first: 100) {
     edges {
@@ -4800,6 +4943,9 @@ export const CategoryListDocument = new TypedDocumentString(`
       edges {
         node {
           id
+          variants {
+            totalCount
+          }
           ...ProductListTile
         }
       }
@@ -5398,6 +5544,9 @@ export const ProductListDocument = new TypedDocumentString(`
     edges {
       node {
         id
+        variants {
+          totalCount
+        }
         ...ProductListTile
       }
     }
@@ -5490,6 +5639,9 @@ export const ProductDetailDocument = new TypedDocumentString(`
           id
           name
           sku
+          availability {
+            ...Availability
+          }
           media(first: 5) {
             edges {
               node {
@@ -5506,7 +5658,12 @@ export const ProductDetailDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment CategoryBreadcrumb on Category {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment CategoryBreadcrumb on Category {
   id
   name
   slug
