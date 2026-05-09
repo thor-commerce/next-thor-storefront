@@ -228,11 +228,15 @@
 				background: var(--color-surface-muted);
 			}
 		}
-	}
-}
 
-.quantityButton:disabled {
-	color: var(--text-soft);
+		&:disabled {
+			color: rgba(0, 0, 0, 0.3);
+			cursor: default;
+			&:hover {
+				background: none;
+			}
+		}
+	}
 }
 
 .quantity {

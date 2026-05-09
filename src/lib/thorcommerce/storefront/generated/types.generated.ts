@@ -3805,9 +3805,7 @@ export const CartFragmentDoc = new TypedDocumentString(
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -3852,7 +3850,12 @@ export const CartFragmentDoc = new TypedDocumentString(
     ...Money
   }
 }
-    fragment Money on Money {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Money on Money {
   centAmount
   currencyCode
   fractionDigits
@@ -3985,7 +3988,12 @@ export const CartCreateDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4013,9 +4021,7 @@ export const CartCreateDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4079,7 +4085,12 @@ export const CartUpdateDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4107,9 +4118,7 @@ export const CartUpdateDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4167,7 +4176,12 @@ export const CartReplicateDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4195,9 +4209,7 @@ export const CartReplicateDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4258,7 +4270,12 @@ export const CartDiscountCodeAddDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4286,9 +4303,7 @@ export const CartDiscountCodeAddDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4346,7 +4361,12 @@ export const CartDiscountCodeRemoveDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4374,9 +4394,7 @@ export const CartDiscountCodeRemoveDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4440,7 +4458,12 @@ export const CartLineItemsAddDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4468,9 +4491,7 @@ export const CartLineItemsAddDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4528,7 +4549,12 @@ export const CartLineItemsUpdateDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4556,9 +4582,7 @@ export const CartLineItemsUpdateDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4616,7 +4640,12 @@ export const CartLineItemsRemoveDocument = new TypedDocumentString(`
     }
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4644,9 +4673,7 @@ export const CartLineItemsRemoveDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
@@ -4821,7 +4848,12 @@ export const CartDocument = new TypedDocumentString(`
     ...Cart
   }
 }
-    fragment Cart on Cart {
+    fragment Availability on ProductVariantAvailability {
+  availableForPurchase
+  availableQuantity
+  stockPolicy
+}
+fragment Cart on Cart {
   id
   customerId
   state
@@ -4849,9 +4881,7 @@ export const CartDocument = new TypedDocumentString(`
             value
           }
           availability {
-            availableForPurchase
-            availableQuantity
-            stockPolicy
+            ...Availability
           }
         }
         unitPrice {
