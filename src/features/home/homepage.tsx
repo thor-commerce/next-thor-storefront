@@ -19,7 +19,10 @@ export default function Homepage({ data }: Props) {
 	const products = mapEdgesToItems(data.products);
 
 	const featuredCategory = categories[0];
-	const totalCategoryProducts = categories.reduce((sum, category) => sum + Number(category.productsCount), 0);
+	const totalCategoryProducts = categories.reduce(
+		(sum, category) => sum + Number(category.products.totalCount),
+		0,
+	);
 	const totalCollectionProducts = collections.reduce(
 		(sum, collection) => sum + collection.products.totalCount,
 		0,
@@ -102,7 +105,9 @@ export default function Homepage({ data }: Props) {
 						{categories.map((category) => (
 							<Navigation key={category.id} href={`/categories/${category.slug}`} className={s.featureCard}>
 								<div className={s.featureTitle}>{category.name}</div>
-								<div className={s.featureMeta}>{formatCount(Number(category.productsCount), "product")}</div>
+								<div className={s.featureMeta}>
+									{formatCount(Number(category.products.totalCount), "product")}
+								</div>
 							</Navigation>
 						))}
 					</div>

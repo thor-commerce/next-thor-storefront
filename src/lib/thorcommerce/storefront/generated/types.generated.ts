@@ -35,9 +35,52 @@ export type AddressAlreadyExistsError = UserError & {
 	message: Scalars["String"]["output"];
 };
 
+/** Structured details for an address resolved from an autocomplete suggestion. */
+export type AddressDetails = {
+	address1?: Maybe<Scalars["String"]["output"]>;
+	addressId: Scalars["String"]["output"];
+	city?: Maybe<Scalars["String"]["output"]>;
+	countryCode?: Maybe<Scalars["String"]["output"]>;
+	countryName?: Maybe<Scalars["String"]["output"]>;
+	formattedAddress?: Maybe<Scalars["String"]["output"]>;
+	latitude?: Maybe<Scalars["Float"]["output"]>;
+	longitude?: Maybe<Scalars["Float"]["output"]>;
+	postalCode?: Maybe<Scalars["String"]["output"]>;
+	state?: Maybe<Scalars["String"]["output"]>;
+};
+
 export type AddressNotFoundError = UserError & {
 	message: Scalars["String"]["output"];
 };
+
+/** A single address autocomplete suggestion. */
+export type AddressPrediction = {
+	addressId: Scalars["String"]["output"];
+	completionService: Scalars["String"]["output"];
+	description: Scalars["String"]["output"];
+	matchedSubstrings: Array<AddressPredictionMatchedSubstring>;
+};
+
+export type AddressPredictionLocationInput = {
+	latitude: Scalars["Float"]["input"];
+	longitude: Scalars["Float"]["input"];
+};
+
+/** A substring within an address prediction's description that matched the user query. */
+export type AddressPredictionMatchedSubstring = {
+	length: Scalars["Int"]["output"];
+	offset: Scalars["Int"]["output"];
+};
+
+/** Defines when a policy shall be executed. */
+export enum ApplyPolicy {
+	/** After the resolver was executed. */
+	AfterResolver = "AFTER_RESOLVER",
+	/** Before the resolver was executed. */
+	BeforeResolver = "BEFORE_RESOLVER",
+	/** The policy is applied in the validation step before the execution. */
+	Validation = "VALIDATION",
+}
 
 export type Attribute = Node & {
 	/** The unique identifier of the attribute. */
@@ -165,6 +208,8 @@ export type Cart = Node & {
 	id: Scalars["ID"]["output"];
 	lineItems: CartLineItemConnection;
 	lineItemsQuantity: Scalars["Long"]["output"];
+	/** Gets whether marketing consent was set on the cart, if any. */
+	marketingConsent?: Maybe<Scalars["Boolean"]["output"]>;
 	metadata: Array<MetadataItem>;
 	paymentSession?: Maybe<PaymentSession>;
 	/** Gets the shipping address associated with the cart. */
@@ -310,6 +355,7 @@ export type CartCompleteError =
 
 export type CartCompleteInput = {
 	cartId: Scalars["ID"]["input"];
+	marketingConsent?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type CartCompletePayload = {
@@ -348,6 +394,7 @@ export type CartCreateInput = {
 	customerEmail?: InputMaybe<Scalars["String"]["input"]>;
 	customerId?: InputMaybe<Scalars["ID"]["input"]>;
 	lineItems?: InputMaybe<Array<CartLineItemInput>>;
+	marketingConsent?: InputMaybe<Scalars["Boolean"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	shippingAddress?: InputMaybe<CartAddressInput>;
 	storeId: Scalars["ID"]["input"];
@@ -563,7 +610,8 @@ export type CartPaymentSessionInitializeError =
 	| CartNotFoundError
 	| PaymentGatewayChannelMismatchError
 	| PaymentGatewayNotFoundError
-	| PaymentGatewaySessionInitializeFailedError;
+	| PaymentGatewaySessionInitializeFailedError
+	| PaymentGatewayUnavailableError;
 
 export type CartPaymentSessionInitializeInput = {
 	cartId: Scalars["ID"]["input"];
@@ -680,6 +728,7 @@ export type CartUpdateInput = {
 	cartId: Scalars["ID"]["input"];
 	customerEmail?: InputMaybe<Scalars["String"]["input"]>;
 	customerId?: InputMaybe<Scalars["ID"]["input"]>;
+	marketingConsent?: InputMaybe<Scalars["Boolean"]["input"]>;
 	metadata?: InputMaybe<Array<KeyValuePairOfStringAndStringInput>>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	shippingAddress?: InputMaybe<CartAddressInput>;
@@ -709,6 +758,7 @@ export type Category = Node & {
 	id: Scalars["ID"]["output"];
 	/** The level of the category. Root categories have a level of 0, their direct children have a level of 1, and so on. */
 	level: Scalars["Int"]["output"];
+	metafields: Array<ResolvedMetafield>;
 	/** The name of the category. */
 	name: Scalars["String"]["output"];
 	parent?: Maybe<Category>;
@@ -724,11 +774,22 @@ export type Category = Node & {
  *
  * Each category includes core details such as title, description, and associated products. Categories can be organized hierarchically to create a structured navigation experience for customers.
  */
+export type CategoryMetafieldsArgs = {
+	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+	namespace?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/**
+ * Represents a category, encapsulating all information required to display and manage categories across storefronts and sales channels.
+ *
+ * Each category includes core details such as title, description, and associated products. Categories can be organized hierarchically to create a structured navigation experience for customers.
+ */
 export type CategoryProductsArgs = {
 	after?: InputMaybe<Scalars["String"]["input"]>;
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -763,11 +824,27 @@ export enum CategorySortKeys {
 	Name = "NAME",
 }
 
+export enum CheckoutFieldRequirement {
+	Disabled = "DISABLED",
+	Optional = "OPTIONAL",
+	Required = "REQUIRED",
+}
+
+export enum CheckoutNameRequirement {
+	FirstAndLastName = "FIRST_AND_LAST_NAME",
+	LastNameOnly = "LAST_NAME_ONLY",
+}
+
 /** Data required to display the hosted checkout page. */
 export type CheckoutSession = {
+	companyNameRequirement: CheckoutFieldRequirement;
+	companyVatNumberRequirement: CheckoutFieldRequirement;
 	favicon?: Maybe<Media>;
 	logo?: Maybe<Media>;
+	marketingConsent: Scalars["Boolean"]["output"];
+	nameRequirement: CheckoutNameRequirement;
 	redirectUri?: Maybe<Scalars["String"]["output"]>;
+	shippingPhoneNumberRequirement: CheckoutFieldRequirement;
 	/** The token of the checkout session. */
 	token: Scalars["String"]["output"];
 };
@@ -780,6 +857,7 @@ export type CheckoutSession = {
 export type Collection = Node & {
 	/** The ID of the collection. */
 	id: Scalars["ID"]["output"];
+	metafields: Array<ResolvedMetafield>;
 	/** The name of the collection. */
 	name: Scalars["String"]["output"];
 	products: ProductsConnection;
@@ -792,11 +870,22 @@ export type Collection = Node & {
  *
  *  Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
  */
+export type CollectionMetafieldsArgs = {
+	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+	namespace?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+/**
+ * Represents a collection, encapsulating all information required to display and manage collections across storefronts and sales channels.
+ *
+ *  Each collection includes core details such as title, description, and associated products. Collections can be organized hierarchically to create a structured navigation experience for customers.
+ */
 export type CollectionProductsArgs = {
 	after?: InputMaybe<Scalars["String"]["input"]>;
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -887,7 +976,10 @@ export type Customer = Node & {
 	id: Scalars["ID"]["output"];
 	/** The last name of the customer. */
 	lastName?: Maybe<Scalars["String"]["output"]>;
+	/** Indicates whether the customer has consented to marketing. */
+	marketingConsent: Scalars["Boolean"]["output"];
 	metadata: Array<MetadataItem>;
+	metafields: Array<ResolvedMetafield>;
 	orders: OrderConnection;
 	ordersCount: Scalars["Long"]["output"];
 };
@@ -908,6 +1000,11 @@ export type CustomerCustomerGroupsArgs = {
 
 export type CustomerMetadataArgs = {
 	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+export type CustomerMetafieldsArgs = {
+	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+	namespace?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type CustomerOrdersArgs = {
@@ -1165,6 +1262,7 @@ export type CustomerUpdateInput = {
 	email?: InputMaybe<Scalars["String"]["input"]>;
 	firstName?: InputMaybe<Scalars["String"]["input"]>;
 	lastName?: InputMaybe<Scalars["String"]["input"]>;
+	marketingConsent?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type CustomerUpdatePayload = {
@@ -1224,6 +1322,19 @@ export type DiscountedPrice = {
 	discount?: Maybe<ProductDiscount>;
 	/** Money value of the discounted price. */
 	value: Money;
+};
+
+export type DropdownMetafield = ResolvedMetafield & {
+	defaultValue: Scalars["String"]["output"];
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	options: Array<Scalars["String"]["output"]>;
+	ownerType: MetafieldOwnerType;
+	value: Scalars["String"]["output"];
 };
 
 export type Facet = {
@@ -1290,6 +1401,7 @@ export type LineShippingMethodMetadataArgs = {
 };
 
 export type ManualPaymentGateway = PaymentGateway & {
+	/** @deprecated Channels are no longer used. This field will be removed in version 5.0. */
 	channelIds: Array<Scalars["ID"]["output"]>;
 	id: Scalars["ID"]["output"];
 	name: Scalars["String"]["output"];
@@ -1334,6 +1446,23 @@ export type MetadataItem = {
 	value: Scalars["String"]["output"];
 };
 
+export enum MetafieldDefinitionKind {
+	Dropdown = "DROPDOWN",
+	Money = "MONEY",
+	ProductPicker = "PRODUCT_PICKER",
+	Tags = "TAGS",
+	Text = "TEXT",
+	VariantPicker = "VARIANT_PICKER",
+}
+
+export enum MetafieldOwnerType {
+	Category = "CATEGORY",
+	Collection = "COLLECTION",
+	Customer = "CUSTOMER",
+	Product = "PRODUCT",
+	ProductVariant = "PRODUCT_VARIANT",
+}
+
 /** The monetary value in the smallest unit of the currency. */
 export type Money = {
 	/** The amount of money in the smallest unit of the currency. For example, 100 cents in USD. */
@@ -1342,6 +1471,17 @@ export type Money = {
 	currencyCode: Scalars["String"]["output"];
 	/** The number of digits after the decimal separator in the currency. For example, 2 for USD and 0 for JPY. */
 	fractionDigits: Scalars["Int"]["output"];
+};
+
+export type MoneyMetafield = ResolvedMetafield & {
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	money?: Maybe<Money>;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	ownerType: MetafieldOwnerType;
 };
 
 export type Mutation = {
@@ -1790,6 +1930,10 @@ export type PaymentGatewaySessionInitializeFailedError = UserError & {
 	message: Scalars["String"]["output"];
 };
 
+export type PaymentGatewayUnavailableError = UserError & {
+	message: Scalars["String"]["output"];
+};
+
 export type PaymentSession = {
 	/** The unique identifier of the payment session. */
 	id: Scalars["ID"]["output"];
@@ -1845,6 +1989,7 @@ export type Product = Node & {
 	/** The unique identifier of the product. */
 	id: Scalars["ID"]["output"];
 	metadata: Array<MetadataItem>;
+	metafields: Array<ResolvedMetafield>;
 	/** The name of the product. */
 	name: Scalars["String"]["output"];
 	priceRange?: Maybe<ProductPriceRange>;
@@ -1887,6 +2032,15 @@ export type ProductCollectionsArgs = {
  */
 export type ProductMetadataArgs = {
 	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+/**
+ * Represents a product in Thor Commerce, encapsulating all information required to display and manage items across storefronts and sales channels.
+ * Each product includes core details such as title, rich description, pricing, media assets, and customizable options (e.g., size, color). Variants enable multiple versions of a product with distinct attributes and prices. You can add or update images, videos, and other media to enrich the customer experience. Products can be organized into categories for intuitive browsing and discovery.
+ */
+export type ProductMetafieldsArgs = {
+	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+	namespace?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /**
@@ -1947,6 +2101,17 @@ export type ProductDiscountRelativeValue = {
 
 export type ProductDiscountValue = ProductDiscountAbsoluteValue | ProductDiscountRelativeValue;
 
+export type ProductPickerMetafield = ResolvedMetafield & {
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	ownerType: MetafieldOwnerType;
+	product?: Maybe<Product>;
+};
+
 export type ProductPriceRange = {
 	/** Gets the maximum price of the product in the specified currency. */
 	maxPrice: Price;
@@ -1970,6 +2135,7 @@ export type ProductVariant = Node & {
 	image?: Maybe<Media>;
 	media: MediaConnection;
 	metadata: Array<MetadataItem>;
+	metafields: Array<ResolvedMetafield>;
 	/** The name of the variant. */
 	name: Scalars["String"]["output"];
 	price?: Maybe<Price>;
@@ -1990,6 +2156,11 @@ export type ProductVariantMediaArgs = {
 
 export type ProductVariantMetadataArgs = {
 	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+};
+
+export type ProductVariantMetafieldsArgs = {
+	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
+	namespace?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ProductVariantAvailability = {
@@ -2031,6 +2202,7 @@ export enum ProductVariantSortKeys {
 }
 
 export type ProductsConnection = {
+	/** @deprecated Use facets instead. This will be removed in v5 */
 	aggregates: Array<Facet>;
 	/** A list of edges. */
 	edges?: Maybe<Array<ProductsEdge>>;
@@ -2051,6 +2223,8 @@ export type ProductsEdge = {
 };
 
 export type Query = {
+	addressDetails?: Maybe<AddressDetails>;
+	addressPredictions: Array<AddressPrediction>;
 	cart?: Maybe<Cart>;
 	categories: CategoryConnection;
 	category?: Maybe<Category>;
@@ -2059,12 +2233,25 @@ export type Query = {
 	collections: CollectionConnection;
 	countries: Array<CountryInfo>;
 	customer?: Maybe<Customer>;
-	node?: Maybe<Node>;
 	order?: Maybe<Order>;
 	paymentGateways: PaymentGatewayConnection;
 	product?: Maybe<Product>;
 	productVariants: ProductVariantConnection;
 	products: ProductsConnection;
+};
+
+export type QueryAddressDetailsArgs = {
+	addressId: Scalars["String"]["input"];
+	locale: Scalars["String"]["input"];
+	sessionToken: Scalars["String"]["input"];
+};
+
+export type QueryAddressPredictionsArgs = {
+	countryCode: Scalars["String"]["input"];
+	locale: Scalars["String"]["input"];
+	location?: InputMaybe<AddressPredictionLocationInput>;
+	query: Scalars["String"]["input"];
+	sessionToken: Scalars["String"]["input"];
 };
 
 export type QueryCartArgs = {
@@ -2076,6 +2263,7 @@ export type QueryCategoriesArgs = {
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -2086,6 +2274,7 @@ export type QueryCategoriesArgs = {
 
 export type QueryCategoryArgs = {
 	id?: InputMaybe<Scalars["ID"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	path?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
@@ -2100,6 +2289,7 @@ export type QueryCheckoutSessionArgs = {
 
 export type QueryCollectionArgs = {
 	id?: InputMaybe<Scalars["ID"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -2112,10 +2302,6 @@ export type QueryCollectionsArgs = {
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
-};
-
-export type QueryNodeArgs = {
-	id: Scalars["ID"]["input"];
 };
 
 export type QueryOrderArgs = {
@@ -2132,6 +2318,7 @@ export type QueryPaymentGatewaysArgs = {
 
 export type QueryProductArgs = {
 	id?: InputMaybe<Scalars["ID"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -2144,6 +2331,7 @@ export type QueryProductVariantsArgs = {
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -2158,6 +2346,7 @@ export type QueryProductsArgs = {
 	before?: InputMaybe<Scalars["String"]["input"]>;
 	first?: InputMaybe<Scalars["Int"]["input"]>;
 	last?: InputMaybe<Scalars["Int"]["input"]>;
+	locale?: InputMaybe<Scalars["String"]["input"]>;
 	priceChannelId?: InputMaybe<Scalars["ID"]["input"]>;
 	priceCountry?: InputMaybe<Scalars["String"]["input"]>;
 	priceCurrency?: InputMaybe<Scalars["String"]["input"]>;
@@ -2184,6 +2373,25 @@ export enum ReplicationStrategy {
 	Strict = "STRICT",
 }
 
+export type ResolvedMetafield = {
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	ownerType: MetafieldOwnerType;
+};
+
+export enum ScalarSerializationType {
+	Boolean = "BOOLEAN",
+	Float = "FLOAT",
+	Int = "INT",
+	List = "LIST",
+	Object = "OBJECT",
+	String = "STRING",
+}
+
 export type SelectedAttribute = {
 	attribute: Attribute;
 	attributeValue: AttributeValue;
@@ -2198,22 +2406,6 @@ export enum ShipmentState {
 	Ready = "READY",
 	Shipped = "SHIPPED",
 }
-
-export type ShippingMethod = Node & {
-	/** The description of the shipping method. */
-	description?: Maybe<Scalars["String"]["output"]>;
-	/** The unique identifier of the shipping method. */
-	id: Scalars["ID"]["output"];
-	metadata: Array<MetadataItem>;
-	/** The name of the shipping method. */
-	name: Scalars["String"]["output"];
-	/** The sku of the shipping method. */
-	sku?: Maybe<Scalars["String"]["output"]>;
-};
-
-export type ShippingMethodMetadataArgs = {
-	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
-};
 
 export type ShippingMethodNotFoundError = UserError & {
 	message: Scalars["String"]["output"];
@@ -2269,6 +2461,17 @@ export type SwatchAttributeValueMetadataArgs = {
 	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
+export type TagsMetafield = ResolvedMetafield & {
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	ownerType: MetafieldOwnerType;
+	tags: Array<Scalars["String"]["output"]>;
+};
+
 export enum TaxBehavior {
 	Exclusive = "EXCLUSIVE",
 	Inclusive = "INCLUSIVE",
@@ -2290,6 +2493,7 @@ export type TaxRate = {
 	portions: Array<TaxPortion>;
 	/** Gets the tax rate as a decimal value. */
 	rate: Scalars["Decimal"]["output"];
+	/** @deprecated Don't use this.... use portions instead... will be removed in v5 */
 	taxPortions: Array<TaxPortion>;
 };
 
@@ -2319,6 +2523,19 @@ export type TextAttributeValueMetadataArgs = {
 	keys?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
+export type TextMetafield = ResolvedMetafield & {
+	allowEmpty?: Maybe<Scalars["Boolean"]["output"]>;
+	defaultValue: Scalars["String"]["output"];
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	ownerType: MetafieldOwnerType;
+	value: Scalars["String"]["output"];
+};
+
 /**
  * Represents the unit price of a product or variant in a cart or order, including the monetary value and currency and potentially discounted price.
  *
@@ -2338,6 +2555,17 @@ export type UpdateCartLineItemsInsufficientStockError = UserError & {
 
 export type UserError = {
 	message: Scalars["String"]["output"];
+};
+
+export type VariantPickerMetafield = ResolvedMetafield & {
+	definitionId: Scalars["ID"]["output"];
+	hasAssignedValue: Scalars["Boolean"]["output"];
+	key: Scalars["String"]["output"];
+	kind: MetafieldDefinitionKind;
+	name: Scalars["String"]["output"];
+	namespace: Scalars["String"]["output"];
+	ownerType: MetafieldOwnerType;
+	variant?: Maybe<ProductVariant>;
 };
 
 export type Weight = {
@@ -3030,6 +3258,7 @@ export type CartPaymentSessionInitializeMutation = {
 			| { message: string; code: "PaymentGatewayChannelMismatchError" }
 			| { message: string; code: "PaymentGatewayNotFoundError" }
 			| { message: string; code: "PaymentGatewaySessionInitializeFailedError" }
+			| { message: string; code: "PaymentGatewayUnavailableError" }
 		> | null;
 	};
 };
@@ -3521,7 +3750,9 @@ export type HomePageQueryVariables = Exact<{
 
 export type HomePageQuery = {
 	categories: {
-		edges?: Array<{ node: { id: string; name: string; slug: string; productsCount: number } }> | null;
+		edges?: Array<{
+			node: { id: string; name: string; slug: string; products: { totalCount: number } };
+		}> | null;
 	};
 	collections: {
 		edges?: Array<{
@@ -4950,7 +5181,7 @@ export const CategoriesDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<CategoriesQuery, CategoriesQueryVariables>;
 export const CategoryListDocument = new TypedDocumentString(`
     query CategoryList($slug: String!, $currency: String!, $storeId: ID!, $after: String, $sortDirection: SortDirection!, $sortKey: ProductCategorySortKeys!, $query: String) {
-  category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+  category(slug: $slug) {
     id
     name
     slug
@@ -5260,7 +5491,7 @@ export const CollectionsDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<CollectionsQuery, CollectionsQueryVariables>;
 export const CollectionListDocument = new TypedDocumentString(`
     query CollectionList($slug: String!, $currency: String!, $storeId: ID!, $after: String, $sortDirection: SortDirection!, $sortKey: ProductCollectionSortKeys!) {
-  collection(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+  collection(slug: $slug) {
     id
     name
     products(
@@ -5390,13 +5621,15 @@ export const CurrentCustomerDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<CurrentCustomerQuery, CurrentCustomerQueryVariables>;
 export const HomePageDocument = new TypedDocumentString(`
     query HomePage($storeId: ID!, $currency: String!) {
-  categories(first: 6, storeId: $storeId, priceCurrency: $currency) {
+  categories(first: 6) {
     edges {
       node {
         id
         name
         slug
-        productsCount
+        products(storeId: $storeId, priceCurrency: $currency) {
+          totalCount
+        }
       }
     }
   }
