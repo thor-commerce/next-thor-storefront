@@ -3750,7 +3750,9 @@ export type HomePageQueryVariables = Exact<{
 
 export type HomePageQuery = {
 	categories: {
-		edges?: Array<{ node: { id: string; name: string; slug: string; productsCount: number } }> | null;
+		edges?: Array<{
+			node: { id: string; name: string; slug: string; products: { totalCount: number } };
+		}> | null;
 	};
 	collections: {
 		edges?: Array<{
@@ -5179,7 +5181,7 @@ export const CategoriesDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<CategoriesQuery, CategoriesQueryVariables>;
 export const CategoryListDocument = new TypedDocumentString(`
     query CategoryList($slug: String!, $currency: String!, $storeId: ID!, $after: String, $sortDirection: SortDirection!, $sortKey: ProductCategorySortKeys!, $query: String) {
-  category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+  category(slug: $slug) {
     id
     name
     slug
@@ -5489,7 +5491,7 @@ export const CollectionsDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<CollectionsQuery, CollectionsQueryVariables>;
 export const CollectionListDocument = new TypedDocumentString(`
     query CollectionList($slug: String!, $currency: String!, $storeId: ID!, $after: String, $sortDirection: SortDirection!, $sortKey: ProductCollectionSortKeys!) {
-  collection(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+  collection(slug: $slug) {
     id
     name
     products(
@@ -5619,13 +5621,15 @@ export const CurrentCustomerDocument = new TypedDocumentString(`
     `) as unknown as TypedDocumentString<CurrentCustomerQuery, CurrentCustomerQueryVariables>;
 export const HomePageDocument = new TypedDocumentString(`
     query HomePage($storeId: ID!, $currency: String!) {
-  categories(first: 6, storeId: $storeId, priceCurrency: $currency) {
+  categories(first: 6) {
     edges {
       node {
         id
         name
         slug
-        productsCount
+        products(storeId: $storeId, priceCurrency: $currency) {
+          totalCount
+        }
       }
     }
   }

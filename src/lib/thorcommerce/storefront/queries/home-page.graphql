@@ -1,11 +1,13 @@
 query HomePage($storeId: ID!, $currency: String!) {
-	categories(first: 6, storeId: $storeId, priceCurrency: $currency) {
+	categories(first: 6) {
 		edges {
 			node {
 				id
 				name
 				slug
-				productsCount
+				products(storeId: $storeId, priceCurrency: $currency) {
+					totalCount
+				}
 			}
 		}
 	}

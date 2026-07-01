@@ -23,7 +23,7 @@ query CategoryList(
 	$sortKey: ProductCategorySortKeys!
 	$query: String
 ) {
-	category(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+	category(slug: $slug) {
 		id
 		name
 		slug

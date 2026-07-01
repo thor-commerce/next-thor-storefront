@@ -21,7 +21,7 @@ query CollectionList(
 	$sortDirection: SortDirection!
 	$sortKey: ProductCollectionSortKeys!
 ) {
-	collection(slug: $slug, storeId: $storeId, priceCurrency: $currency) {
+	collection(slug: $slug) {
 		id
 		name
 		products(
