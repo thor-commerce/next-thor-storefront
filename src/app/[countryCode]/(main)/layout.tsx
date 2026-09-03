@@ -2,6 +2,9 @@ import { CartProvider } from "@/features/cart/cart-context";
 import Navbar from "@/features/navbar/navbar";
 import { getCart } from "@/lib/thorcommerce/storefront";
 
+// Storefront routes depend on request-scoped cart and customer data.
+export const instant = false;
+
 export default async function RootLayout({
 	children,
 }: Readonly<{

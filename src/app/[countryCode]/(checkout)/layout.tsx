@@ -2,6 +2,9 @@ import { type ReactNode } from "react";
 import s from "./layout.module.css";
 import Navigation from "@/components/navigation/navigation";
 
+// Checkout and order routes depend on request-scoped cart, customer, and payment data.
+export const instant = false;
+
 export const metadata = {
 	title: "Checkout",
 	robots: {

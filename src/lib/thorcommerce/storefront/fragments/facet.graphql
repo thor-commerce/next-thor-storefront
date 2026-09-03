@@ -1,6 +1,7 @@
 fragment Facet on Facet {
 	field
 	name
+	queryField
 	values {
 		name
 		count
