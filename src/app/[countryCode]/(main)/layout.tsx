@@ -7,6 +7,7 @@ export default async function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	// Don't await the fetch; pass the promise to the client provider.
 	const cart = getCart();
 	return (
 		<CartProvider cartPromise={cart}>

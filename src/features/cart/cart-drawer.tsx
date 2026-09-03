@@ -51,10 +51,10 @@ export default function CartDrawer() {
 	}, [pathname, search]);
 
 	return (
-		<DialogTrigger>
+		<DialogTrigger isOpen={isOpen} onOpenChange={setOpen}>
 			<Pressable>
 				<IconButton
-					onClick={() => setOpen(true)}
+					aria-label="Open cart"
 					icon={
 						<>
 							<ShoppingCart />
@@ -75,8 +75,6 @@ export default function CartDrawer() {
 			<ModalOverlay
 				isDismissable
 				className={s.overlay}
-				isOpen={isOpen}
-				onOpenChange={setOpen}
 				shouldCloseOnInteractOutside={(element) => {
 					// Don't close when interacting with 1Password or other browser extensions
 					const isExtensionElement =
