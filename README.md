@@ -35,6 +35,7 @@ A Thor Commerce storefront built with Next.js 16, React 19, Server Components, S
 
    ```bash
    THOR_PROJECT="[your-project-id]"
+   THOR_STOREFRONT_API_KEY="[your-storefront-api-key]"
    BETTER_AUTH_SECRET="[openssl rand -base64 32]"
    BETTER_AUTH_URL="http://localhost:3000"
    NEXT_SERVER_ACTIONS_ENCRYPTION_KEY="[openssl rand -base64 32]"
@@ -57,6 +58,7 @@ A Thor Commerce storefront built with Next.js 16, React 19, Server Components, S
 ## Environment Variables
 
 - `THOR_PROJECT` - Thor Commerce project ID used to build Storefront API requests.
+- `THOR_STOREFRONT_API_KEY` - Server-side API key sent to the Thor Storefront API.
 - `BETTER_AUTH_SECRET` - secret used by Better Auth.
 - `BETTER_AUTH_URL` - base URL for Better Auth callbacks and cookies.
 - `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` - encryption key for Server Actions, required for Cloudflare Workers deployments.

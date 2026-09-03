@@ -75,6 +75,8 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 	return (
 		<>
 			{facets.map((facet) => {
+				const facetKey = `${idPrefix ?? "desktop"}-${facet.queryField}`;
+
 				if (facet.field === FacetField.Price) {
 					const bounds = parsePriceBounds(facet);
 
@@ -84,8 +86,8 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 					const currentMax = rawMax !== null && Number.isFinite(Number(rawMax)) ? Number(rawMax) : undefined;
 					return (
 						<PriceRangeFilter
-							key={facet.field}
-							id={idPrefix ? `${idPrefix}-${facet.field}` : facet.field}
+							key={facetKey}
+							id={facetKey}
 							label={facet.name}
 							min={bounds.min}
 							max={bounds.max}
@@ -98,13 +100,13 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 					);
 				}
 
-				const key = getParamKey(facet.field);
+				const key = getParamKey(facet.queryField);
 				const currentValues = searchParams.getAll(key);
 
 				return (
 					<FilterControl
-						key={facet.field}
-						id={idPrefix ? `${idPrefix}-${facet.field}` : facet.field}
+						key={facetKey}
+						id={facetKey}
 						label={facet.name}
 						currentValues={currentValues}
 						filterOptions={facet.values.map((v) => ({
@@ -112,7 +114,7 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 							label: v.name,
 							count: v.count,
 						}))}
-						onFilterChange={(values) => updateFilter(facet.field, values)}
+						onFilterChange={(values) => updateFilter(facet.queryField, values)}
 					/>
 				);
 			})}

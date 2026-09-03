@@ -2653,6 +2653,7 @@ export type CategoryBreadcrumbFragment = {
 export type FacetFragment = {
 	field: FacetField;
 	name: string;
+	queryField: string;
 	values: Array<{ name: string; count: number }>;
 };
 
@@ -3413,7 +3414,12 @@ export type CategoryListQuery = {
 		ancestors: Array<{ slug: string; name: string }>;
 		products: {
 			totalCount: number;
-			facets: Array<{ field: FacetField; name: string; values: Array<{ name: string; count: number }> }>;
+			facets: Array<{
+				field: FacetField;
+				name: string;
+				queryField: string;
+				values: Array<{ name: string; count: number }>;
+			}>;
 			edges?: Array<{
 				node: {
 					id: string;
@@ -3858,7 +3864,12 @@ export type ProductListQueryVariables = Exact<{
 export type ProductListQuery = {
 	products: {
 		totalCount: number;
-		facets: Array<{ field: FacetField; name: string; values: Array<{ name: string; count: number }> }>;
+		facets: Array<{
+			field: FacetField;
+			name: string;
+			queryField: string;
+			values: Array<{ name: string; count: number }>;
+		}>;
 		edges?: Array<{
 			node: {
 				id: string;
@@ -4113,6 +4124,7 @@ export const FacetFragmentDoc = new TypedDocumentString(
     fragment Facet on Facet {
   field
   name
+  queryField
   values {
     name
     count
@@ -5221,6 +5233,7 @@ export const CategoryListDocument = new TypedDocumentString(`
     fragment Facet on Facet {
   field
   name
+  queryField
   values {
     name
     count
@@ -5823,6 +5836,7 @@ export const ProductListDocument = new TypedDocumentString(`
     fragment Facet on Facet {
   field
   name
+  queryField
   values {
     name
     count

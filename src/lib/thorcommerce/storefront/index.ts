@@ -9,6 +9,18 @@ import { headers } from "next/headers";
 
 const endpoint = `https://api.thorcommerce.io/${process.env.THOR_PROJECT}/storefront/graphql`;
 
+type StorefrontApiError = {
+    message?: string;
+    [key: string]: unknown;
+};
+
+type StorefrontApiResponse<TData> = {
+    data?: TData;
+    errors?: StorefrontApiError[];
+    message?: string;
+    [key: string]: unknown;
+};
+
 export async function storefrontFetch<TData, TVariables>({
     headers: HeadersInit,
     query,
@@ -18,6 +30,12 @@ export async function storefrontFetch<TData, TVariables>({
     query: TypedDocumentString<TData, TVariables>;
     variables?: TVariables;
 }): Promise<TData> {
+
+    const storefrontApiKey = process.env.THOR_STOREFRONT_API_KEY;
+
+    if (!storefrontApiKey) {
+        throw new Error("Missing THOR_STOREFRONT_API_KEY environment variable");
+    }
 
 
     const sessionCtx = await auth.api.getSession({
@@ -30,6 +48,7 @@ export async function storefrontFetch<TData, TVariables>({
         headers: {
             "Content-Type": "application/json",
             ...HeadersInit,
+            "X-Thor-Storefront-Token": storefrontApiKey,
             //Include the Authorization header if we have a session token, this allows Thor to validate the user and return user-specific data special prices and etc....
             ...(sessionCtx ? { Authorization: `Bearer ${sessionCtx.session.token}` } : {}),
         },
@@ -39,14 +58,34 @@ export async function storefrontFetch<TData, TVariables>({
         }),
     });
 
-    if (!response.ok) {
-        throw new Error(`Storefront API error: ${response.status}`);
+    const responseBody = await response.text();
+    let json: StorefrontApiResponse<TData>;
+
+    try {
+        json = JSON.parse(responseBody) as StorefrontApiResponse<TData>;
+    } catch {
+        console.error("Thor Storefront API returned an invalid response", {
+            status: response.status,
+            statusText: response.statusText,
+            body: responseBody,
+        });
+
+        throw new Error(`Storefront API error: ${response.status} ${response.statusText}`);
     }
 
-    const json = await response.json();
+    if (!response.ok || json.errors?.length) {
+        const errorMessage = json.errors
+            ?.map(error => error.message)
+            .filter((message): message is string => Boolean(message))
+            .join("\n") || json.message;
 
-    if (json.errors) {
-        throw new Error(json.errors.map((e: { message: string }) => e.message).join("\n"));
+        console.error("Thor Storefront API request failed", {
+            status: response.status,
+            statusText: response.statusText,
+            error: json.errors ?? json,
+        });
+
+        throw new Error(errorMessage || `Storefront API error: ${response.status} ${response.statusText}`);
     }
 
     return json.data as TData;
