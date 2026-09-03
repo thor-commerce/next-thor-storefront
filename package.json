@@ -18,7 +18,7 @@
 		"@gsap/react": "^2.1.2",
 		"@hookform/resolvers": "^5.9.1",
 		"@next/env": "16.3.4",
-		"@opennextjs/cloudflare": "^1.19.4",
+		"@opennextjs/cloudflare": "^1.20.6",
 		"@stripe/react-stripe-js": "^6.8.2",
 		"@stripe/stripe-js": "^9.15.0",
 		"@thor-commerce/better-auth-thor": "^0.2.0",
