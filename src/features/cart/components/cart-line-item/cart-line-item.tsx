@@ -28,12 +28,15 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 			return acc;
 		}, 0) ?? 0;
 
-	const effectiveUnitPriceCentAmount =
+	const discountedLinePriceCentAmount =
 		(line.unitPrice.discountedPrice
 			? line.unitPrice.discountedPrice.value.centAmount
-			: line.unitPrice.value.centAmount) - (lineDiscounts || 0);
+			: line.unitPrice.value.centAmount) *
+			line.quantity -
+		lineDiscounts;
 
-	const isDiscounted = originalPrice.centAmount !== effectiveUnitPriceCentAmount;
+	const originalLinePriceCentAmount = originalPrice.centAmount * line.quantity;
+	const isDiscounted = originalLinePriceCentAmount !== discountedLinePriceCentAmount;
 
 	return (
 		<li className={s.cartLineItem}>
@@ -81,7 +84,7 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 										maximumFractionDigits: 2,
 										money: {
 											...originalPrice,
-											centAmount: originalPrice.centAmount * line.quantity,
+											centAmount: originalLinePriceCentAmount,
 										},
 									})}
 								</span>
@@ -90,7 +93,10 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 								{formatMoney({
 									minimumFractionDigits: 0,
 									maximumFractionDigits: 2,
-									money: line.total,
+									money: {
+										...line.total,
+										centAmount: discountedLinePriceCentAmount,
+									},
 								})}
 							</span>
 						</div>

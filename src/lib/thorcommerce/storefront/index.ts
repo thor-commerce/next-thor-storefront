@@ -3,11 +3,11 @@
 import { getCartIdFromCookies, saveCartIdToCookie } from "@/features/cart/utils";
 import { auth } from "@/lib/auth";
 import { getRequestContext } from "@/lib/request-context";
-import { CartCompleteDocument, CartCompleteMutationVariables, CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CartShippingLinesSetDocument, CartShippingLinesSetMutationVariables, CartState, CartUpdateDocument, CartUpdateMutationVariables, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, OrderDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { CartCompleteDocument, CartCompleteMutationVariables, CartCreateDocument, CartCreateMutationVariables, CartDocument, CartLineItemsAddDocument, CartLineItemsRemoveDocument, CartLineItemsUpdateDocument, CartPaymentSessionInitializeDocument, CartReplicateDocument, CartShippingLinesSetDocument, CartShippingLinesSetMutationVariables, CartState, CartUpdateDocument, CartUpdateMutationVariables, CategoriesDocument, CategoryListDocument, CategoryListQueryVariables, CheckoutCartDocument, CollectionListDocument, CollectionListQueryVariables, CollectionsDocument, CurrentCustomerDocument, CustomerActivateDocument, CustomerActivateMutationVariables, CustomerRegisterDocument, CustomerResetPasswordDocument, CustomerResetPasswordMutationVariables, CustomerResetPasswordTokenDocument, CustomerResetPasswordTokenMutationVariables, HomePageDocument, OrderDocument, PaymentGatewaysDocument, ProductDetailDocument, ProductListDocument, ProductListQueryVariables, ReplicationStrategy, TypedDocumentString } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import type { CartAddressInput, CartFragment, CurrentCustomerQuery } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import { getStorefrontGraphqlEndpoint } from "@/lib/thorcommerce/storefront/endpoint";
 import { removeEdgesAndNodes } from "@/lib/thorcommerce/utils";
 import { headers } from "next/headers";
-
-const endpoint = `https://api.thorcommerce.io/${process.env.THOR_PROJECT}/storefront/graphql`;
 
 type StorefrontApiError = {
     message?: string;
@@ -43,7 +43,7 @@ export async function storefrontFetch<TData, TVariables>({
     });
 
 
-    const response = await fetch(endpoint, {
+    const response = await fetch(getStorefrontGraphqlEndpoint(), {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -289,18 +289,165 @@ export const customerPasswordReset = async (variables: CustomerResetPasswordMuta
     return data.customerPasswordReset;
 }
 
+type CustomerAddress = NonNullable<
+    NonNullable<CurrentCustomerQuery["customer"]>["defaultShippingAddress"]
+>;
 
+type CartAddressStateQuery = {
+    cart?: {
+        shippingAddress?: { address1?: string | null } | null;
+    } | null;
+};
+
+const CART_ADDRESS_STATE_QUERY = new TypedDocumentString<
+    CartAddressStateQuery,
+    { id: string }
+>(`
+    query CartAddressState($id: ID!) {
+        cart(id: $id) {
+            shippingAddress {
+                address1
+            }
+        }
+    }
+`);
+
+const mapCustomerAddress = (
+    address: CustomerAddress | null | undefined,
+    email: string | null | undefined,
+): CartAddressInput | undefined => {
+    if (!address) {
+        return undefined;
+    }
+
+    return {
+        firstName: address.firstName ?? undefined,
+        lastName: address.lastName ?? undefined,
+        company: address.company ?? undefined,
+        address1: address.address1 ?? undefined,
+        address2: address.address2 ?? undefined,
+        city: address.city ?? undefined,
+        postalCode: address.postalCode ?? undefined,
+        state: address.state ?? undefined,
+        countryCode: address.countryCode ?? undefined,
+        phone: address.phone ?? undefined,
+        email: email ?? undefined,
+    };
+};
+
+const getCustomerCartDefaults = async () => {
+    const session = await auth.api.getSession({ headers: await headers() });
+
+    if (!session) {
+        return {};
+    }
+
+    const data = await storefrontFetch({ query: CurrentCustomerDocument });
+    const customer = data.customer;
+
+    if (!customer) {
+        throw new Error("The authenticated session did not resolve a Thor customer");
+    }
+
+    const firstAddress = customer.addresses.edges?.[0]?.node;
+    const shippingAddress = customer.defaultShippingAddress ?? firstAddress;
+    const billingAddress = customer.defaultBillingAddress ?? shippingAddress;
+
+    return {
+        customerId: customer.id,
+        customerEmail: customer.email ?? undefined,
+        shippingAddress: mapCustomerAddress(shippingAddress, customer.email),
+        billingAddress: mapCustomerAddress(billingAddress, customer.email),
+    };
+};
 
 const createCart = async (variables: CartCreateMutationVariables) => {
+    const customerDefaults = await getCustomerCartDefaults();
     const res = await storefrontFetch({
         query: CartCreateDocument,
-        variables: variables
+        variables: {
+            input: {
+                ...variables.input,
+                ...customerDefaults,
+            },
+        },
     });
 
     if (res.cartCreate.cart?.id) {
         await saveCartIdToCookie(res.cartCreate.cart.id);
     }
     return res;
+};
+
+const attachCustomerToCart = async (
+    cart: CartFragment,
+    context: Awaited<ReturnType<typeof getRequestContext>>,
+) => {
+    const customerDefaults = await getCustomerCartDefaults();
+    const customerChanged = Boolean(
+        customerDefaults.customerId && cart.customerId !== customerDefaults.customerId,
+    );
+    let needsShippingAddress = Boolean(customerDefaults.shippingAddress && customerChanged);
+
+    if (customerDefaults.shippingAddress && !customerChanged) {
+        const addressState = await storefrontFetch({
+            query: CART_ADDRESS_STATE_QUERY,
+            variables: { id: cart.id },
+        });
+        needsShippingAddress = !addressState.cart?.shippingAddress?.address1;
+    }
+
+    if (!customerDefaults.customerId || (!customerChanged && !needsShippingAddress)) {
+        return cart;
+    }
+
+    const updateResult = await storefrontFetch({
+        query: CartUpdateDocument,
+        variables: {
+            input: {
+                cartId: cart.id,
+                customerId: customerDefaults.customerId,
+                customerEmail: customerDefaults.customerEmail,
+                shippingAddress: needsShippingAddress
+                    ? customerDefaults.shippingAddress
+                    : undefined,
+                billingAddress: customerChanged
+                    ? customerDefaults.billingAddress
+                    : undefined,
+            },
+        },
+    });
+    const customerCart = updateResult.cartUpdate.cart;
+
+    if (!customerCart || updateResult.cartUpdate.errors?.length) {
+        throw new Error("Unable to attach the authenticated customer to the cart");
+    }
+
+    if (!customerChanged || customerCart.lineItemsQuantity === 0) {
+        return customerCart;
+    }
+
+    // Replication resolves every line again using the customer groups now stored on
+    // the cart. This prevents hosted checkout from discovering a price change.
+    const replicateResult = await storefrontFetch({
+        query: CartReplicateDocument,
+        variables: {
+            input: {
+                cartId: customerCart.id,
+                currency: context.currency,
+                storeId: context.store,
+                strategy: ReplicationStrategy.SkipUnavailable,
+            },
+        },
+    });
+    const repricedCart = replicateResult.cartReplicate.cart;
+
+    if (!repricedCart) {
+        throw new Error("Unable to reprice the cart for the authenticated customer");
+    }
+
+    await saveCartIdToCookie(repricedCart.id);
+    return repricedCart;
 };
 
 
@@ -331,12 +478,16 @@ export async function findOrCreateCart() {
     const cart = response.cart?.state === CartState.Ordered ? null : response.cart;
 
     // If the cart is not found (e.g., it was cleared from the backend), create a new one. This ensures the user always has a cart to work with.
-    return cart || (await createCart({
-        input: {
-            currency: context.currency,
-            storeId: context.store
-        }
-    })).cartCreate?.cart;
+    if (!cart) {
+        return (await createCart({
+            input: {
+                currency: context.currency,
+                storeId: context.store
+            }
+        })).cartCreate?.cart;
+    }
+
+    return attachCustomerToCart(cart, context);
 }
 
 export async function getCart() {

@@ -83,3 +83,19 @@ export async function removeLineItem(prevState: unknown, lineItemId: string) {
 		return "Error removing item from cart";
 	}
 }
+
+export async function prepareCheckout() {
+	try {
+		const cart = await findOrCreateCart();
+
+		if (!cart || cart.lineItemsQuantity === 0) {
+			return { error: "Your cart is empty." };
+		}
+
+		updateTag(CACHE_TAGS.cart);
+		return { checkoutUrl: cart.checkoutUrl };
+	} catch (error) {
+		console.error("Error preparing hosted checkout", error);
+		return { error: "Unable to prepare checkout. Please try again." };
+	}
+}
