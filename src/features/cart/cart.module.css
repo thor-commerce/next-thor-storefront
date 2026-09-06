@@ -253,6 +253,12 @@
 	min-height: 3.125rem;
 }
 
+.checkoutError {
+	margin: 0;
+	font-size: var(--text-sm);
+	color: var(--invalid-color);
+}
+
 .emptyState {
 	display: grid;
 	gap: var(--spacing-s);

@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { thorAuthPlugin } from "@thor-commerce/better-auth-thor";
 import { customSession } from "better-auth/plugins";
 import { nextCookies } from "better-auth/next-js";
+import { getStorefrontAuthGraphqlEndpoint } from "@/lib/thorcommerce/storefront/endpoint";
 
 export const auth = betterAuth({
   account: {
@@ -23,7 +24,7 @@ export const auth = betterAuth({
 
   plugins: [
     thorAuthPlugin({
-      apiEndpoint: `https://api.thorcommerce.io/${process.env.THOR_PROJECT}/storefront/graphql`,
+      apiEndpoint: getStorefrontAuthGraphqlEndpoint(),
       refreshThresholdMinutes: 5
     }),
     customSession(async ({ user, session }) => {

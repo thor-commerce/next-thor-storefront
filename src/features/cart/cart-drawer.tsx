@@ -8,23 +8,41 @@ import { formatMoney } from "@/utils/money";
 import clsx from "clsx";
 import { XIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Dialog, DialogTrigger, Heading, Modal, ModalOverlay, Pressable } from "react-aria-components";
 import CartLineItem from "./components/cart-line-item/cart-line-item";
 import s from "./cart.module.css";
 import { useCart } from "@/features/cart/cart-context";
 import IconButton from "@/components/icon-button/icon-button";
+import { prepareCheckout } from "@/features/cart/actions";
 
 export default function CartDrawer() {
 	const { cart } = useCart();
 	const quantityRef = useRef(cart?.lineItemsQuantity ?? 0);
 	const [isOpen, setOpen] = useState(false);
+	const [checkoutError, setCheckoutError] = useState<string | null>(null);
+	const [isCheckoutPending, startCheckoutTransition] = useTransition();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const search = searchParams.toString();
+	console.log(cart);
 
 	const hasItems = Boolean(cart?.lineItemsQuantity && cart.lineItemsQuantity > 0);
 	const lines = mapEdgesToItems(cart?.lineItems) ?? [];
+
+	const handleCheckout = () => {
+		setCheckoutError(null);
+		startCheckoutTransition(async () => {
+			const result = await prepareCheckout();
+
+			if (!result.checkoutUrl) {
+				setCheckoutError(result.error ?? "Unable to prepare checkout.");
+				return;
+			}
+
+			window.location.assign(getHostedCheckoutUrl(result.checkoutUrl));
+		});
+	};
 
 	useEffect(() => {
 		if (
@@ -144,14 +162,14 @@ export default function CartDrawer() {
 										</div>
 									</div>
 									<Button
-										as={"a"}
-										href={cart.checkoutUrl}
-										onClick={() => setOpen(false)}
+										type="button"
+										onClick={handleCheckout}
+										loading={isCheckoutPending}
 										className={s.drawerCheckoutButton}
-										disabled
 									>
 										Checkout
 									</Button>
+									{checkoutError ? <p className={s.checkoutError}>{checkoutError}</p> : null}
 								</footer>
 							</>
 						) : (
@@ -173,4 +191,15 @@ export default function CartDrawer() {
 			</ModalOverlay>
 		</DialogTrigger>
 	);
+}
+
+function getHostedCheckoutUrl(checkoutUrl: string) {
+	const checkoutOrigin = process.env.NEXT_PUBLIC_THOR_CHECKOUT_ORIGIN;
+
+	if (!checkoutOrigin) {
+		return checkoutUrl;
+	}
+
+	const generatedUrl = new URL(checkoutUrl);
+	return `${checkoutOrigin.replace(/\/$/, "")}${generatedUrl.pathname}${generatedUrl.search}`;
 }

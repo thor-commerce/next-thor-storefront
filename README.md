@@ -1,145 +1,254 @@
 # Thor Commerce Next.js Storefront
 
-A Thor Commerce storefront built with Next.js 16, React 19, Server Components, Server Actions, and typed GraphQL operations. The project is a practical starter for product discovery, cart, checkout, customer auth, and country-aware storefront routing against the Thor Commerce Storefront API.
+**A modern, type-safe headless ecommerce starter built with Thor Commerce, Next.js 16, React 19, TypeScript, and GraphQL.**
 
-## What's Included
+[![GitHub stars](https://img.shields.io/github/stars/thor-commerce/next-thor-storefront?style=social)](https://github.com/thor-commerce/next-thor-storefront/stargazers)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![GraphQL](https://img.shields.io/badge/GraphQL-typed-E10098?logo=graphql&logoColor=white)](https://graphql.org/)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-ready-F38020?logo=cloudflare&logoColor=white)](https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/)
 
-- Country-prefixed routing under `src/app/[countryCode]` with automatic redirect and market context in `src/proxy.ts`.
-- Typed Storefront API operations generated from colocated `.graphql` files in `src/lib/thorcommerce/storefront`.
-- Server-side GraphQL access through `storefrontFetch`, with request context for store and currency headers.
-- Product, category, collection, cart, checkout, order, account, and home page flows.
-- Better Auth integration with `@thor-commerce/better-auth-thor` for customer sessions.
-- Reusable UI components with CSS Modules and shared commerce utilities.
+[Use this template](https://github.com/new?template_name=next-thor-storefront&template_owner=thor-commerce) · [Thor Commerce](https://thorcommerce.io/) · [Developer documentation](https://docs.thorcommerce.io/) · [Storefront API](https://docs.thorcommerce.io/api/storefront-graphql)
 
-## Prerequisites
+This repository is a reference storefront for [Thor Commerce](https://thorcommerce.io/), the unified commerce platform for B2B, DTC, and hybrid business models. It demonstrates real customer-facing commerce flows—from product discovery and market-aware pricing to cart, checkout, payments, orders, and customer accounts—using the Next.js App Router.
 
-- Node.js 20+
-- [pnpm](https://pnpm.io/)
-- A Thor Commerce project ID with Storefront API access
+Use it as a starting point for a custom storefront, as an integration reference for the Thor Storefront GraphQL API, or as a working example of server-first commerce architecture in Next.js.
 
-## Quick Start
+## Why this storefront
 
-1. Install dependencies:
+- **Commerce primitives included.** Catalog, variants, collections, categories, availability, pricing, discounts, cart, shipping, checkout, payments, orders, and accounts are already connected.
+- **Server-first and type-safe.** React Server Components and Server Actions call typed GraphQL documents without exposing storefront credentials to the browser.
+- **Built for customization.** Features are grouped by domain, styling uses local CSS Modules, and generated API types remain separate from handwritten application code.
+- **Market-aware by design.** Country-prefixed routes resolve store and currency context before catalog or cart operations run.
+- **Deployable to the edge.** OpenNext and Wrangler configuration is included for Cloudflare Workers with R2-backed incremental caching.
 
-   ```bash
-   pnpm install
-   ```
+## Features
 
-2. Copy the environment template:
+| Area | Included |
+| --- | --- |
+| Catalog | Product listings, product details, variants, categories, collections, sorting, faceted filters, and availability |
+| Pricing | Store- and currency-aware prices, product discounts, cart discounts, and formatted money values |
+| Cart | Cookie-backed persistence, quantity updates, line removal, availability checks, discount display, and cart totals |
+| Checkout | Payment gateway selection, customer details, shipping methods, order summary, and order completion |
+| Payments | Stripe Payment Element, wallets supported by Stripe, and manual payment gateways |
+| Customer accounts | Registration, login, logout, password reset, customer sessions, and customer-aware pricing |
+| Markets | Country-prefixed routing with store and currency context injected at the request boundary |
+| Media | Responsive product images backed by Thor Commerce media URLs and image transformations |
+| UI | React Aria components, responsive layouts, loading states, skeletons, drawers, and accessible controls |
+| Deployment | Next.js production builds plus OpenNext configuration for Cloudflare Workers and R2 |
 
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Update `.env` with your Thor Commerce project and auth secrets:
-
-   ```bash
-   THOR_PROJECT="[your-project-id]"
-   THOR_STOREFRONT_API_KEY="[your-storefront-api-key]"
-   BETTER_AUTH_SECRET="[openssl rand -base64 32]"
-   BETTER_AUTH_URL="http://localhost:3000"
-   NEXT_SERVER_ACTIONS_ENCRYPTION_KEY="[openssl rand -base64 32]"
-   ```
-
-4. Generate typed GraphQL artifacts:
-
-   ```bash
-   pnpm codegen
-   ```
-
-5. Start the development server:
-
-   ```bash
-   pnpm dev
-   ```
-
-6. Open `http://localhost:3000`. Requests are redirected to a country-prefixed route, such as `/dk`.
-
-## Environment Variables
-
-- `THOR_PROJECT` - Thor Commerce project ID used to build Storefront API requests.
-- `THOR_STOREFRONT_API_KEY` - Server-side API key sent to the Thor Storefront API.
-- `BETTER_AUTH_SECRET` - secret used by Better Auth.
-- `BETTER_AUTH_URL` - base URL for Better Auth callbacks and cookies.
-- `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` - encryption key for Server Actions, required for Cloudflare Workers deployments.
-
-Keep local values in `.env`. Do not commit real project IDs or secrets.
-
-## Scripts
-
-- `pnpm dev` - run the Next.js development server.
-- `pnpm build` - create a production build.
-- `pnpm start` - serve the production build.
-- `pnpm lint` - run ESLint.
-- `pnpm lint:fix` - run ESLint and apply automatic fixes.
-- `pnpm codegen` - generate TypeScript types and typed documents from Storefront GraphQL operations.
-- `pnpm cf-typegen` - generate Cloudflare environment types with Wrangler.
-
-## Project Structure
+## Architecture
 
 ```text
-src/
-  app/
-    [countryCode]/
-      (main)/                 # Storefront pages: home, products, categories, collections, account
-      (checkout)/             # Checkout and order pages
-    api/auth/[...all]/        # Better Auth route handler
-  components/                 # Shared UI primitives and commerce components
-  features/
-    account/                  # Customer login and account actions
-    cart/                     # Cart drawer, context, actions, and helpers
-    checkout/                 # Checkout form, schema, actions, and order utilities
-    categories/               # Category page UI
-    collections/              # Collection page UI
-    home/                     # Home page UI
-    navbar/                   # Navigation shell
-    products/                 # Product listing and detail UI
-  lib/
-    auth.ts                   # Better Auth configuration
-    request-context.ts        # Store and currency context from request headers
-    thorcommerce/
-      config.ts               # Country, currency, and store configuration
-      const.ts                # Thor headers, cookies, and defaults
-      storefront/             # GraphQL documents, generated types, and API helpers
-  utils/                      # Shared formatting, maps, countries, and price helpers
-  proxy.ts                    # Country routing and market header injection
+Browser
+  ↓
+Next.js routes, React Server Components, and Server Actions
+  ↓
+Country, store, currency, cart, and customer context
+  ↓
+Typed GraphQL operations through storefrontFetch
+  ↓
+https://api.thorcommerce.io/{THOR_PROJECT}/storefront/graphql
+  ↓
+Thor Commerce catalog, pricing, cart, checkout, and customer services
 ```
 
-## Thor Commerce Integration
+The browser receives rendered UI and invokes Server Actions. Storefront credentials and authenticated API calls stay on the server. GraphQL operations are authored in `.graphql` files and compiled into typed TypeScript documents with GraphQL Code Generator.
 
-Storefront requests are centralized in `src/lib/thorcommerce/storefront/index.ts`. The helper posts typed GraphQL documents to:
+## Quick start
+
+### Prerequisites
+
+- Node.js 20.9 or newer
+- [pnpm](https://pnpm.io/)
+- A Thor Commerce project with Storefront API access
+
+### 1. Create your storefront
+
+Start with the GitHub template or clone the repository:
+
+```bash
+git clone git@github.com:thor-commerce/next-thor-storefront.git
+cd next-thor-storefront
+pnpm install
+```
+
+### 2. Configure the environment
+
+```bash
+cp .env.example .env
+```
+
+Add your Thor project and application secrets to `.env`:
+
+```bash
+THOR_PROJECT="your-project-id"
+THOR_STOREFRONT_API_KEY="your-storefront-api-key"
+BETTER_AUTH_SECRET="generate-with-openssl-rand-base64-32"
+BETTER_AUTH_URL="http://localhost:3000"
+NEXT_SERVER_ACTIONS_ENCRYPTION_KEY="generate-with-openssl-rand-base64-32"
+```
+
+Keep secrets in local environment files or your deployment platform's secret store. Never commit real credentials.
+
+### 3. Generate the GraphQL client
+
+```bash
+pnpm codegen
+```
+
+### 4. Run the storefront
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). The middleware redirects the request to a country-prefixed market route such as `/dk`.
+
+## Configuration
+
+### Environment variables
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `THOR_PROJECT` | Yes | Project ID used in the Thor Storefront GraphQL endpoint |
+| `THOR_STOREFRONT_API_KEY` | Yes | Server-side credential sent with Storefront API requests |
+| `BETTER_AUTH_SECRET` | Yes | Secret used to sign Better Auth state and sessions |
+| `BETTER_AUTH_URL` | Yes | Base URL for authentication callbacks and cookies |
+| `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` | Production | Stable encryption key for Server Actions across deployments |
+
+### Markets, stores, and currencies
+
+Edit `src/lib/thorcommerce/config.ts` to configure:
+
+- supported country codes;
+- the default country;
+- Thor store IDs;
+- supported currencies; and
+- the mapping between markets, stores, and currencies.
+
+`src/middleware.ts` resolves the country from the URL or the Cloudflare `CF-IPCountry` header, redirects invalid or missing market prefixes, and injects `X-Thor-Store` and `X-Thor-Currency` into the request.
+
+## Working with the Thor Storefront API
+
+Application requests are centralized in `src/lib/thorcommerce/storefront/index.ts` and sent to the project-specific endpoint:
 
 ```text
 https://api.thorcommerce.io/${THOR_PROJECT}/storefront/graphql
 ```
 
-`src/proxy.ts` resolves the country from the URL or `CF-IPCountry`, redirects missing or invalid country prefixes, and injects `X-Thor-Store` and `X-Thor-Currency` headers. Server code reads those headers through `getRequestContext()`.
+GraphQL source files live under `src/lib/thorcommerce/storefront`:
 
-Country and market behavior is configured in `src/lib/thorcommerce/config.ts`. Update `COUNTRIES`, `STORE`, `CURRENCY`, and `DEFAULT_COUNTRY` when adapting the storefront to a real market setup.
+```text
+fragments/     Shared product, price, availability, cart, and money selections
+queries/       Catalog, cart, checkout, order, and customer reads
+mutations/     Cart, checkout, and customer writes
+generated/     Generated TypeScript types and typed document strings
+```
 
-## Working With GraphQL
+After changing a query, mutation, or fragment, regenerate the client:
 
-- GraphQL operations live in `src/lib/thorcommerce/storefront/**/*.graphql`.
-- Generated types are written to `src/lib/thorcommerce/storefront/generated/types.generated.ts`.
-- GraphQL Code Generator is configured in `.graphqlrc.ts`.
+```bash
+pnpm codegen
+```
 
-Run `pnpm codegen` after changing GraphQL documents so TypeScript stays in sync with the Storefront API schema.
+Do not edit `generated/types.generated.ts` manually. Update the GraphQL document and run code generation instead.
 
-## Auth
+## Repository guide
 
-Customer auth is configured in `src/lib/auth.ts` with Better Auth and `@thor-commerce/better-auth-thor`. The API route is mounted at `src/app/api/auth/[...all]/route.ts`.
+This map is intended for contributors, maintainers, and AI coding agents working in the repository.
 
-Set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` before using login or account flows locally.
+| If you want to change… | Start here |
+| --- | --- |
+| Product queries and product pages | `src/lib/thorcommerce/storefront/queries/products.graphql` and `src/features/products` |
+| Categories and collections | `src/features/categories`, `src/features/collections`, and their GraphQL queries |
+| Cart behavior | `src/features/cart` and `src/lib/thorcommerce/storefront/mutations/cart.graphql` |
+| Checkout steps and validation | `src/features/checkout` and `src/lib/thorcommerce/storefront/queries/checkout.graphql` |
+| Customer authentication | `src/lib/auth.ts`, `src/features/account`, and `src/app/api/auth/[...all]` |
+| Country, store, or currency behavior | `src/lib/thorcommerce/config.ts`, `src/lib/request-context.ts`, and `src/middleware.ts` |
+| Storefront API transport | `src/lib/thorcommerce/storefront/index.ts` and `endpoint.ts` |
+| Shared visual components | `src/components` |
+| Cloudflare deployment | `open-next.config.ts`, `wrangler.jsonc`, and `public/_headers` |
 
-## Deployment Notes
+Important repository conventions:
 
-- Provide all required environment variables in the deployment environment.
-- `src/proxy.ts` reads `CF-IPCountry` for country detection, which is available on Cloudflare. Adapt that header lookup if your host provides a different country signal.
-- Run `pnpm codegen` before building when GraphQL operations or the schema have changed.
-- Run `pnpm build` as the final production verification.
+- Treat `.graphql` documents as the source of truth for Storefront API selections.
+- Keep API keys and customer session tokens on the server.
+- Reuse the request's store and currency context through the complete cart lifecycle.
+- Re-read the returned cart after mutations because prices, discounts, stock, shipping eligibility, and totals can change together.
+- Keep cart IDs in cookies and resource IDs and cursors opaque.
+- Read `AGENTS.md` before using an AI coding agent; it points to the repository's Thor Commerce API skills.
 
-## Further Reading
+## Project structure
 
+```text
+src/
+  app/
+    [countryCode]/
+      (main)/                 Storefront and customer account routes
+      (checkout)/             Checkout and order routes
+    api/auth/[...all]/        Better Auth route handler
+  components/                 Shared UI primitives and commerce components
+  features/
+    account/                  Login, registration, and account actions
+    cart/                     Cart drawer, context, actions, and line items
+    checkout/                 Customer, delivery, payment, and order flows
+    categories/               Category page UI
+    collections/              Collection page UI
+    home/                     Home page UI
+    navbar/                   Navigation and customer controls
+    products/                 Product listing and product detail UI
+  lib/
+    auth.ts                   Better Auth configuration
+    request-context.ts        Store and currency request context
+    thorcommerce/
+      config.ts               Country, currency, and store configuration
+      storefront/             GraphQL documents, generated types, and API client
+  utils/                      Money, price, map, and responsive utilities
+  middleware.ts               Market routing and request header injection
+```
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| `pnpm dev` | Start the Next.js development server |
+| `pnpm build` | Create a production build |
+| `pnpm start` | Serve the production build |
+| `pnpm lint` | Run ESLint |
+| `pnpm lint:fix` | Apply safe ESLint fixes |
+| `pnpm codegen` | Generate TypeScript types and typed GraphQL documents |
+| `pnpm cf-typegen` | Generate Cloudflare environment types |
+| `pnpm preview` | Build and preview the Cloudflare deployment locally |
+| `pnpm deploy` | Build and deploy to Cloudflare |
+| `pnpm upload` | Build and upload a Cloudflare deployment version |
+
+## Deploying to Cloudflare
+
+The repository includes OpenNext and Wrangler configuration for Cloudflare Workers. Before deploying:
+
+1. Add the required environment variables and secrets to Cloudflare.
+2. Create or update the R2 bucket referenced by `wrangler.jsonc`.
+3. Generate GraphQL types and run a production build.
+4. Preview the Worker locally with `pnpm preview`.
+5. Deploy with `pnpm deploy`.
+
+If you deploy elsewhere, adapt the country-detection header in `src/middleware.ts`; `CF-IPCountry` is specific to Cloudflare.
+
+## Contributing
+
+Issues, ideas, and pull requests are welcome. If you find a bug or want to propose a storefront feature, [open an issue](https://github.com/thor-commerce/next-thor-storefront/issues/new) with a clear reproduction or use case.
+
+If this storefront saves you time, [star the repository](https://github.com/thor-commerce/next-thor-storefront) to help other Next.js and headless commerce developers discover Thor Commerce.
+
+## Learn more
+
+- [Thor Commerce](https://thorcommerce.io/)
+- [Thor Commerce developer documentation](https://docs.thorcommerce.io/)
+- [Storefront API overview](https://docs.thorcommerce.io/api/storefront-graphql)
+- [Cart and checkout guide](https://docs.thorcommerce.io/api/storefront-graphql/cart-and-checkout)
+- [Thor Commerce on GitHub](https://github.com/thor-commerce)
 - [Next.js documentation](https://nextjs.org/docs)
 - [Better Auth documentation](https://www.better-auth.com/docs)
-- [Thor Commerce documentation](https://docs.thorcommerce.io/)
+- [GraphQL Code Generator documentation](https://the-guild.dev/graphql/codegen)
