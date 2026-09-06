@@ -25,18 +25,18 @@ Use it as a starting point for a custom storefront, as an integration reference 
 
 ## Features
 
-| Area | Included |
-| --- | --- |
-| Catalog | Product listings, product details, variants, categories, collections, sorting, faceted filters, and availability |
-| Pricing | Store- and currency-aware prices, product discounts, cart discounts, and formatted money values |
-| Cart | Cookie-backed persistence, quantity updates, line removal, availability checks, discount display, and cart totals |
-| Checkout | Payment gateway selection, customer details, shipping methods, order summary, and order completion |
-| Payments | Stripe Payment Element, wallets supported by Stripe, and manual payment gateways |
-| Customer accounts | Registration, login, logout, password reset, customer sessions, and customer-aware pricing |
-| Markets | Country-prefixed routing with store and currency context injected at the request boundary |
-| Media | Responsive product images backed by Thor Commerce media URLs and image transformations |
-| UI | React Aria components, responsive layouts, loading states, skeletons, drawers, and accessible controls |
-| Deployment | Next.js production builds plus OpenNext configuration for Cloudflare Workers and R2 |
+| Area              | Included                                                                                                          |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Catalog           | Product listings, product details, variants, categories, collections, sorting, faceted filters, and availability  |
+| Pricing           | Store- and currency-aware prices, product discounts, cart discounts, and formatted money values                   |
+| Cart              | Cookie-backed persistence, quantity updates, line removal, availability checks, discount display, and cart totals |
+| Checkout          | Payment gateway selection, customer details, shipping methods, order summary, and order completion                |
+| Payments          | Stripe Payment Element, wallets supported by Stripe, and manual payment gateways                                  |
+| Customer accounts | Registration, login, logout, password reset, customer sessions, and customer-aware pricing                        |
+| Markets           | Country-prefixed routing with store and currency context injected at the request boundary                         |
+| Media             | Responsive product images backed by Thor Commerce media URLs and image transformations                            |
+| UI                | React Aria components, responsive layouts, loading states, skeletons, drawers, and accessible controls            |
+| Deployment        | Next.js production builds plus OpenNext configuration for Cloudflare Workers and R2                               |
 
 ## Architecture
 
@@ -110,12 +110,12 @@ Open [http://localhost:3000](http://localhost:3000). The middleware redirects th
 
 ### Environment variables
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `THOR_PROJECT` | Yes | Project ID used in the Thor Storefront GraphQL endpoint |
-| `THOR_STOREFRONT_API_KEY` | Yes | Server-side credential sent with Storefront API requests |
-| `BETTER_AUTH_SECRET` | Yes | Secret used to sign Better Auth state and sessions |
-| `BETTER_AUTH_URL` | Yes | Base URL for authentication callbacks and cookies |
+| Variable                             | Required   | Purpose                                                     |
+| ------------------------------------ | ---------- | ----------------------------------------------------------- |
+| `THOR_PROJECT`                       | Yes        | Project ID used in the Thor Storefront GraphQL endpoint     |
+| `THOR_STOREFRONT_API_KEY`            | Yes        | Server-side credential sent with Storefront API requests    |
+| `BETTER_AUTH_SECRET`                 | Yes        | Secret used to sign Better Auth state and sessions          |
+| `BETTER_AUTH_URL`                    | Yes        | Base URL for authentication callbacks and cookies           |
 | `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` | Production | Stable encryption key for Server Actions across deployments |
 
 ### Markets, stores, and currencies
@@ -159,17 +159,17 @@ Do not edit `generated/types.generated.ts` manually. Update the GraphQL document
 
 This map is intended for contributors, maintainers, and AI coding agents working in the repository.
 
-| If you want to change… | Start here |
-| --- | --- |
-| Product queries and product pages | `src/lib/thorcommerce/storefront/queries/products.graphql` and `src/features/products` |
-| Categories and collections | `src/features/categories`, `src/features/collections`, and their GraphQL queries |
-| Cart behavior | `src/features/cart` and `src/lib/thorcommerce/storefront/mutations/cart.graphql` |
-| Checkout steps and validation | `src/features/checkout` and `src/lib/thorcommerce/storefront/queries/checkout.graphql` |
-| Customer authentication | `src/lib/auth.ts`, `src/features/account`, and `src/app/api/auth/[...all]` |
+| If you want to change…               | Start here                                                                              |
+| ------------------------------------ | --------------------------------------------------------------------------------------- |
+| Product queries and product pages    | `src/lib/thorcommerce/storefront/queries/products.graphql` and `src/features/products`  |
+| Categories and collections           | `src/features/categories`, `src/features/collections`, and their GraphQL queries        |
+| Cart behavior                        | `src/features/cart` and `src/lib/thorcommerce/storefront/mutations/cart.graphql`        |
+| Checkout steps and validation        | `src/features/checkout` and `src/lib/thorcommerce/storefront/queries/checkout.graphql`  |
+| Customer authentication              | `src/lib/auth.ts`, `src/features/account`, and `src/app/api/auth/[...all]`              |
 | Country, store, or currency behavior | `src/lib/thorcommerce/config.ts`, `src/lib/request-context.ts`, and `src/middleware.ts` |
-| Storefront API transport | `src/lib/thorcommerce/storefront/index.ts` and `endpoint.ts` |
-| Shared visual components | `src/components` |
-| Cloudflare deployment | `open-next.config.ts`, `wrangler.jsonc`, and `public/_headers` |
+| Storefront API transport             | `src/lib/thorcommerce/storefront/index.ts` and `endpoint.ts`                            |
+| Shared visual components             | `src/components`                                                                        |
+| Cloudflare deployment                | `open-next.config.ts`, `wrangler.jsonc`, and `public/_headers`                          |
 
 Important repository conventions:
 
@@ -211,18 +211,18 @@ src/
 
 ## Commands
 
-| Command | Description |
-| --- | --- |
-| `pnpm dev` | Start the Next.js development server |
-| `pnpm build` | Create a production build |
-| `pnpm start` | Serve the production build |
-| `pnpm lint` | Run ESLint |
-| `pnpm lint:fix` | Apply safe ESLint fixes |
-| `pnpm codegen` | Generate TypeScript types and typed GraphQL documents |
-| `pnpm cf-typegen` | Generate Cloudflare environment types |
-| `pnpm preview` | Build and preview the Cloudflare deployment locally |
-| `pnpm deploy` | Build and deploy to Cloudflare |
-| `pnpm upload` | Build and upload a Cloudflare deployment version |
+| Command           | Description                                           |
+| ----------------- | ----------------------------------------------------- |
+| `pnpm dev`        | Start the Next.js development server                  |
+| `pnpm build`      | Create a production build                             |
+| `pnpm start`      | Serve the production build                            |
+| `pnpm lint`       | Run ESLint                                            |
+| `pnpm lint:fix`   | Apply safe ESLint fixes                               |
+| `pnpm codegen`    | Generate TypeScript types and typed GraphQL documents |
+| `pnpm cf-typegen` | Generate Cloudflare environment types                 |
+| `pnpm preview`    | Build and preview the Cloudflare deployment locally   |
+| `pnpm deploy`     | Build and deploy to Cloudflare                        |
+| `pnpm upload`     | Build and upload a Cloudflare deployment version      |
 
 ## Deploying to Cloudflare
 
