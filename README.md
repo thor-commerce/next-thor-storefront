@@ -69,7 +69,7 @@ The browser receives rendered UI and invokes Server Actions. Storefront credenti
 Start with the GitHub template or clone the repository:
 
 ```bash
-git clone git@github.com:thor-commerce/next-thor-storefront.git
+git clone https://github.com/thor-commerce/next-thor-storefront.git
 cd next-thor-storefront
 pnpm install
 ```
@@ -235,6 +235,28 @@ The repository includes OpenNext and Wrangler configuration for Cloudflare Worke
 5. Deploy with `pnpm deploy`.
 
 If you deploy elsewhere, adapt the country-detection header in `src/middleware.ts`; `CF-IPCountry` is specific to Cloudflare.
+
+## Frequently asked questions
+
+### What is Thor Commerce?
+
+[Thor Commerce](https://thorcommerce.io/) is a unified commerce platform for B2B, DTC, and hybrid businesses. Its GraphQL APIs connect catalog, pricing, inventory, customers, carts, checkout, and orders while leaving the storefront experience under your control.
+
+### Is this a headless ecommerce starter?
+
+Yes. The repository provides a decoupled Next.js frontend backed by the Thor Commerce Storefront GraphQL API. You can replace the design system, add routes, and extend GraphQL selections without coupling the UI to a monolithic commerce frontend.
+
+### Does it support custom checkout?
+
+Yes. The included checkout covers customer details, delivery, gateway selection, Stripe payments, manual payments, and order completion. Thor can also return a hosted checkout URL when that is a better fit for your implementation.
+
+### Can it run outside Cloudflare?
+
+Yes. The application uses standard Next.js patterns. Cloudflare deployment files are included, but you can deploy to another Next.js-compatible platform after adapting platform-specific country detection and runtime configuration.
+
+### Is it ready for production?
+
+This is a working reference implementation and a strong starting point. Before launch, review your market configuration, authentication settings, payment methods, tax behavior, shipping rules, observability, accessibility, and deployment security for your business requirements.
 
 ## Contributing
 
