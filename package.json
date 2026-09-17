@@ -9,15 +9,11 @@
 		"lint": "eslint",
 		"lint:fix": "eslint --fix",
 		"codegen": "graphql-codegen",
-<<<<<<< HEAD
 		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
 		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
 		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload"
-=======
-		"test": "node --test --experimental-strip-types",
+		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
 		"typecheck": "tsc --noEmit"
->>>>>>> main
 	},
 	"dependencies": {
 		"@gsap/react": "^2.1.2",
