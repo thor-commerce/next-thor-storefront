@@ -6,8 +6,19 @@ import { useFormStatus } from "react-dom";
 import s from "./cart-line-item.module.css";
 import { useActionState } from "react";
 
-export function RemoveItemButton({ lineItemId }: { lineItemId: string }) {
-	const [, formAction] = useActionState(removeLineItem, null);
+export function RemoveItemButton({
+	lineItemId,
+	onError,
+}: {
+	lineItemId: string;
+	onError: (error: string | null) => void;
+}) {
+	const [, formAction] = useActionState(async (state: unknown, id: string) => {
+		onError(null);
+		const error = await removeLineItem(state, id);
+		onError(error ?? null);
+		return error;
+	}, null);
 	const removeItemAction = formAction.bind(null, lineItemId);
 	return (
 		<form action={removeItemAction} className={s.removeForm}>

@@ -54,6 +54,9 @@ mutation CartLineItemsAdd($input: CartLineItemsAddInput!) {
 		}
 		errors {
 			__typename
+			... on UserError {
+				message
+			}
 		}
 	}
 }
@@ -63,6 +66,12 @@ mutation CartLineItemsUpdate($input: CartLineItemsUpdateInput!) {
 		cart {
 			...Cart
 		}
+		errors {
+			__typename
+			... on UserError {
+				message
+			}
+		}
 	}
 }
 
@@ -70,6 +79,12 @@ mutation CartLineItemsRemove($input: CartLineItemsRemoveInput!) {
 	cartLineItemsRemove(input: $input) {
 		cart {
 			...Cart
+		}
+		errors {
+			__typename
+			... on UserError {
+				message
+			}
 		}
 	}
 }

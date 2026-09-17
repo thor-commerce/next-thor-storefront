@@ -1,151 +1,101 @@
-import Button from "@/components/button/button";
+import Image from "next/image";
 import Navigation from "@/components/navigation/navigation";
 import ThorImage from "@/components/thor-image/thor-image";
+import type { HomePageQuery } from "@/lib/thorcommerce/storefront/generated/types.generated";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
 import s from "./homepage.module.css";
-import { HomePageQuery } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import ProductCarousel from "./product-carousel";
 
-type Props = {
-	data: HomePageQuery;
+type Props = { data: HomePageQuery };
+
+type Campaign = { src: string; alt: string; headline?: string };
+const defaultCampaign: Campaign = {
+	src: "/campaign/nordform-everyday.png",
+	alt: "Two people wearing relaxed neutral layers beside a coastal concrete wall",
+};
+const collectionCampaigns: Record<string, Campaign> = {
+	"everyday-essentials": {
+		src: "/campaign/nordform-courtyard.png",
+		alt: "Woman in an ivory tee and charcoal trousers walking through a sunlit courtyard",
+		headline: "Your everyday. Elevated.",
+	},
+	"soft-layers": {
+		src: "/campaign/nordform-soft-layers.png",
+		alt: "Man wearing a moss green knit and beige trousers on a rocky coast",
+		headline: "A softer kind of outside.",
+	},
 };
 
-const formatCount = (count: number, noun: string) =>
-	`${new Intl.NumberFormat("en-US").format(count)} ${count === 1 ? noun : `${noun}s`}`;
-
 export default function Homepage({ data }: Props) {
-	const categories = mapEdgesToItems(data.categories);
 	const collections = mapEdgesToItems(data.collections);
 	const products = mapEdgesToItems(data.products);
 
-	const featuredCategory = categories[0];
-	const totalCategoryProducts = categories.reduce(
-		(sum, category) => sum + Number(category.products.totalCount),
-		0,
-	);
-	const totalCollectionProducts = collections.reduce(
-		(sum, collection) => sum + collection.products.totalCount,
-		0,
-	);
-
 	return (
 		<div className={s.page}>
-			<section className={s.lead}>
-				<div className={s.container}>
-					<div className={s.leadGrid}>
-						<div className={s.leadCopy}>
-							<h1 className={s.leadTitle}>Everyday groceries, seasonal picks, and dinner shortcuts.</h1>
-							<p className={s.leadText}>
-								Shop the core catalog, jump straight into curated collections, or start with the categories
-								people browse most.
-							</p>
-							<div className={s.leadActions}>
-								<Button as={Navigation} href="/products" style={{ width: "auto" }}>
-									Shop all products
-								</Button>
-								<Button
-									as={Navigation}
-									href={featuredCategory ? `/categories/${featuredCategory.slug}` : "/categories"}
-									variant="secondary"
-									className={s.secondaryAction}
-									style={{ width: "auto" }}
-								>
-									Browse categories
-								</Button>
-							</div>
+			<section className={s.hero} aria-labelledby="campaign-title">
+				<Image
+					src="/campaign/nordform-everyday.png"
+					alt="Two people wearing relaxed neutral layers beside a coastal concrete wall"
+					fill
+					preload
+					sizes="100vw"
+					className={s.heroImage}
+				/>
+				<div className={s.heroCopy}>
+					<p className={s.eyebrow}>Nordform / Everyday essentials</p>
+					<h1 id="campaign-title">
+						Made for
+						<br />
+						your everyday.
+					</h1>
+					<p>Easy layers. Quiet colours. Your own way to wear them.</p>
+					<Navigation href="/products" className={s.lightButton}>
+						Shop the collection
+					</Navigation>
+				</div>
+			</section>
 
-							<div className={s.stats}>
-								<div className={s.stat}>
-									<div className={s.statValue}>{formatCount(categories.length, "category")}</div>
-									<div className={s.statLabel}>Main departments</div>
-								</div>
-								<div className={s.stat}>
-									<div className={s.statValue}>{formatCount(collections.length, "collection")}</div>
-									<div className={s.statLabel}>Curated selections</div>
-								</div>
-								<div className={s.stat}>
-									<div className={s.statValue}>{formatCount(products.length, "new arrival")}</div>
-									<div className={s.statLabel}>Freshly added products</div>
-								</div>
-							</div>
-						</div>
-
-						<div className={s.leadAside}>
-							<div className={s.leadImage}>
-								<ThorImage
-									src="/campaign/fish-veg-ice-desktop.png"
-									alt="Featured grocery selection"
+			{collections.length > 0 && (
+				<section className={s.campaignGrid} aria-label="Shop the Nordform collections">
+					{collections.map((collection) => {
+						const campaign = collectionCampaigns[collection.slug] ?? defaultCampaign;
+						return (
+							<article key={collection.id} className={s.campaignCard}>
+								<Image
+									src={campaign.src}
+									alt={campaign.alt}
 									fill
-									priority
-									sizes="(max-width: 1024px) 100vw, 32rem"
-									className={s.leadImageMedia}
+									sizes="(max-width: 640px) 100vw, 50vw"
+									className={s.campaignImage}
 								/>
-							</div>
-							<div className={s.leadNote}>
-								<div className={s.leadNoteTitle}>What’s inside</div>
-								<div className={s.leadNoteText}>
-									{formatCount(totalCategoryProducts, "product")} across the top categories and{" "}
-									{formatCount(totalCollectionProducts, "product")} in the highlighted collections.
+								<div className={s.campaignCopy}>
+									<p>{collection.name}</p>
+									<h2>{campaign.headline ?? collection.name}</h2>
+									<Navigation
+										href={`/collections/${collection.slug}`}
+										className={s.lightButton}
+										aria-label={`Shop ${collection.name}`}
+									>
+										Shop
+									</Navigation>
 								</div>
+							</article>
+						);
+					})}
+				</section>
+			)}
+
+			{products.length > 0 && (
+				<section className={s.section} aria-labelledby="latest-title">
+					<ProductCarousel
+						heading={
+							<div>
+								<p className={s.eyebrow}>The everyday rotation</p>
+								<h2 id="latest-title">Meet your next favourites.</h2>
 							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<section className={s.section}>
-				<div className={s.container}>
-					<div className={s.sectionHeader}>
-						<h2 className={s.sectionTitle}>Shop by category</h2>
-						<Navigation href="/categories" className={s.sectionLink}>
-							See all categories
-						</Navigation>
-					</div>
-					<div className={s.featureGrid}>
-						{categories.map((category) => (
-							<Navigation key={category.id} href={`/categories/${category.slug}`} className={s.featureCard}>
-								<div className={s.featureTitle}>{category.name}</div>
-								<div className={s.featureMeta}>
-									{formatCount(Number(category.products.totalCount), "product")}
-								</div>
-							</Navigation>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<section className={s.section}>
-				<div className={s.container}>
-					<div className={s.sectionHeader}>
-						<h2 className={s.sectionTitle}>Collections</h2>
-						<Navigation href="/collections" className={s.sectionLink}>
-							See all collections
-						</Navigation>
-					</div>
-					<div className={s.featureGrid}>
-						{collections.map((collection) => (
-							<Navigation
-								key={collection.id}
-								href={`/collections/${collection.slug}`}
-								className={s.featureCard}
-							>
-								<div className={s.featureTitle}>{collection.name}</div>
-								<div className={s.featureMeta}>{formatCount(collection.products.totalCount, "product")}</div>
-							</Navigation>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<section className={s.section}>
-				<div className={s.container}>
-					<div className={s.sectionHeader}>
-						<h2 className={s.sectionTitle}>Latest products</h2>
-						<Navigation href="/products" className={s.sectionLink}>
-							See all products
-						</Navigation>
-					</div>
-					<div className={s.productGrid}>
+						}
+					>
 						{products.map((product) => {
 							const price = product.priceRange?.minPrice;
 							return (
@@ -155,21 +105,34 @@ export default function Homepage({ data }: Props) {
 											src={product.heroVariant?.image?.src ?? ""}
 											alt={product.name}
 											fill
-											sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+											sizes="(max-width: 640px) 75vw, (max-width: 1024px) 40vw, 33vw"
 											className={s.productImageMedia}
 										/>
 									</div>
-									<div className={s.productName}>{product.name}</div>
-									{price && (
-										<div className={s.productPrice}>
-											{formatMoney({ money: price.discountedPrice?.value ?? price.value })}
-										</div>
-									)}
+									<h3>{product.name}</h3>
+									{price && <p>{formatMoney({ money: price.discountedPrice?.value ?? price.value })}</p>}
 								</Navigation>
 							);
 						})}
-					</div>
-				</div>
+					</ProductCarousel>
+				</section>
+			)}
+
+			<section className={s.brandStatement} aria-labelledby="brand-title">
+				<p className={s.eyebrow}>Less noise. More you.</p>
+				<h2 id="brand-title">
+					Good days.
+					<br />
+					Great essentials.
+				</h2>
+				<p>
+					From the first layer to the finishing touch.
+					<br />
+					Find the pieces that feel like you.
+				</p>
+				<Navigation href="/products" className={s.darkButton}>
+					Find your favourites
+				</Navigation>
 			</section>
 		</div>
 	);

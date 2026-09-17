@@ -11,7 +11,12 @@ import {
 } from "@/features/checkout/schema";
 import { CheckoutStepEnum } from "@/features/checkout/types";
 import type { CartAddressInput } from "@/lib/thorcommerce/storefront/generated/types.generated";
-import { completeCart, getCheckoutCart, setCartShippingLines, updateCart } from "@/lib/thorcommerce/storefront";
+import {
+	completeCart,
+	getCheckoutCart,
+	setCartShippingLines,
+	updateCart,
+} from "@/lib/thorcommerce/storefront";
 import { updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { removeCartCookie } from "@/features/cart/utils";
@@ -146,7 +151,7 @@ export async function completeCartAction(
 		return { error: "Order could not be completed" };
 	}
 
-	removeCartCookie();
+	await removeCartCookie();
 	updateTag(CACHE_TAGS.cart);
 	redirect(`/${payload.countryCode}/orders/${result.order.id}`);
 }

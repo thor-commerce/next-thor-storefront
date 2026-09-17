@@ -1,5 +1,4 @@
 import ThorImage from "@/components/thor-image/thor-image";
-import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
 import clsx from "clsx";
 
@@ -15,21 +14,13 @@ export default function CheckoutSummaryCartLineItem({ line }: { line: CheckoutSu
 
 	const originalPrice = line.unitPrice.value;
 
-	const lineItemDiscounts =
-		mapEdgesToItems(line.discountApplications).reduce((acc, app) => {
-			const discountedAmount = app.discountedAmount?.centAmount;
-			if (discountedAmount) {
-				return acc + discountedAmount;
-			}
-			return acc;
-		}, 0) ?? 0;
+	const displayTotal = line.taxedPrice
+		? line.taxBehavior === TaxBehavior.Exclusive
+			? line.taxedPrice.net
+			: line.taxedPrice.gross
+		: line.total;
+	const isDiscounted = originalPrice.centAmount * line.quantity > displayTotal.centAmount;
 
-	const effectiveUnitPriceCentAmount =
-		(line.unitPrice.discountedPrice
-			? line.unitPrice.discountedPrice.value.centAmount
-			: line.unitPrice.value.centAmount) - (lineItemDiscounts || 0);
-
-	const isDiscounted = originalPrice.centAmount !== effectiveUnitPriceCentAmount;
 	return (
 		<div role="row" className={s.item}>
 			<div className={s.imageCell} role="cell">
@@ -67,11 +58,7 @@ export default function CheckoutSummaryCartLineItem({ line }: { line: CheckoutSu
 					{formatMoney({
 						minimumFractionDigits: 0,
 						maximumFractionDigits: 2,
-						money: line.taxedPrice
-							? line.taxBehavior === TaxBehavior.Exclusive
-								? line.taxedPrice.net
-								: line.taxedPrice.gross
-							: line.total,
+						money: displayTotal,
 					})}
 				</span>
 			</div>

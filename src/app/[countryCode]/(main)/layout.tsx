@@ -1,4 +1,6 @@
+import s from "./layout.module.css";
 import { CartProvider } from "@/features/cart/cart-context";
+import Footer from "@/features/footer/footer";
 import Navbar from "@/features/navbar/navbar";
 import { getCart } from "@/lib/thorcommerce/storefront";
 
@@ -14,8 +16,11 @@ export default async function RootLayout({
 	const cart = getCart();
 	return (
 		<CartProvider cartPromise={cart}>
-			<Navbar />
-			{children}
+			<div className={s.page}>
+				<Navbar />
+				<main className={s.content}>{children}</main>
+				<Footer />
+			</div>
 		</CartProvider>
 	);
 }

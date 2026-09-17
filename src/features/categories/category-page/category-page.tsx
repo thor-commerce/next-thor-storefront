@@ -14,9 +14,19 @@ type Props = {
 	breadcrumbs?: { label: string; href: string }[];
 	facets: FacetFragment[];
 	currency: string;
+	pageInfo: { hasNextPage: boolean; endCursor?: string | null };
 };
 
-export default function CategoryPage({ name, products, breadcrumbs, facets, totalCount, sortValue, currency }: Props) {
+export default function CategoryPage({
+	name,
+	products,
+	breadcrumbs,
+	facets,
+	totalCount,
+	sortValue,
+	currency,
+	pageInfo,
+}: Props) {
 	return (
 		<>
 			<ProductList
@@ -34,6 +44,7 @@ export default function CategoryPage({ name, products, breadcrumbs, facets, tota
 				facets={facets}
 				totalCount={totalCount}
 				currency={currency}
+				pageInfo={pageInfo}
 			/>
 		</>
 	);

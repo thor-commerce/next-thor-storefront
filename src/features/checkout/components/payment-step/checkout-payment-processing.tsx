@@ -3,6 +3,7 @@
 import Spinner from "@/components/spinner/spinner";
 import { completeCartAction } from "@/features/checkout/actions";
 import type { CheckoutCart } from "@/features/checkout/types";
+import { unstable_rethrow } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { useEffect, useState } from "react";
 import s from "./checkout-payment-step.module.css";
@@ -78,7 +79,10 @@ export default function CheckoutPaymentProcessing({
 			setError(result?.error ?? "Order could not be completed");
 		}
 
-		void processPayment();
+		void processPayment().catch((error: unknown) => {
+			unstable_rethrow(error);
+			if (isMounted) setError("We could not check your payment. Refresh this page to try again.");
+		});
 
 		return () => {
 			isMounted = false;

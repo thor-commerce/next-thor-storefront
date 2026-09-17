@@ -10,7 +10,7 @@
 	color: inherit;
 	vertical-align: baseline;
 	text-decoration: none;
-	background-color: rgb(255, 255, 255);
+	background-color: var(--color-surface);
 	font-size: 13px;
 }
 

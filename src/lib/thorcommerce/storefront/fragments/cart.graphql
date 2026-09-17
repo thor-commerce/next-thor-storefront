@@ -1,9 +1,22 @@
 fragment Cart on Cart {
 	id
+	currency
+	store {
+		id
+	}
+	priceChannel {
+		id
+	}
 	customerId
 	state
 	shippingAddress {
 		countryCode
+	}
+	shippingLines {
+		id
+		total {
+			...Money
+		}
 	}
 	checkoutUrl
 	lineItemsQuantity

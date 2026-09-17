@@ -4,18 +4,22 @@ import clsx from "clsx";
 type Props = {} & React.ComponentProps<typeof Image>;
 
 const imageLoader = ({ src, width, quality }: ImageLoaderProps) => {
-	return `${src}?width=${width}&quality=${quality || 75}&format=webp`;
+	const [path, query] = src.split("?", 2);
+	const params = new URLSearchParams(query);
+	params.set("width", String(width));
+	params.set("quality", String(quality ?? 75));
+	params.set("format", "webp");
+	return `${path}?${params}`;
 };
 
-export default function ThorImage({ ...props }: Props) {
+export default function ThorImage({ alt, ...props }: Props) {
 	//if src is empty return a missing image placeholder
 	if (!props.src) {
 		return (
-			<div className={clsx(props.className)}>
-				<span className="text-gray-500">No Image</span>
+			<div className={clsx(props.className)} role="img" aria-label={alt || "No image"}>
+				<span>No Image</span>
 			</div>
 		);
 	}
-	// eslint-disable-next-line jsx-a11y/alt-text
-	return <Image loader={imageLoader} {...props} />;
+	return <Image alt={alt} loader={imageLoader} {...props} />;
 }

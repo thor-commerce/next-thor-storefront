@@ -1,11 +1,11 @@
-query HomePage($storeId: ID!, $currency: String!) {
+query HomePage($storeId: ID!, $currency: String!, $priceChannel: ID) {
 	categories(first: 6) {
 		edges {
 			node {
 				id
 				name
 				slug
-				products(storeId: $storeId, priceCurrency: $currency) {
+				products(storeId: $storeId, priceCurrency: $currency, priceChannelId: $priceChannel) {
 					totalCount
 				}
 			}
@@ -17,13 +17,20 @@ query HomePage($storeId: ID!, $currency: String!) {
 				id
 				name
 				slug
-				products(first: 0, storeId: $storeId, priceCurrency: $currency) {
+				products(first: 0, storeId: $storeId, priceCurrency: $currency, priceChannelId: $priceChannel) {
 					totalCount
 				}
 			}
 		}
 	}
-	products(first: 8, sortKey: ID, sortDirection: DESC, storeId: $storeId, priceCurrency: $currency) {
+	products(
+		first: 8
+		sortKey: ID
+		sortDirection: DESC
+		storeId: $storeId
+		priceCurrency: $currency
+		priceChannelId: $priceChannel
+	) {
 		edges {
 			node {
 				id

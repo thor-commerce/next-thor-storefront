@@ -1,18 +1,31 @@
 "use client";
 
 import { TAXONOMY_SORT_OPTIONS } from "@/components/product-list/sort";
-import { ProductListTileFragment } from "@/lib/thorcommerce/storefront/generated/types.generated";
+import type {
+	FacetFragment,
+	ProductListTileFragment,
+} from "@/lib/thorcommerce/storefront/generated/types.generated";
 import ProductList from "@/components/product-list/product-list";
 
 type Props = {
 	sortValue: string;
 	name: string;
 	products: ProductListTileFragment[];
+	facets: FacetFragment[];
 	totalCount: number;
 	currency: string;
+	pageInfo: { hasNextPage: boolean; endCursor?: string | null };
 };
 
-export default function CollectionPage({ name, products, totalCount, sortValue, currency }: Props) {
+export default function CollectionPage({
+	name,
+	products,
+	facets,
+	totalCount,
+	sortValue,
+	currency,
+	pageInfo,
+}: Props) {
 	return (
 		<>
 			<ProductList
@@ -27,9 +40,10 @@ export default function CollectionPage({ name, products, totalCount, sortValue, 
 						label: option.label,
 					})),
 				}}
-				facets={[]}
+				facets={facets}
 				totalCount={totalCount}
 				currency={currency}
+				pageInfo={pageInfo}
 			/>
 		</>
 	);

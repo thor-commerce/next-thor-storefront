@@ -20,7 +20,7 @@ export default function StripeElementsProvider({
 	const paymentSession = cart.paymentSession;
 	const paymentGateway = paymentSession?.paymentGateway;
 
-	if (!paymentSession?.clientSecret) {
+	if (paymentSession?.__typename !== "StripePaymentSession" || !paymentSession.clientSecret) {
 		throw new Error("Stripe payment session is missing a client secret");
 	}
 

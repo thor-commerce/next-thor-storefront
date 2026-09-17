@@ -8,7 +8,7 @@
 	list-style: none;
 	display: flex;
 	flex-direction: column;
-	padding: 18px 0;
+	padding: 24px 0;
 	width: 100%;
 
 	&:not(:last-child) {
@@ -27,21 +27,22 @@
 	padding-right: 0;
 	margin: 0;
 	img {
-		background: var(--product-tile-bg);
+		background: var(--color-surface-muted);
 	}
 }
 
 .thumbnailWrapper {
-	aspect-ratio: 1 / 1;
+	aspect-ratio: 4 / 5;
 	position: relative;
 	overflow: hidden;
-	border-radius: 16px;
-	background: var(--product-tile-bg);
-	box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.04);
+	border-radius: 4px;
+	background: var(--color-surface-muted);
 }
 
 .thumbnailWrapper img {
 	border-radius: inherit;
+	object-fit: contain;
+	padding: 6px;
 }
 
 .productInfo {
@@ -85,6 +86,7 @@
 	gap: 4px;
 	min-width: 72px;
 	padding-top: 1px;
+	font-variant-numeric: tabular-nums;
 	text-align: right;
 	white-space: nowrap;
 }
@@ -98,7 +100,8 @@
 	padding-top: 1px;
 
 	.total {
-		line-height: 1;
+		order: -1;
+		line-height: 1.4;
 	}
 }
 
@@ -111,7 +114,7 @@
 
 .total {
 	font-size: 0.9375rem;
-	font-weight: var(--font-weight-semibold);
+	font-weight: 500;
 }
 
 .lineItemControls {
@@ -127,8 +130,8 @@
 	cursor: pointer;
 	display: inline-grid;
 	place-items: center;
-	width: 28px;
-	height: 28px;
+	width: 40px;
+	height: 40px;
 	padding: 0;
 	border-radius: 999rem;
 	color: var(--text-muted);
@@ -208,7 +211,7 @@
 	display: flex;
 	width: fit-content;
 	border: 1px solid var(--color-border-strong);
-	border-radius: 10px;
+	border-radius: 999px;
 	overflow: hidden;
 
 	button {
@@ -217,8 +220,8 @@
 		justify-content: center;
 		cursor: pointer;
 		padding: 6px;
-		width: 30px;
-		height: 30px;
+		width: 40px;
+		height: 40px;
 		background: none;
 		border: none;
 		color: var(--foreground);
@@ -285,4 +288,27 @@
 	.linePriceStacked {
 		min-width: 72px;
 	}
+}
+
+.quantityControls button:focus-visible,
+.removeItemButton:focus-visible {
+	outline: 2px solid #111;
+	outline-offset: -3px;
+}
+.priceColumn {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-end;
+	justify-content: space-between;
+	align-self: stretch;
+	flex-shrink: 0;
+}
+.priceColumn .removeItemButton {
+	margin: -10px -10px 0 0;
+}
+
+.error {
+	margin-top: 12px;
+	font-size: 0.875rem;
+	color: var(--text-error, #b42318);
 }

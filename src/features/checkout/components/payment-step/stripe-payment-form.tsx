@@ -26,48 +26,54 @@ export default function StripePaymentForm({ cart }: StripePaymentFormProps) {
 		setError(undefined);
 		setIsSubmitting(true);
 
-		const { error: submitError } = await elements.submit();
+		try {
+			const { error: submitError } = await elements.submit();
 
-		if (submitError) {
-			setError(submitError.message ?? "Payment details could not be submitted");
-			setIsSubmitting(false);
-			return;
-		}
+			if (submitError) {
+				setError(submitError.message ?? "Payment details could not be submitted");
+				setIsSubmitting(false);
+				return;
+			}
 
-		if (!cart.paymentSession?.clientSecret) {
-			setError("Payment session is missing");
-			setIsSubmitting(false);
-			return;
-		}
+			if (cart.paymentSession?.__typename !== "StripePaymentSession" || !cart.paymentSession.clientSecret) {
+				setError("Payment session is missing");
+				setIsSubmitting(false);
+				return;
+			}
 
-		const returnUrl = buildReturnUrl();
-		const billingAddress = cart.billingAddress ?? cart.shippingAddress;
-		const billingName = [billingAddress?.firstName, billingAddress?.lastName].filter(Boolean).join(" ");
-		const result = await stripe.confirmPayment({
-			clientSecret: cart.paymentSession.clientSecret,
-			elements,
-			confirmParams: {
-				payment_method_data: {
-					billing_details: {
-						address: {
-							city: billingAddress?.city ?? "",
-							country: billingAddress?.countryCode ?? "",
-							line1: billingAddress?.address1 ?? "",
-							line2: billingAddress?.address2 ?? "",
-							postal_code: billingAddress?.postalCode ?? "",
-							state: billingAddress?.state ?? "",
+			const returnUrl = buildReturnUrl();
+			const billingAddress = cart.billingAddress ?? cart.shippingAddress;
+			const billingName = [billingAddress?.firstName, billingAddress?.lastName].filter(Boolean).join(" ");
+			const result = await stripe.confirmPayment({
+				clientSecret: cart.paymentSession.clientSecret,
+				elements,
+				confirmParams: {
+					payment_method_data: {
+						billing_details: {
+							address: {
+								city: billingAddress?.city ?? "",
+								country: billingAddress?.countryCode ?? "",
+								line1: billingAddress?.address1 ?? "",
+								line2: billingAddress?.address2 ?? "",
+								postal_code: billingAddress?.postalCode ?? "",
+								state: billingAddress?.state ?? "",
+							},
+							email: cart.customerEmail ?? "",
+							name: billingName,
+							phone: billingAddress?.phone ?? "",
 						},
-						email: cart.customerEmail ?? "",
-						name: billingName,
-						phone: billingAddress?.phone ?? "",
 					},
+					return_url: returnUrl,
 				},
-				return_url: returnUrl,
-			},
-		});
+			});
 
-		if (result.error) {
-			setError(result.error.message ?? "Payment could not be confirmed");
+			if (result.error) {
+				setError(result.error.message ?? "Payment could not be confirmed");
+				setIsSubmitting(false);
+			}
+		} catch {
+			setError("Payment could not be submitted. Please try again.");
+		} finally {
 			setIsSubmitting(false);
 		}
 	};
@@ -81,7 +87,6 @@ export default function StripePaymentForm({ cart }: StripePaymentFormProps) {
 					},
 					layout: {
 						defaultCollapsed: false,
-						// radios: true,
 						spacedAccordionItems: false,
 						type: "accordion",
 					},
@@ -93,7 +98,11 @@ export default function StripePaymentForm({ cart }: StripePaymentFormProps) {
 				}}
 			/>
 
-			{error && <p className={s.error}>{error}</p>}
+			{error && (
+				<p role="alert" className={s.error}>
+					{error}
+				</p>
+			)}
 
 			<Button disabled={!stripe || !elements || isSubmitting} loading={isSubmitting} type="submit">
 				Pay now

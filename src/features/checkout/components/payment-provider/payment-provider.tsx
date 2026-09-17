@@ -58,6 +58,7 @@ export default async function PaymentProvider({
 		if (error) {
 			throw new Error(error.message);
 		}
+		if (!result.cart?.paymentSession) throw new Error("Payment session could not be initialized.");
 
 		redirect(`/${countryCode}/checkout/${cart.id}?step=${CheckoutStepEnum.Payment}`);
 	}

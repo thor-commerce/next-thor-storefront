@@ -2,7 +2,7 @@
 	color-scheme: light;
 
 	--top-bar-height: 36px;
-	--navbar-height: 48px;
+	--navbar-height: 64px;
 	--border-color: #e8e8e8;
 	--color-success: #007d48;
 
@@ -16,9 +16,9 @@
 
 	/* Typography */
 
-	--font-family-sans: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
-	--font-family-display: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
-	--font-family-mono: "Helvetica Now Text Medium", Helvetica, Arial, sans-serif;
+	--font-family-sans: var(--font-geist-sans), Arial, sans-serif;
+	--font-family-display: var(--font-family-sans);
+	--font-family-mono: var(--font-family-sans);
 
 	--font-weight-regular: 400;
 	--font-weight-medium: 500;
@@ -65,6 +65,7 @@
 
 	/* Layout */
 	--container-max-width: 90rem;
+	--storefront-container-width: 112rem;
 	--page-gutter: clamp(1rem, 3vw, 2rem);
 	--section-space: clamp(3rem, 8vw, 6rem);
 	--content-max-width: 46rem;
@@ -127,11 +128,12 @@
 	--color-white: #ffffff;
 
 	/* Semantic colors */
-	--color-background: #f5f5f5;
-	--color-background-alt: #eef2f7;
-	--color-surface: #ffffff;
-	--color-surface-strong: #ffffff;
-	--color-surface-muted: #f8fafc;
+	--color-background: #fff;
+	--color-background-alt: var(--color-surface-muted);
+	--color-surface: var(--color-background);
+	--color-surface-strong: var(--color-background);
+	--color-surface-muted: #f5f5f5;
+	--color-surface-hover: #e8e8e8;
 	--color-surface-inverse: var(--color-ink-950);
 	--color-border-subtle: #e2e8f0;
 	--color-border-strong: #cbd5e1;
@@ -185,6 +187,7 @@
 }
 
 html {
+	background: var(--background);
 	font-size: 16px;
 	scroll-behavior: smooth;
 	text-size-adjust: 100%;
@@ -195,7 +198,7 @@ body {
 	/* min-height: 100svh; */
 	color: var(--foreground);
 	background: var(--background);
-	font-family: var(--font-geist-sans);
+	font-family: var(--font-family-sans);
 	font-size: var(--text-body-size);
 	line-height: var(--text-body-line-height);
 	-webkit-font-smoothing: antialiased;
@@ -398,4 +401,24 @@ textarea::placeholder {
 	letter-spacing: var(--tracking-wide);
 	text-transform: uppercase;
 	color: var(--color-text-muted);
+}
+
+/* Animate native accordions while preserving their built-in keyboard behavior. */
+@supports (interpolate-size: allow-keywords) {
+	details::details-content {
+		interpolate-size: allow-keywords;
+		block-size: 0;
+		overflow: hidden;
+		transition:
+			block-size 220ms ease,
+			content-visibility 220ms allow-discrete;
+	}
+	details[open]::details-content {
+		block-size: auto;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	details::details-content {
+		transition: none;
+	}
 }

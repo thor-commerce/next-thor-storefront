@@ -36,7 +36,7 @@ Use it as a starting point for a custom storefront, as an integration reference 
 | Markets           | Country-prefixed routing with store and currency context injected at the request boundary                         |
 | Media             | Responsive product images backed by Thor Commerce media URLs and image transformations                            |
 | UI                | React Aria components, responsive layouts, loading states, skeletons, drawers, and accessible controls            |
-| Deployment        | Next.js production builds plus OpenNext configuration for Cloudflare Workers and R2                               |
+| Deployment        | Standard Next.js production builds for a Node.js server or a compatible hosting platform                          |
 
 ## Architecture
 
@@ -60,7 +60,7 @@ The browser receives rendered UI and invokes Server Actions. Storefront credenti
 
 ### Prerequisites
 
-- Node.js 20.9 or newer
+- Node.js 22.18 or newer
 - [pnpm](https://pnpm.io/)
 - A Thor Commerce project with Storefront API access
 
@@ -104,7 +104,31 @@ pnpm codegen
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The middleware redirects the request to a country-prefixed market route such as `/dk`.
+Open [http://localhost:3000](http://localhost:3000). The proxy redirects the request to a country-prefixed market route such as `/dk`.
+
+### Run against the seed project
+
+Use `.env.local` for the sample store configuration, alongside your existing application secrets:
+
+```bash
+THOR_PROJECT="seed"
+THOR_STOREFRONT_API_KEY="your-storefront-api-key"
+NEXT_PUBLIC_THOR_STORE_ID="store_01m2na4m5jfsv94pw1tvvwv0cw"
+THOR_PRICE_CHANNEL_ID="ch_01m2na4kynerzv51b8m029g34e"
+NEXT_PUBLIC_THOR_CURRENCY="DKK"
+NEXT_PUBLIC_THOR_MARKETS="dk,se,de"
+BETTER_AUTH_URL="http://localhost:3000"
+```
+
+Use a Storefront API key, not an Admin API key. The store and price channel IDs above belong to the current `seed` installation; use the corresponding IDs when installing the dataset in another project. Leave `NEXT_PUBLIC_THOR_CHECKOUT_ORIGIN` empty to use Thor's returned hosted checkout URL, including in `.env.development.local`, which takes precedence during development.
+
+```bash
+npm run dev -- --port 3000
+```
+
+The footer market selector showcases Denmark (DKK), Sweden (SEK), and Germany (EUR). Set `NEXT_PUBLIC_THOR_MARKETS` to the allowed country codes. Switching markets preserves the current page, clears currency-dependent price filters, and reprices the cart without dropping items; unavailable items prevent the switch.
+
+Open [the seed catalog](http://localhost:3000/dk/products). Restart the dev server after changing environment variables. Public market settings are embedded at build time for production builds.
 
 ## Configuration
 
@@ -128,7 +152,7 @@ Edit `src/lib/thorcommerce/config.ts` to configure:
 - supported currencies; and
 - the mapping between markets, stores, and currencies.
 
-`src/middleware.ts` resolves the country from the URL or the Cloudflare `CF-IPCountry` header, redirects invalid or missing market prefixes, and injects `X-Thor-Store` and `X-Thor-Currency` into the request.
+`src/proxy.ts` resolves the country from the URL or the Cloudflare `CF-IPCountry` header, redirects invalid or missing market prefixes, and injects `X-Thor-Country`, `X-Thor-Store`, and `X-Thor-Currency` into the request.
 
 ## Working with the Thor Storefront API
 
@@ -159,17 +183,16 @@ Do not edit `generated/types.generated.ts` manually. Update the GraphQL document
 
 This map is intended for contributors, maintainers, and AI coding agents working in the repository.
 
-| If you want to change…               | Start here                                                                              |
-| ------------------------------------ | --------------------------------------------------------------------------------------- |
-| Product queries and product pages    | `src/lib/thorcommerce/storefront/queries/products.graphql` and `src/features/products`  |
-| Categories and collections           | `src/features/categories`, `src/features/collections`, and their GraphQL queries        |
-| Cart behavior                        | `src/features/cart` and `src/lib/thorcommerce/storefront/mutations/cart.graphql`        |
-| Checkout steps and validation        | `src/features/checkout` and `src/lib/thorcommerce/storefront/queries/checkout.graphql`  |
-| Customer authentication              | `src/lib/auth.ts`, `src/features/account`, and `src/app/api/auth/[...all]`              |
-| Country, store, or currency behavior | `src/lib/thorcommerce/config.ts`, `src/lib/request-context.ts`, and `src/middleware.ts` |
-| Storefront API transport             | `src/lib/thorcommerce/storefront/index.ts` and `endpoint.ts`                            |
-| Shared visual components             | `src/components`                                                                        |
-| Cloudflare deployment                | `open-next.config.ts`, `wrangler.jsonc`, and `public/_headers`                          |
+| If you want to change…               | Start here                                                                             |
+| ------------------------------------ | -------------------------------------------------------------------------------------- |
+| Product queries and product pages    | `src/lib/thorcommerce/storefront/queries/products.graphql` and `src/features/products` |
+| Categories and collections           | `src/features/categories`, `src/features/collections`, and their GraphQL queries       |
+| Cart behavior                        | `src/features/cart` and `src/lib/thorcommerce/storefront/mutations/cart.graphql`       |
+| Checkout steps and validation        | `src/features/checkout` and `src/lib/thorcommerce/storefront/queries/checkout.graphql` |
+| Customer authentication              | `src/lib/auth.ts`, `src/features/account`, and `src/app/api/auth/[...all]`             |
+| Country, store, or currency behavior | `src/lib/thorcommerce/config.ts`, `src/lib/request-context.ts`, and `src/proxy.ts`     |
+| Storefront API transport             | `src/lib/thorcommerce/storefront/index.ts` and `endpoint.ts`                           |
+| Shared visual components             | `src/components`                                                                       |
 
 Important repository conventions:
 
@@ -206,35 +229,36 @@ src/
       config.ts               Country, currency, and store configuration
       storefront/             GraphQL documents, generated types, and API client
   utils/                      Money, price, map, and responsive utilities
-  middleware.ts               Market routing and request header injection
+  proxy.ts                    Market routing and request header injection
 ```
 
 ## Commands
 
-| Command           | Description                                           |
-| ----------------- | ----------------------------------------------------- |
-| `pnpm dev`        | Start the Next.js development server                  |
-| `pnpm build`      | Create a production build                             |
-| `pnpm start`      | Serve the production build                            |
-| `pnpm lint`       | Run ESLint                                            |
-| `pnpm lint:fix`   | Apply safe ESLint fixes                               |
-| `pnpm codegen`    | Generate TypeScript types and typed GraphQL documents |
-| `pnpm cf-typegen` | Generate Cloudflare environment types                 |
-| `pnpm preview`    | Build and preview the Cloudflare deployment locally   |
-| `pnpm deploy`     | Build and deploy to Cloudflare                        |
-| `pnpm upload`     | Build and upload a Cloudflare deployment version      |
+| Command          | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| `pnpm dev`       | Start the Next.js development server                  |
+| `pnpm build`     | Create a production build                             |
+| `pnpm start`     | Serve the production build                            |
+| `pnpm test`      | Run the regression tests                              |
+| `pnpm typecheck` | Check TypeScript without building                     |
+| `pnpm lint`      | Run ESLint                                            |
+| `pnpm lint:fix`  | Apply safe ESLint fixes                               |
+| `pnpm codegen`   | Generate TypeScript types and typed GraphQL documents |
 
-## Deploying to Cloudflare
+## Deployment and verification
 
-The repository includes OpenNext and Wrangler configuration for Cloudflare Workers. Before deploying:
+Run the checks before publishing changes:
 
-1. Add the required environment variables and secrets to Cloudflare.
-2. Create or update the R2 bucket referenced by `wrangler.jsonc`.
-3. Generate GraphQL types and run a production build.
-4. Preview the Worker locally with `pnpm preview`.
-5. Deploy with `pnpm deploy`.
+```bash
+pnpm codegen
+pnpm lint
+pnpm test
+pnpm build
+```
 
-If you deploy elsewhere, adapt the country-detection header in `src/middleware.ts`; `CF-IPCountry` is specific to Cloudflare.
+The tests cover product filtering and variant selection. A production build also checks TypeScript and route compilation. Authentication email delivery, payment completion, and shipping rules need integration testing against your own Thor project and payment gateway sandbox.
+
+Deploy using a Next.js-compatible platform or run `pnpm build` followed by `pnpm start` on a Node.js server. Configure the environment variables on that server. No Cloudflare Worker adapter or deployment scripts are included. The optional `CF-IPCountry` hint is used only when the URL and saved market do not select a market.
 
 ## Frequently asked questions
 
@@ -252,7 +276,7 @@ Yes. The included checkout covers customer details, delivery, gateway selection,
 
 ### Can it run outside Cloudflare?
 
-Yes. The application uses standard Next.js patterns. Cloudflare deployment files are included, but you can deploy to another Next.js-compatible platform after adapting platform-specific country detection and runtime configuration.
+Yes. The application uses standard Next.js patterns. Use any Next.js-compatible platform and configure the environment variables listed above.
 
 ### Is it ready for production?
 
