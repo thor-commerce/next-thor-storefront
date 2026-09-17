@@ -1,262 +1,273 @@
 .page {
-	padding-bottom: var(--section-space);
-}
-
-.container {
-	width: min(calc(100% - (var(--page-gutter) * 2)), var(--container-max-width));
-	margin: 0 auto;
-}
-
-.lead {
-	padding: var(--spacing-xl) 0 var(--spacing-2xl);
-	border-bottom: 1px solid var(--color-border-subtle);
-}
-
-.leadGrid {
-	display: grid;
-	grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 28rem);
-	gap: var(--spacing-xl);
-	align-items: stretch;
-}
-
-.leadCopy {
-	display: grid;
-	align-content: start;
-	gap: var(--spacing-l);
-	padding: var(--spacing-l) 0;
-}
-
-.leadTitle {
-	max-width: 16ch;
-	font-size: clamp(2.5rem, 6vw, 4.5rem);
-	line-height: 0.96;
-	letter-spacing: -0.04em;
-	font-weight: 600;
-}
-
-.leadText {
-	max-width: 38rem;
-	color: var(--text-muted);
-	font-size: var(--text-lg);
-	line-height: 1.55;
-}
-
-.leadActions {
-	display: flex;
-	gap: var(--spacing-s);
-	flex-wrap: wrap;
-}
-
-.secondaryAction {
-	color: var(--foreground);
-	background: transparent;
-	border-color: var(--color-border-strong);
-	box-shadow: none;
-}
-
-.secondaryAction:hover:not(:disabled) {
-	background: var(--color-surface-muted);
-	border-color: var(--color-border-strong);
-	box-shadow: none;
-}
-
-.leadAside {
-	display: grid;
-	grid-template-rows: minmax(18rem, 1fr) auto;
-	gap: var(--spacing-s);
-}
-
-.leadImage {
-	position: relative;
-	overflow: hidden;
-	min-height: 24rem;
-	border: 1px solid var(--color-border-subtle);
-	border-radius: var(--radius-l);
-	background: var(--color-surface-muted);
-}
-
-.leadImageMedia {
-	object-fit: cover;
-}
-
-.leadNote {
-	display: grid;
-	gap: var(--spacing-2xs);
-	padding: var(--spacing-m);
-	border: 1px solid var(--color-border-subtle);
-	border-radius: var(--radius-l);
 	background: var(--color-surface);
+	color: #161616;
 }
-
-.leadNoteTitle {
-	font-size: var(--text-sm);
-	font-weight: 600;
-}
-
-.leadNoteText {
-	font-size: var(--text-sm);
-	color: var(--text-muted);
-	line-height: 1.5;
-}
-
-.stats {
+.hero {
+	position: relative;
+	min-height: 38rem;
+	height: min(80svh, 60rem);
+	isolation: isolate;
 	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: var(--spacing-s);
-	margin-top: var(--spacing-xl);
+	align-items: end;
+	text-align: center;
+	background: #62685e;
+	color: #fff;
 }
-
-.stat {
-	padding-top: var(--spacing-m);
-	border-top: 1px solid var(--color-border-subtle);
+.hero::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(transparent 30%, rgb(0 0 0 / 55%));
 }
-
-.statValue {
-	font-size: var(--text-xl);
+.heroImage {
+	object-fit: cover;
+	object-position: center 15%;
+	z-index: -2;
+}
+.heroCopy {
+	padding: 4rem 1.5rem;
+}
+.eyebrow {
+	font-size: 0.8rem;
 	font-weight: 600;
-	line-height: 1.1;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
 }
-
-.statLabel {
-	margin-top: var(--spacing-2xs);
-	font-size: var(--text-sm);
-	color: var(--text-muted);
+.heroCopy h1,
+.brandStatement h2 {
+	font-size: clamp(3.5rem, 6.5vw, 7rem);
+	font-weight: 900;
+	letter-spacing: -0.065em;
+	line-height: 0.92;
+	text-transform: uppercase;
+	margin: 1rem 0 1.5rem;
 }
-
+.heroCopy > p:last-of-type {
+	font-size: 1.1rem;
+}
+.lightButton,
+.darkButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	min-height: 2.9rem;
+	padding: 0.75rem 1.6rem;
+	margin-top: 1.5rem;
+	border-radius: 999px;
+	background: var(--color-surface);
+	color: #161616;
+	font-size: 0.95rem;
+	font-weight: 600;
+}
+.darkButton {
+	background: #161616;
+	color: #fff;
+}
+.lightButton:hover {
+	background: var(--color-surface-hover);
+}
+.darkButton:hover {
+	background: #404040;
+}
 .section {
-	padding: var(--spacing-2xl) 0 0;
+	width: min(calc(100% - 2 * var(--page-gutter)), var(--storefront-container-width));
+	margin-inline: auto;
+	padding-top: clamp(3rem, 5vw, 6rem);
 }
-
 .sectionHeader {
 	display: flex;
 	align-items: end;
 	justify-content: space-between;
-	gap: var(--spacing-m);
-	margin-bottom: var(--spacing-l);
+	gap: 1.5rem;
+	margin-bottom: 1.75rem;
 }
-
-.sectionTitle {
-	font-size: var(--text-2xl);
-	line-height: 1.1;
+.sectionHeader .eyebrow {
+	margin-bottom: 0.65rem;
+	color: #646464;
+}
+.sectionHeader h2 {
+	font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+	letter-spacing: -0.035em;
+	line-height: 1.15;
 	font-weight: 600;
 }
-
-.sectionLink {
-	font-size: var(--text-sm);
-	color: var(--text-muted);
+.carouselViewport {
+	overflow: hidden;
 }
-
-.sectionLink:hover {
-	color: var(--foreground);
+.carouselViewport:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 5px;
 }
-
-.featureGrid {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: var(--spacing-s);
+.carouselActions,
+.carouselControls {
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
 }
-
-.featureCard {
-	display: grid;
-	gap: var(--spacing-s);
-	padding: var(--spacing-l);
-	border: 1px solid var(--color-border-subtle);
-	border-radius: var(--radius-l);
-	background: var(--color-surface);
+.carouselActions {
+	gap: 1.5rem;
 }
-
-.featureTitle {
-	font-size: var(--text-lg);
-	font-weight: 600;
+.carouselButton {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 3rem;
+	height: 3rem;
+	border: 0;
+	border-radius: 50%;
+	background: var(--color-surface-muted);
+	color: #161616;
+	cursor: pointer;
 }
-
-.featureMeta {
-	font-size: var(--text-sm);
-	color: var(--text-muted);
+.carouselButton:hover:not(:disabled) {
+	background: var(--color-surface-hover);
 }
-
+.carouselButton:disabled {
+	color: #b8b8b8;
+	cursor: default;
+}
+.carouselButton:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 3px;
+}
 .productGrid {
-	display: grid;
-	grid-template-columns: repeat(4, minmax(0, 1fr));
-	gap: var(--spacing-l);
+	display: flex;
+	gap: 1rem;
+	touch-action: pan-y pinch-zoom;
 }
-
 .productCard {
-	display: block;
+	min-width: 0;
+	flex: 0 0 calc((100% - 2rem) / 3);
 }
-
+.page .productCard:focus-visible {
+	outline-offset: -2px;
+}
 .productImage {
 	position: relative;
-	aspect-ratio: 1 / 1;
+	aspect-ratio: 4 / 5;
 	overflow: hidden;
-	border: 1px solid var(--color-border-subtle);
-	border-radius: var(--radius-l);
-	background: var(--product-tile-bg);
+	background: var(--color-surface-muted);
 }
-
 .productImageMedia {
-	object-fit: cover;
+	object-fit: contain;
+	padding: 8%;
+	transition: transform 200ms ease;
 }
-
-.productName {
-	margin-top: var(--spacing-m);
-	font-size: var(--text-base);
+.productCard:hover .productImageMedia {
+	transform: scale(1.035);
+}
+.productCard h3 {
+	font-size: 1rem;
+	font-weight: 500;
+	margin: 1rem 0 0.4rem;
+}
+.productCard > p {
+	color: #666;
+	font-size: 0.95rem;
+}
+.campaignGrid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.5rem;
+	padding-top: 0.5rem;
+}
+.campaignCard {
+	position: relative;
+	isolation: isolate;
+	aspect-ratio: 1 / 1;
+	min-height: 32rem;
+	display: flex;
+	align-items: end;
+	background: #697060;
+	color: white;
+}
+.campaignCard::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	background: linear-gradient(transparent 45%, rgb(0 0 0 / 55%));
+}
+.campaignImage {
+	object-fit: cover;
+	object-position: center 30%;
+	z-index: -2;
+}
+.campaignCopy {
+	padding: clamp(1.5rem, 3vw, 3.5rem);
+}
+.campaignCopy > p {
+	font-size: 1rem;
 	font-weight: 500;
 }
-
-.productPrice {
-	margin-top: var(--spacing-2xs);
-	font-size: var(--text-sm);
-	color: var(--text-muted);
+.campaignCopy h2 {
+	font-size: clamp(1.75rem, 3vw, 3rem);
+	line-height: 1.1;
+	letter-spacing: -0.035em;
+	font-weight: 600;
+	margin-top: 0.75rem;
+	max-width: 17ch;
 }
-
+.brandStatement {
+	text-align: center;
+	padding: clamp(4rem, 9vw, 9rem) 1.5rem;
+}
+.brandStatement h2 {
+	font-size: clamp(3rem, 6vw, 6rem);
+}
+.brandStatement > p:last-of-type {
+	line-height: 1.6;
+	color: #666;
+}
+.page a:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 5px;
+}
 @media (max-width: 64rem) {
-	.leadGrid {
-		grid-template-columns: 1fr;
-	}
-
-	.leadAside {
-		grid-template-rows: auto;
-	}
-
-	.leadImage {
-		min-height: 20rem;
-	}
-
-	.productGrid {
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+	.productCard {
+		flex-basis: 40%;
 	}
 }
-
 @media (max-width: 40rem) {
-	.lead {
-		padding: var(--spacing-l) 0 var(--spacing-xl);
+	.hero {
+		min-height: 36rem;
+		height: 78svh;
 	}
-
-	.leadCopy {
-		gap: var(--spacing-m);
-		padding: var(--spacing-s) 0;
+	.heroCopy {
+		padding: 2.5rem 1rem;
 	}
-
-	.leadText {
-		font-size: var(--text-base);
+	.heroCopy h1 {
+		font-size: 3.5rem;
 	}
-
-	.stats {
-		grid-template-columns: 1fr;
+	.heroCopy > p:last-of-type {
+		max-width: 25ch;
+		margin-inline: auto;
+		font-size: 1rem;
 	}
-
 	.sectionHeader {
 		align-items: start;
 		flex-direction: column;
+		gap: 1rem;
 	}
-
-	.featureGrid {
+	.productCard {
+		flex-basis: 76%;
+	}
+	.carouselActions {
+		width: 100%;
+		justify-content: flex-end;
+	}
+	.campaignGrid {
 		grid-template-columns: 1fr;
 	}
-
-	.productGrid {
-		grid-template-columns: 1fr;
-		gap: var(--spacing-m);
+	.campaignCard {
+		aspect-ratio: 4 / 5;
+		min-height: 0;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.productImageMedia {
+		transition: none;
 	}
 }

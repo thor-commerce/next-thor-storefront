@@ -13,8 +13,10 @@ import { Availability, getAvailabilityStatus } from "@/lib/thorcommerce/utils";
 export default function EditItemQuantityButton({
 	item,
 	type,
+	onError,
 }: {
 	item: CartLineItemType;
+	onError: (error: string | null) => void;
 	type: "increase" | "decrease";
 }) {
 	const payload = {
@@ -22,7 +24,12 @@ export default function EditItemQuantityButton({
 		quantity: type === "increase" ? item.quantity + 1 : item.quantity - 1,
 	};
 
-	const [, formAction] = useActionState(updateItemQuantity, null);
+	const [, formAction] = useActionState(async (state: unknown, input: typeof payload) => {
+		onError(null);
+		const error = await updateItemQuantity(state, input);
+		onError(error ?? null);
+		return error;
+	}, null);
 
 	const updateItemQuantityAction = formAction.bind(null, payload);
 

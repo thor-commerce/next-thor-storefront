@@ -3,8 +3,31 @@ fragment ProductListTile on Product {
 	name
 	slug
 	heroVariant {
+		id
 		image {
 			src
+		}
+	}
+	colorVariants: variants(first: 100) {
+		edges {
+			node {
+				id
+				image {
+					src
+				}
+				price {
+					...Price
+				}
+				selectedAttributes {
+					attribute {
+						name
+					}
+					attributeValue {
+						id
+						value
+					}
+				}
+			}
 		}
 	}
 	priceRange {

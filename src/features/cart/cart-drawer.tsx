@@ -1,62 +1,59 @@
 "use client";
 
 import Button from "@/components/button/button";
-import ShoppingCart from "@/components/icons/shopping-cart";
+import headerIcon from "@/components/icon-button/header-icon.module.css";
 import Navigation from "@/components/navigation/navigation";
 import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
 import clsx from "clsx";
-import { XIcon } from "lucide-react";
+import { ShoppingBag, XIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
-import { Dialog, DialogTrigger, Heading, Modal, ModalOverlay, Pressable } from "react-aria-components";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+	Dialog,
+	DialogTrigger,
+	Heading,
+	Modal,
+	ModalOverlay,
+	Button as AriaButton,
+} from "react-aria-components";
 import CartLineItem from "./components/cart-line-item/cart-line-item";
 import s from "./cart.module.css";
 import { useCart } from "@/features/cart/cart-context";
-import IconButton from "@/components/icon-button/icon-button";
-import { prepareCheckout } from "@/features/cart/actions";
 
 export default function CartDrawer() {
 	const { cart } = useCart();
 	const quantityRef = useRef(cart?.lineItemsQuantity ?? 0);
-	const [isOpen, setOpen] = useState(false);
-	const [checkoutError, setCheckoutError] = useState<string | null>(null);
-	const [isCheckoutPending, startCheckoutTransition] = useTransition();
+	const [isOpen, setIsOpen] = useState(false);
+	const setOpen = useCallback((open: boolean) => {
+		if (open) {
+			const root = document.documentElement;
+			const scrollbarWidth = window.innerWidth - root.clientWidth;
+			root.style.setProperty("--cart-scrollbar-width", `${scrollbarWidth}px`);
+		}
+		setIsOpen(open);
+	}, []);
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
 	const search = searchParams.toString();
-	console.log(cart);
+
+	const shippingAmount = cart?.shippingLines.reduce((sum, line) => sum + line.total.centAmount, 0) ?? 0;
+	const shippingLabel = cart?.shippingLines.length
+		? shippingAmount === 0
+			? "Free"
+			: formatMoney({ money: { ...cart.total, centAmount: shippingAmount } })
+		: "Calculated at checkout";
 
 	const hasItems = Boolean(cart?.lineItemsQuantity && cart.lineItemsQuantity > 0);
 	const lines = mapEdgesToItems(cart?.lineItems) ?? [];
 
-	const handleCheckout = () => {
-		setCheckoutError(null);
-		startCheckoutTransition(async () => {
-			const result = await prepareCheckout();
-
-			if (!result.checkoutUrl) {
-				setCheckoutError(result.error ?? "Unable to prepare checkout.");
-				return;
-			}
-
-			window.location.assign(getHostedCheckoutUrl(result.checkoutUrl));
-		});
-	};
-
 	useEffect(() => {
-		if (
-			cart?.lineItemsQuantity &&
-			cart?.lineItemsQuantity !== quantityRef.current &&
-			cart?.lineItemsQuantity > 0
-		) {
-			if (!isOpen) {
-				// eslint-disable-next-line react-hooks/set-state-in-effect
-				setOpen(true);
-			}
-			quantityRef.current = cart?.lineItemsQuantity;
+		const quantity = cart?.lineItemsQuantity ?? 0;
+		if (quantity > quantityRef.current && !isOpen) {
+			setOpen(true);
 		}
-	}, [isOpen, cart?.lineItemsQuantity, quantityRef]);
+		quantityRef.current = quantity;
+	}, [isOpen, cart?.lineItemsQuantity, quantityRef, setOpen]);
 
 	useEffect(() => {
 		const timeout = window.setTimeout(() => {
@@ -66,30 +63,19 @@ export default function CartDrawer() {
 		return () => {
 			window.clearTimeout(timeout);
 		};
-	}, [pathname, search]);
+	}, [pathname, search, setOpen]);
 
 	return (
 		<DialogTrigger isOpen={isOpen} onOpenChange={setOpen}>
-			<Pressable>
-				<IconButton
-					aria-label="Open cart"
-					icon={
-						<>
-							<ShoppingCart />
-							{hasItems ? (
-								<span className={clsx(s.cartCount)}>
-									<span className={s.number}>
-										{cart!.lineItemsQuantity > 9 ? "+9" : cart!.lineItemsQuantity}
-									</span>
-								</span>
-							) : null}
-						</>
-					}
-				/>
-			</Pressable>
-			{/* <ShoppingCart /> */}
+			<AriaButton aria-label="Open cart" className={headerIcon.button}>
+				<ShoppingBag size={22} strokeWidth={1.75} aria-hidden="true" />
+				{hasItems && (
+					<span className={s.cartCount}>
+						<span className={s.number}>{cart!.lineItemsQuantity > 9 ? "+9" : cart!.lineItemsQuantity}</span>
+					</span>
+				)}
+			</AriaButton>
 
-			{/* </AriaButton> */}
 			<ModalOverlay
 				isDismissable
 				className={s.overlay}
@@ -156,20 +142,22 @@ export default function CartDrawer() {
 											<span>Subtotal</span>
 											<strong>{formatMoney({ money: cart.subtotal })}</strong>
 										</div>
+										<div className={s.totalRow}>
+											<span>Shipping</span>
+											<strong>{shippingLabel}</strong>
+										</div>
 										<div className={clsx(s.totalRow, s.totalRowStrong)}>
 											<span>Total</span>
 											<strong>{formatMoney({ money: cart.total })}</strong>
 										</div>
 									</div>
 									<Button
-										type="button"
-										onClick={handleCheckout}
-										loading={isCheckoutPending}
+										as="a"
+										href={getHostedCheckoutUrl(cart.checkoutUrl)}
 										className={s.drawerCheckoutButton}
 									>
 										Checkout
 									</Button>
-									{checkoutError ? <p className={s.checkoutError}>{checkoutError}</p> : null}
 								</footer>
 							</>
 						) : (

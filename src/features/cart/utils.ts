@@ -1,15 +1,11 @@
-"use server";
+import "server-only";
 
-import { THOR_CART_COOKIE_NAME } from "@/lib/thorcommerce/config";
+import { THOR_CART_COOKIE_NAME, THOR_CART_COOKIE_MAX_AGE } from "@/lib/thorcommerce/const";
 import { cookies } from "next/headers";
 
 export async function removeCartCookie() {
-	try {
-		const cookieStore = await cookies();
-		cookieStore.set(THOR_CART_COOKIE_NAME, "", { maxAge: -1 });
-	} catch (e) {
-		console.error("Error removing checkout cookie", e);
-	}
+	const cookieStore = await cookies();
+	cookieStore.delete(THOR_CART_COOKIE_NAME);
 }
 
 export async function getCartIdFromCookies() {
@@ -23,6 +19,9 @@ export async function saveCartIdToCookie(cartId: string) {
 	const cookieStore = await cookies();
 	cookieStore.set(THOR_CART_COOKIE_NAME, cartId, {
 		sameSite: "lax",
+		httpOnly: true,
+		path: "/",
+		maxAge: THOR_CART_COOKIE_MAX_AGE,
 		secure: shouldUseHttps,
 	});
 }

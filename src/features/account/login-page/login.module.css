@@ -1,5 +1,5 @@
 .page {
-	width: min(calc(100% - (var(--page-gutter) * 2)), 28rem);
+	width: min(calc(100% - (var(--page-gutter) * 2)), 26rem);
 	margin: 0 auto;
 	padding: clamp(var(--spacing-2xl), 10vw, 6rem) 0 var(--section-space);
 }

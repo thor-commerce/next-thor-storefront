@@ -3,3 +3,11 @@ query Cart($id: ID!) {
 		...Cart
 	}
 }
+
+query CartAddressState($id: ID!) {
+	cart(id: $id) {
+		shippingAddress {
+			address1
+		}
+	}
+}

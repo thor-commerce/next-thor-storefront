@@ -9,9 +9,10 @@ export default async function AllProductsPage({ searchParams }: PageProps<"/[cou
 	const { sort } = resolvedSearchParams;
 	const selectedSort = getProductSort(sort);
 	const { currency } = await getRequestContext();
-	const { products, facets, totalCount } = await getProductList({
+	const { products, facets, totalCount, pageInfo } = await getProductList({
 		sortDirection: selectedSort.sortDirection,
 		sortKey: selectedSort.sortKey,
+		after: typeof resolvedSearchParams.after === "string" ? resolvedSearchParams.after : undefined,
 		query: buildFacetQuery(resolvedSearchParams),
 	});
 
@@ -21,6 +22,7 @@ export default async function AllProductsPage({ searchParams }: PageProps<"/[cou
 			products={products}
 			facets={facets}
 			currency={currency}
+			pageInfo={pageInfo}
 			breadcrumbs={[
 				{ label: "Home", href: "/" },
 				{ label: "All products", href: "/products" },

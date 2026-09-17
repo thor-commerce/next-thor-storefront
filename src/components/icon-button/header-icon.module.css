@@ -1,0 +1,31 @@
+.button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: #161616;
+	cursor: pointer;
+	transition: background-color 160ms ease;
+}
+@media (hover: hover) {
+	.button:hover {
+		background-color: var(--color-surface-hover);
+	}
+}
+.button:focus-visible,
+.button[data-focus-visible] {
+	outline: 2px solid currentColor;
+	outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+	.button {
+		transition: none;
+	}
+}

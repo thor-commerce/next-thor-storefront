@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { resolveMarketRoute } from "./lib/market-routing";
 import { COUNTRIES } from "./lib/thorcommerce/config";
 import {
 	DEFAULT_COUNTRY,
 	THOR_COUNTRY_COOKIE_MAX_AGE,
+	THOR_COUNTRY_HEADER,
 	THOR_COUNTRY_COOKIE_NAME,
 	THOR_CURRENCY_HEADER,
 	THOR_STORE_HEADER,
@@ -29,17 +31,20 @@ export async function proxy(request: NextRequest) {
 	const requestHeaders = new Headers(request.headers);
 
 	// Let static files pass through
-	if (pathname.includes(".")) {
+	if (/\.(?:ico|png|jpe?g|webp|avif|svg|gif|css|js|map|woff2?|ttf|txt|xml)$/i.test(pathname)) {
 		return NextResponse.next({ request: { headers: requestHeaders } });
 	}
 
 	const viewerCountry = request.headers.get("CF-IPCountry")?.toLowerCase() || undefined;
 
-	// Extract a possible country code from the URL: e.g. /dk/products → "dk"
-	const match = pathname.match(/^\/([a-z]{2})(\/.*)?$/i);
-	const pathCountry = match?.[1]?.toLowerCase();
-	const rest = match?.[2] ?? "";
-	const countryCode = getCountryCode([pathCountry, viewerCountry]);
+	const savedCountry = request.cookies.get(THOR_COUNTRY_COOKIE_NAME)?.value;
+	const route = resolveMarketRoute(
+		pathname,
+		COUNTRIES.map((country) => country.code),
+		[savedCountry, viewerCountry],
+		DEFAULT_COUNTRY,
+	);
+	const countryCode = route.country;
 	const country = COUNTRIES.find((c) => c.code.toLowerCase() === countryCode);
 
 	if (!country) {
@@ -48,6 +53,7 @@ export async function proxy(request: NextRequest) {
 	}
 
 	// Set store/currency headers for every downstream request
+	requestHeaders.set(THOR_COUNTRY_HEADER, countryCode);
 	requestHeaders.set(THOR_STORE_HEADER, country.store);
 	requestHeaders.set(THOR_CURRENCY_HEADER, country.currencies[0]);
 
@@ -56,16 +62,13 @@ export async function proxy(request: NextRequest) {
 		value: country.code.toLowerCase(),
 		path: "/",
 		maxAge: THOR_COUNTRY_COOKIE_MAX_AGE,
+		THOR_COUNTRY_HEADER,
 		sameSite: "lax" as const,
 		secure: process.env.NODE_ENV === "production",
 	};
 
-	// If pathCountry is missing or invalid, redirect to one with country prefix
-	const isPathCountryValid = COUNTRIES.some((c) => c.code.toLowerCase() === pathCountry);
-
-	if (!isPathCountryValid) {
-		// Construct the new URL: e.g., /us/products → /dk/products
-		const newUrl = new URL(`/${countryCode}${rest}`, origin);
+	if (route.needsRedirect) {
+		const newUrl = new URL(route.pathname, origin);
 		newUrl.search = searchParams.toString();
 
 		// Use a 307 redirect so the HTTP method is preserved
@@ -79,26 +82,4 @@ export async function proxy(request: NextRequest) {
 	const response = NextResponse.next({ request: { headers: requestHeaders } });
 	response.cookies.set(countryCookieOptions);
 	return response;
-}
-
-/**
- * Determines which country code to use based on the viewer's location and a prioritized list of country codes.
- *
- * The `countryCodes` array represents countries in order of preference (e.g., ["us", "dk"]).
- * The function selects the first valid code that exists in the predefined `COUNTRIES` list.
- * If none of the provided codes are valid, it falls back to the `DEFAULT_COUNTRY`.
- *
- * @param countryCodes - A prioritized list of possible country codes (e.g., ["us", "dk"]).
- * @returns The first valid country code in lowercase, or the default country if none are valid.
- */
-function getCountryCode(countryCodes: (string | undefined)[]): string {
-	if (!countryCodes.length) {
-		return DEFAULT_COUNTRY;
-	}
-
-	const countryCode = countryCodes.find((code) =>
-		COUNTRIES.some((c) => c.code.toLowerCase() === code?.toLowerCase()),
-	);
-
-	return (countryCode ?? DEFAULT_COUNTRY).toLowerCase();
 }

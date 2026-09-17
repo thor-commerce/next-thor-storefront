@@ -19,14 +19,13 @@ export default function RootLayout(props: { children: ReactNode }) {
 		<div className={s.checkoutWrapper}>
 			<nav className={s.navbar}>
 				<Navigation href="/" className={s.link}>
-					<strong style={{ fontWeight: 600 }}>Thor</strong>
-					Mart
+					<strong>NORDFORM</strong>
 				</Navigation>
 				<Navigation href="/" className={s.link}>
 					Continue shopping
 				</Navigation>
 			</nav>
-			{props.children}
+			<main>{props.children}</main>
 		</div>
 	);
 }

@@ -8,7 +8,9 @@
 		"start": "next start",
 		"lint": "eslint",
 		"lint:fix": "eslint --fix",
-		"codegen": "graphql-codegen"
+		"codegen": "graphql-codegen",
+		"test": "node --test --experimental-strip-types",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@gsap/react": "^2.1.2",
@@ -63,5 +65,8 @@
 			"eslint --fix",
 			"git add"
 		]
+	},
+	"engines": {
+		"node": ">=22.18.0"
 	}
 }

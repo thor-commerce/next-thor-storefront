@@ -1,0 +1,67 @@
+.sections {
+	margin-top: 32px;
+	border-top: 1px solid #e5e5e5;
+}
+.section {
+	border-bottom: 1px solid #e5e5e5;
+}
+.summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	padding: 24px 0;
+	cursor: pointer;
+	list-style: none;
+}
+.summary::-webkit-details-marker {
+	display: none;
+}
+.summary h2 {
+	margin: 0;
+	font-size: 20px;
+	line-height: 1.5;
+	font-weight: 500;
+}
+.summary svg {
+	flex-shrink: 0;
+	transition: transform 220ms ease;
+}
+.section[open] > .summary svg {
+	transform: rotate(180deg);
+}
+.summary:focus-visible {
+	outline: 2px solid #111;
+	outline-offset: 4px;
+	border-radius: 2px;
+}
+.content {
+	padding-bottom: 24px;
+	line-height: 1.7;
+	overflow-wrap: anywhere;
+}
+.content p {
+	margin: 0;
+	white-space: pre-line;
+}
+.specifications {
+	margin: 0;
+}
+.specifications div {
+	display: grid;
+	grid-template-columns: minmax(80px, 1fr) minmax(0, 2fr);
+	gap: 16px;
+	padding: 4px 0;
+}
+.specifications dt {
+	color: #666;
+}
+.specifications dd {
+	margin: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.summary svg {
+		transition: none;
+	}
+}

@@ -25,14 +25,20 @@ export default function TopBarAnimator({ children }: Props) {
 		const navbar = el.closest("[data-navbar]") as HTMLElement;
 		if (!navbar) return;
 
-		const height = topBar.offsetHeight;
-		navbar.style.setProperty("--top-bar-offset", `-${height}px`);
-
-		ScrollTrigger.create({
-			start: `${height}px top`,
+		const trigger = ScrollTrigger.create({
+			start: () => `${topBar.offsetHeight}px top`,
 			onEnter: () => navbar.classList.add(s.topBarHidden),
 			onLeaveBack: () => navbar.classList.remove(s.topBarHidden),
 		});
+		const observer = new ResizeObserver(() => {
+			navbar.style.setProperty("--top-bar-offset", `-${topBar.offsetHeight}px`);
+			trigger.refresh();
+		});
+		observer.observe(topBar);
+		return () => {
+			observer.disconnect();
+			navbar.classList.remove(s.topBarHidden);
+		};
 	});
 
 	return <div ref={ref}>{children}</div>;

@@ -16,7 +16,7 @@ type Props = {
 
 const getParamKey = (field: string) => field.toLowerCase();
 
-function parsePriceBounds(facet: FacetFragment): { min: number; max: number } {
+function parsePriceBounds(facet: FacetFragment): { min: number; max: number } | null {
 	const minValue = facet.values.find((v) => v.name === "min")?.count;
 	const maxValue = facet.values.find((v) => v.name === "max")?.count;
 
@@ -30,7 +30,7 @@ function parsePriceBounds(facet: FacetFragment): { min: number; max: number } {
 		return { min: Math.floor(minValue), max: Math.ceil(maxValue) };
 	}
 
-	return { min: 0, max: 10000 };
+	return null;
 }
 
 export default function ProductListFilters({ facets, currency, fractionDigits, idPrefix }: Props) {
@@ -40,6 +40,7 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 	const [, startTransition] = useTransition();
 
 	const pushParams = (params: URLSearchParams) => {
+		params.delete("after");
 		const query = params.toString();
 		startTransition(() => {
 			router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
@@ -79,6 +80,7 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 
 				if (facet.field === FacetField.Price) {
 					const bounds = parsePriceBounds(facet);
+					if (!bounds) return null;
 
 					const rawMin = searchParams.get(PRICE_MIN_PARAM);
 					const rawMax = searchParams.get(PRICE_MAX_PARAM);
@@ -111,7 +113,14 @@ export default function ProductListFilters({ facets, currency, fractionDigits, i
 						currentValues={currentValues}
 						filterOptions={facet.values.map((v) => ({
 							value: v.name,
-							label: v.name,
+							label:
+								facet.field === FacetField.Availability
+									? v.name === "true"
+										? "In stock"
+										: v.name === "false"
+											? "Out of stock"
+											: v.name
+									: v.name,
 							count: v.count,
 						}))}
 						onFilterChange={(values) => updateFilter(facet.queryField, values)}

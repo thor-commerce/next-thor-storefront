@@ -5,9 +5,11 @@ query ProductList(
 	$sortKey: ProductSortKeys!
 	$priceChannel: ID
 	$query: String
+	$after: String
 ) {
 	products(
-		first: 100
+		first: 24
+		after: $after
 		sortDirection: $sortDirection
 		sortKey: $sortKey
 		storeId: $storeId
@@ -35,11 +37,40 @@ query ProductList(
 	}
 }
 
-query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChannel: ID) {
+query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChannel: ID, $after: String) {
 	product(slug: $slug, priceCurrency: $currency, storeId: $store, priceChannelId: $priceChannel) {
 		id
 		name
 		description
+		metafields(namespace: "apparel", keys: ["material", "care"]) {
+			__typename
+			id
+			name
+			... on TextMetafield {
+				value
+			}
+		}
+		attributeAssignments {
+			attribute {
+				id
+				name
+			}
+			values(first: 100) {
+				edges {
+					node {
+						__typename
+						id
+						value
+						... on SwatchAttributeValue {
+							color
+							media {
+								src
+							}
+						}
+					}
+				}
+			}
+		}
 		#A product can be in multiple categories, but for the sake of this demo, we take the deepest level category to build the breadcrumb.
 		categories(first: 1, sortDirection: DESC, sortKey: LEVEL) {
 			edges {
@@ -48,12 +79,33 @@ query ProductDetail($slug: String!, $currency: String, $store: ID!, $priceChanne
 				}
 			}
 		}
-		variants(first: 100) {
+		variants(first: 100, after: $after) {
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
 			edges {
 				node {
 					id
 					name
 					sku
+					selectedAttributes {
+						attribute {
+							id
+							name
+						}
+						attributeValue {
+							__typename
+							id
+							value
+							... on SwatchAttributeValue {
+								color
+								media {
+									src
+								}
+							}
+						}
+					}
 					availability {
 						...Availability
 					}

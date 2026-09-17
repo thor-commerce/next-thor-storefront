@@ -1,37 +1,29 @@
-query Collections($storeId: ID!, $currency: String!) {
-	collections(first: 48) {
-		edges {
-			node {
-				id
-				name
-				slug
-				products(first: 0, storeId: $storeId, priceCurrency: $currency) {
-					totalCount
-				}
-			}
-		}
-	}
-}
-
 query CollectionList(
 	$slug: String!
 	$currency: String!
+	$priceChannel: ID
 	$storeId: ID!
 	$after: String
 	$sortDirection: SortDirection!
 	$sortKey: ProductCollectionSortKeys!
+	$query: String
 ) {
 	collection(slug: $slug) {
 		id
 		name
 		products(
-			first: 15
+			first: 24
 			after: $after
 			sortDirection: $sortDirection
 			sortKey: $sortKey
 			priceCurrency: $currency
+			priceChannelId: $priceChannel
 			storeId: $storeId
+			query: $query
 		) {
+			facets {
+				...Facet
+			}
 			edges {
 				node {
 					id

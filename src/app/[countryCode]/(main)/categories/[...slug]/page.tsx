@@ -20,10 +20,11 @@ export default async function Category({
 		throw new Error("Category slug is required");
 	}
 
-	const { name, products, totalCount, breadcrumbs, facets } = await getCategoryList({
+	const { name, products, totalCount, breadcrumbs, facets, pageInfo } = await getCategoryList({
 		slug: categorySlug.toLowerCase(),
 		sortDirection: selectedSort.sortDirection,
 		sortKey: selectedSort.sortKey,
+		after: typeof resolvedSearchParams.after === "string" ? resolvedSearchParams.after : undefined,
 		query: buildFacetQuery(resolvedSearchParams),
 	});
 	return (
@@ -35,6 +36,7 @@ export default async function Category({
 			breadcrumbs={breadcrumbs}
 			facets={facets}
 			currency={currency}
+			pageInfo={pageInfo}
 		/>
 	);
 }

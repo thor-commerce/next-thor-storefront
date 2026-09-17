@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import DiscountLabelIcon from "@/components/icons/discount-label";
 import Navigation from "@/components/navigation/navigation";
 import ThorImage from "@/components/thor-image/thor-image";
@@ -10,6 +13,7 @@ import EditItemQuantityButton from "./edit-quantity-button";
 import { RemoveItemButton } from "./remove-line-item-button";
 
 export default function CartLineItem({ line }: { line: CartLineItemType }) {
+	const [error, setError] = useState<string | null>(null);
 	const attributesText = line.variant?.selectedAttributes
 		.map((selectedAttr) => selectedAttr.value)
 		.filter(Boolean)
@@ -19,21 +23,7 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 
 	const discountApplications = mapEdgesToItems(line.discountApplications);
 
-	const lineDiscounts =
-		discountApplications?.reduce((acc, app) => {
-			const discountedAmount = app.discountedAmount?.centAmount;
-			if (discountedAmount) {
-				return acc + discountedAmount;
-			}
-			return acc;
-		}, 0) ?? 0;
-
-	const discountedLinePriceCentAmount =
-		(line.unitPrice.discountedPrice
-			? line.unitPrice.discountedPrice.value.centAmount
-			: line.unitPrice.value.centAmount) *
-			line.quantity -
-		lineDiscounts;
+	const discountedLinePriceCentAmount = line.total.centAmount;
 
 	const originalLinePriceCentAmount = originalPrice.centAmount * line.quantity;
 	const isDiscounted = originalLinePriceCentAmount !== discountedLinePriceCentAmount;
@@ -50,7 +40,11 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 					<div className={s.productInfoWrapper}>
 						<div className={s.productDetails}>
 							<div>
-								<Navigation href={`/products/${line.productSlug}`}>{line.productName}</Navigation>
+								<Navigation
+									href={`/products/${line.productSlug}${line.variant?.id ? `?variant=${encodeURIComponent(line.variant.id)}` : ""}`}
+								>
+									{line.productName}
+								</Navigation>
 								<div className={s.attributesText}>{attributesText}</div>
 								{discountApplications.length > 0 && (
 									<div className={s.discountLabelContainer}>
@@ -65,44 +59,51 @@ export default function CartLineItem({ line }: { line: CartLineItemType }) {
 							</div>
 							<div className={s.lineItemControls}>
 								<div className={s.quantityControls}>
-									<EditItemQuantityButton item={line} type="decrease" />
+									<EditItemQuantityButton item={line} onError={setError} type="decrease" />
 									<span className={s.quantity}>{line.quantity}</span>
-									<EditItemQuantityButton item={line} type="increase" />
+									<EditItemQuantityButton item={line} onError={setError} type="increase" />
 								</div>
-								<RemoveItemButton lineItemId={line.id} />
 							</div>
 						</div>
-						<div
-							className={clsx(s.linePrice, {
-								[s.linePriceStacked]: isDiscounted,
-							})}
-						>
-							{isDiscounted && (
-								<span className={clsx(s.subtotal, s.strikeThrough)}>
+						<div className={s.priceColumn}>
+							<RemoveItemButton lineItemId={line.id} onError={setError} />
+							<div
+								className={clsx(s.linePrice, {
+									[s.linePriceStacked]: isDiscounted,
+								})}
+							>
+								{isDiscounted && (
+									<span className={clsx(s.subtotal, s.strikeThrough)}>
+										{formatMoney({
+											minimumFractionDigits: originalPrice.fractionDigits,
+											maximumFractionDigits: originalPrice.fractionDigits,
+											money: {
+												...originalPrice,
+												centAmount: originalLinePriceCentAmount,
+											},
+										})}
+									</span>
+								)}
+								<span className={s.total}>
 									{formatMoney({
-										minimumFractionDigits: 0,
-										maximumFractionDigits: 2,
+										minimumFractionDigits: originalPrice.fractionDigits,
+										maximumFractionDigits: originalPrice.fractionDigits,
 										money: {
-											...originalPrice,
-											centAmount: originalLinePriceCentAmount,
+											...line.total,
+											centAmount: discountedLinePriceCentAmount,
 										},
 									})}
 								</span>
-							)}
-							<span className={s.total}>
-								{formatMoney({
-									minimumFractionDigits: 0,
-									maximumFractionDigits: 2,
-									money: {
-										...line.total,
-										centAmount: discountedLinePriceCentAmount,
-									},
-								})}
-							</span>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			{error && (
+				<p role="alert" className={s.error}>
+					{error}
+				</p>
+			)}
 		</li>
 	);
 }

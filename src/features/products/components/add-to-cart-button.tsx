@@ -14,7 +14,7 @@ interface Props {
 }
 
 function AddToCartButton({ className, selectedVariantId, disabled, outOfStock, unavailable }: Props) {
-	const [, formAction] = useActionState(addItem, null);
+	const [error, formAction] = useActionState(addItem, null);
 	const addItemAction = formAction.bind(null, selectedVariantId);
 
 	return (
@@ -25,6 +25,7 @@ function AddToCartButton({ className, selectedVariantId, disabled, outOfStock, u
 				outOfStock={outOfStock}
 				unavailable={unavailable}
 			/>
+			{error && <p role="alert">{error}</p>}
 		</form>
 	);
 }

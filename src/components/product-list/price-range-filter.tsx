@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
 	Button as AriaButton,
 	Disclosure,
@@ -39,18 +39,13 @@ export default function PriceRangeFilter({
 	fractionDigits = 2,
 	onChange,
 }: PriceRangeFilterProps) {
-	const effectiveMin = currentMin ?? min;
-	const effectiveMax = currentMax ?? max;
-
-	const [optimistic, setOptimistic] = useState<[number, number] | undefined>();
-	const displayValue: [number, number] = optimistic ?? [effectiveMin, effectiveMax];
-
-	useEffect(() => {
-		if (optimistic && optimistic[0] === effectiveMin && optimistic[1] === effectiveMax) {
-			// eslint-disable-next-line react-hooks/set-state-in-effect
-			setOptimistic(undefined);
-		}
-	}, [effectiveMin, effectiveMax, optimistic]);
+	const effectiveMin = Math.max(min, Math.min(currentMin ?? min, max));
+	const effectiveMax = Math.max(effectiveMin, Math.min(currentMax ?? max, max));
+	const sourceKey = `${min}:${max}:${currentMin}:${currentMax}`;
+	const [draft, setDraft] = useState<{ source: string; values: [number, number] }>();
+	if (draft && draft.source !== sourceKey) setDraft(undefined);
+	const displayValue: [number, number] =
+		draft?.source === sourceKey ? draft.values : [effectiveMin, effectiveMax];
 
 	const handleChangeEnd = (value: number | number[]) => {
 		if (!Array.isArray(value) || value.length !== 2) return;
@@ -69,7 +64,7 @@ export default function PriceRangeFilter({
 	const isActive = displayValue[0] !== min || displayValue[1] !== max;
 
 	return (
-		<Disclosure id={id} className={s.filterAccordion} defaultExpanded>
+		<Disclosure id={id} className={s.filterAccordion}>
 			<Heading>
 				<AriaButton slot="trigger" className={s.accordionTrigger}>
 					<span className={s.accordionLabel}>
@@ -84,50 +79,52 @@ export default function PriceRangeFilter({
 				</AriaButton>
 			</Heading>
 			<DisclosurePanel className={s.accordionPanel}>
-				<AriaSlider
-					className={s.priceSlider}
-					minValue={min}
-					maxValue={max}
-					step={step}
-					value={displayValue}
-					onChange={(v) => {
-						if (Array.isArray(v) && v.length === 2) {
-							setOptimistic([v[0], v[1]]);
-						}
-					}}
-					onChangeEnd={handleChangeEnd}
-					aria-label={label}
-				>
-					<SliderOutput className={s.priceSliderOutput}>
-						{({ state }) => `${format(state.values[0])} – ${format(state.values[1])}`}
-					</SliderOutput>
-					<SliderTrack className={s.priceSliderTrack}>
-						{({ state, isDisabled }) => (
-							<>
-								<div className={s.priceSliderRail} data-disabled={isDisabled || undefined} />
-								<div
-									className={s.priceSliderFill}
-									data-disabled={isDisabled || undefined}
-									style={{
-										left: `${state.getThumbPercent(0) * 100}%`,
-										width: `${(state.getThumbPercent(1) - state.getThumbPercent(0)) * 100}%`,
-									}}
-								/>
-								{state.values.map((_, i) => (
-									<SliderThumb
-										key={i}
-										index={i}
-										className={s.priceSliderThumb}
-										aria-label={i === 0 ? "Minimum price" : "Maximum price"}
+				<div className={s.accordionContent}>
+					<AriaSlider
+						className={s.priceSlider}
+						minValue={min}
+						maxValue={max}
+						step={step}
+						value={displayValue}
+						onChange={(v) => {
+							if (Array.isArray(v) && v.length === 2) {
+								setDraft({ source: sourceKey, values: [v[0], v[1]] });
+							}
+						}}
+						onChangeEnd={handleChangeEnd}
+						aria-label={label}
+					>
+						<SliderOutput className={s.priceSliderOutput}>
+							{({ state }) => `${format(state.values[0])} – ${format(state.values[1])}`}
+						</SliderOutput>
+						<SliderTrack className={s.priceSliderTrack}>
+							{({ state, isDisabled }) => (
+								<>
+									<div className={s.priceSliderRail} data-disabled={isDisabled || undefined} />
+									<div
+										className={s.priceSliderFill}
+										data-disabled={isDisabled || undefined}
+										style={{
+											left: `${state.getThumbPercent(0) * 100}%`,
+											width: `${(state.getThumbPercent(1) - state.getThumbPercent(0)) * 100}%`,
+										}}
 									/>
-								))}
-							</>
-						)}
-					</SliderTrack>
-				</AriaSlider>
-				<div className={s.priceSliderBounds} aria-hidden>
-					<span>{format(min)}</span>
-					<span>{format(max)}</span>
+									{state.values.map((_, i) => (
+										<SliderThumb
+											key={i}
+											index={i}
+											className={s.priceSliderThumb}
+											aria-label={i === 0 ? "Minimum price" : "Maximum price"}
+										/>
+									))}
+								</>
+							)}
+						</SliderTrack>
+					</AriaSlider>
+					<div className={s.priceSliderBounds} aria-hidden>
+						<span>{format(min)}</span>
+						<span>{format(max)}</span>
+					</div>
 				</div>
 			</DisclosurePanel>
 		</Disclosure>

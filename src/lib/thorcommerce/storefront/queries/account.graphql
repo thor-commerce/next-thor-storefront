@@ -1,0 +1,67 @@
+query AccountDashboard($after: String) {
+	customer {
+		id
+		firstName
+		lastName
+		email
+		ordersCount
+		defaultShippingAddress {
+			firstName
+			lastName
+			company
+			address1
+			address2
+			postalCode
+			city
+			state
+			countryCode
+			phone
+		}
+		defaultBillingAddress {
+			firstName
+			lastName
+			company
+			address1
+			address2
+			postalCode
+			city
+			state
+			countryCode
+			phone
+		}
+		orders(first: 6, after: $after, sortKey: CREATED_AT, sortDirection: DESC) {
+			nodes {
+				id
+				orderNumber
+				createdAt
+				orderState
+				paymentState
+				shipmentState
+				lineItems(first: 4) {
+					nodes {
+						id
+						productName
+						variantName
+						quantity
+						variant {
+							image {
+								src
+							}
+						}
+					}
+					pageInfo {
+						hasNextPage
+					}
+				}
+				lineItemsQuantity
+				total {
+					...Money
+				}
+			}
+			pageInfo {
+				hasNextPage
+				endCursor
+			}
+		}
+	}
+}

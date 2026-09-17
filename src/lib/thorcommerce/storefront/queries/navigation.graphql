@@ -1,0 +1,20 @@
+query Navigation {
+	categories(first: 100) {
+		edges {
+			node {
+				id
+				name
+				slug
+			}
+		}
+	}
+	collections(first: 48) {
+		edges {
+			node {
+				id
+				name
+				slug
+			}
+		}
+	}
+}

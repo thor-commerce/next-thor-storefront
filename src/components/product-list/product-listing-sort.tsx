@@ -1,6 +1,8 @@
 "use client";
 
-import Select from "@/components/select/select";
+import { Button, Label, ListBox, ListBoxItem, Popover, Select, SelectValue } from "react-aria-components";
+import { Check, ChevronDown } from "lucide-react";
+import s from "./product-list.module.css";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
@@ -23,21 +25,38 @@ export default function ProductListingSort({ value, defaultValue, options }: Pro
 			params.set("sort", nextValue);
 		}
 
+		params.delete("after");
 		const query = params.toString();
 		router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false });
 	};
 
 	return (
 		<Select
-			label="Sort by"
-			name="sort"
-			block
-			value={value}
-			options={options.map((option) => ({
-				value: option.value,
-				label: option.label,
-			}))}
-			onChange={(event) => handleChange(event.target.value)}
-		/>
+			className={s.sort}
+			selectedKey={value}
+			onSelectionChange={(key) => {
+				if (key !== null) handleChange(String(key));
+			}}
+		>
+			<Label>Sort by</Label>
+			<Button className={s.sortTrigger}>
+				<SelectValue />
+				<ChevronDown size={16} aria-hidden />
+			</Button>
+			<Popover className={s.sortPopover} placement="bottom end" offset={8}>
+				<ListBox className={s.sortMenu} items={options}>
+					{(option) => (
+						<ListBoxItem id={option.value} textValue={option.label} className={s.sortOption}>
+							{({ isSelected }) => (
+								<>
+									<span>{option.label}</span>
+									{isSelected && <Check size={16} aria-hidden />}
+								</>
+							)}
+						</ListBoxItem>
+					)}
+				</ListBox>
+			</Popover>
+		</Select>
 	);
 }

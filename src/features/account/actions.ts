@@ -10,15 +10,19 @@ import {
 } from "@/lib/thorcommerce/storefront";
 import { redirect } from "next/navigation";
 
+function textField(formData: FormData, name: string): string {
+	const value = formData.get(name);
+	return typeof value === "string" ? value : "";
+}
+
 export type LoginState = { error?: string; success?: boolean } | null;
 
 export async function login(_currentState: unknown, formData: FormData): Promise<LoginState> {
-	const email = formData.get("email") as string;
-	const password = formData.get("password") as string;
+	const email = textField(formData, "email").trim();
+	const password = textField(formData, "password");
 	const { country } = await getRequestContext();
 
 	try {
-
 		const response = await auth.api.customerSignIn({
 			body: { email, password },
 		});
@@ -34,36 +38,36 @@ export async function login(_currentState: unknown, formData: FormData): Promise
 	return redirect(`/${country.toLowerCase()}/account`);
 }
 
-
 export type RegisterState = { error?: string; success?: boolean; email?: string } | null;
 
 export async function register(_currentState: unknown, formData: FormData): Promise<RegisterState> {
-	const email = formData.get("email") as string;
+	const email = textField(formData, "email").trim();
 
-	const response = await customerRegister(email);
-
-	if (response.errors && response.errors.length > 0) {
-		return { error: "Registration failed. Please try again.", email };
+	if (!email) return { error: "Email is required." };
+	try {
+		const response = await customerRegister(email);
+		if (response.errors?.length) return { error: "Registration failed. Please try again.", email };
+		return { success: true, email };
+	} catch {
+		return { error: "Registration is unavailable. Please try again.", email };
 	}
-
-	return { success: true, email };
 }
 
 export type ActivateState = { error?: string; success?: boolean } | null;
 
 export async function activate(_currentState: unknown, formData: FormData): Promise<ActivateState> {
-	const email = formData.get("email") as string;
-	const token = (formData.get("token") as string)?.trim();
-	const firstName = (formData.get("firstName") as string)?.trim();
-	const lastName = (formData.get("lastName") as string)?.trim();
-	const password = formData.get("password") as string;
-	const confirmPassword = formData.get("confirmPassword") as string;
+	const email = textField(formData, "email").trim();
+	const token = textField(formData, "token").trim();
+	const firstName = textField(formData, "firstName").trim();
+	const lastName = textField(formData, "lastName").trim();
+	const password = textField(formData, "password");
+	const confirmPassword = textField(formData, "confirmPassword");
 
 	if (!token) {
 		return { error: "Activation code is required." };
 	}
 
-	if (password !== confirmPassword) {
+	if (!password || password !== confirmPassword) {
 		return { error: "Passwords do not match." };
 	}
 
@@ -81,21 +85,23 @@ export async function activate(_currentState: unknown, formData: FormData): Prom
 	}
 
 	try {
-		await auth.api.customerSignIn({ body: { email, password } });
-	} catch (err) {
-		console.error(err);
+		const result = await auth.api.customerSignIn({ body: { email, password } });
+		if ("error" in result) return { success: true };
+	} catch {
+		return { success: true };
 	}
 
-	redirect("/account");
+	const { country } = await getRequestContext();
+	redirect(`/${country}/account`);
 }
 
 export type ForgotPasswordState = { error?: string; success?: boolean; email?: string } | null;
 
 export async function requestPasswordReset(
 	_currentState: unknown,
-	formData: FormData
+	formData: FormData,
 ): Promise<ForgotPasswordState> {
-	const email = (formData.get("email") as string)?.trim();
+	const email = textField(formData, "email").trim();
 
 	if (!email) {
 		return { error: "Email is required." };
@@ -119,14 +125,11 @@ export async function requestPasswordReset(
 
 export type ResetPasswordState = { error?: string; success?: boolean } | null;
 
-export async function resetPassword(
-	_currentState: unknown,
-	formData: FormData
-): Promise<ResetPasswordState> {
-	const email = (formData.get("email") as string)?.trim();
-	const token = (formData.get("token") as string)?.trim();
-	const password = formData.get("password") as string;
-	const confirmPassword = formData.get("confirmPassword") as string;
+export async function resetPassword(_currentState: unknown, formData: FormData): Promise<ResetPasswordState> {
+	const email = textField(formData, "email").trim();
+	const token = textField(formData, "token").trim();
+	const password = textField(formData, "password");
+	const confirmPassword = textField(formData, "confirmPassword");
 
 	if (!email) {
 		return { error: "Email is required." };
@@ -136,7 +139,7 @@ export async function resetPassword(
 		return { error: "Reset code is required." };
 	}
 
-	if (password !== confirmPassword) {
+	if (!password || password !== confirmPassword) {
 		return { error: "Passwords do not match." };
 	}
 

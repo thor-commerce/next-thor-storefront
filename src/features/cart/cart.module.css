@@ -93,9 +93,19 @@
 	margin-top: var(--spacing-s);
 }
 
+/* Keep scroll locking and replacement spacing together until the exit animation finishes. */
+:global(html):has(.overlay) {
+	--modal-page-inset: var(--cart-scrollbar-width, 0px);
+	scrollbar-gutter: auto !important;
+	overflow: hidden;
+	padding-right: var(--modal-page-inset);
+}
+
 .overlay {
 	position: fixed;
 	inset: 0;
+	/* Cover the reserved scrollbar gutter without changing the page layout. */
+	width: var(--visual-viewport-width, 100vw);
 	z-index: 9999;
 	background: var(--color-overlay);
 
@@ -109,16 +119,21 @@
 }
 
 .modal {
-	position: fixed;
-	top: var(--spacing-s);
-	right: var(--spacing-s);
-	bottom: var(--spacing-s);
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
 	z-index: 10000;
-	width: min(calc(100vw - (var(--spacing-s) * 2)), 28rem);
-	background: var(--color-surface-strong);
+	width: min(100vw, 32rem);
+	background: var(--color-surface);
+	color: #111;
+	--foreground: #111;
+	--text-muted: #707070;
+	--color-border-subtle: #e5e5e5;
+	--color-border-strong: #d5d5d5;
 	outline: none;
-	border: 1px solid var(--color-border-subtle);
-	border-radius: var(--radius-xl);
+	border: 0;
+	border-radius: 0;
 	box-shadow: var(--shadow-m);
 	overflow: hidden;
 
@@ -136,14 +151,15 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--spacing-m);
-	padding: 1.125rem 1.25rem;
+	padding: 1.25rem 1.5rem;
+	flex-shrink: 0;
 	border-bottom: 1px solid var(--color-border-subtle);
 	background: var(--color-surface);
 
 	h1,
 	h2,
 	h3 {
-		font-size: 1.125rem;
+		font-size: 1.5rem;
 		line-height: var(--leading-snug);
 		letter-spacing: var(--tracking-snug);
 		font-weight: var(--font-weight-semibold);
@@ -169,11 +185,11 @@
 .closeButton {
 	display: grid;
 	place-items: center;
-	inline-size: 2.25rem;
-	block-size: 2.25rem;
+	inline-size: 2.75rem;
+	block-size: 2.75rem;
 	flex-shrink: 0;
 	border: none;
-	border-radius: var(--radius-s);
+	border-radius: 50%;
 	background: transparent;
 	color: var(--text-muted);
 	transition:
@@ -202,30 +218,39 @@
 	flex: 1 1 auto;
 	min-height: 0;
 	overflow: auto;
-	padding: 0 1.25rem;
+	scrollbar-width: none;
+	overscroll-behavior: contain;
+	padding: 0 1.5rem;
+}
+
+.drawerContent::-webkit-scrollbar {
+	display: none;
 }
 
 .drawerLineItems {
 	display: flex;
 	flex-direction: column;
-	margin-inline: -1.25rem;
+	padding: 0;
+	margin: 0;
 }
 
 .drawerLineItems > li {
-	padding-inline: 1.25rem;
+	padding-inline: 0;
 }
 
 .drawerFooter {
 	display: grid;
 	gap: 0.875rem;
-	padding: 1rem 1.25rem 1.25rem;
+	padding: 1.5rem;
+	padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+	flex-shrink: 0;
 	border-top: 1px solid var(--color-border-subtle);
 	background: var(--color-surface);
 }
 
 .totals {
 	display: grid;
-	gap: var(--spacing-xs);
+	gap: 0.5rem;
 }
 
 .totalRow {
@@ -233,16 +258,24 @@
 	align-items: center;
 	justify-content: space-between;
 	gap: var(--spacing-m);
-	font-size: var(--text-base);
+	font-size: 0.875rem;
 	color: var(--text-muted);
 }
 
 .totalRow strong {
 	color: var(--foreground);
-	font-weight: var(--font-weight-semibold);
+	font-weight: 400;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.totalRowStrong strong {
+	font-weight: 600;
 }
 
 .totalRowStrong {
+	font-size: 1rem;
+	font-weight: 600;
 	padding-top: 0.75rem;
 	border-top: 1px solid var(--color-border-subtle);
 	color: var(--foreground);
@@ -250,13 +283,12 @@
 
 .drawerCheckoutButton {
 	width: 100%;
-	min-height: 3.125rem;
-}
-
-.checkoutError {
-	margin: 0;
-	font-size: var(--text-sm);
-	color: var(--invalid-color);
+	min-height: 3.75rem;
+	border-radius: 999px;
+	background: #111;
+	border-color: #111;
+	font-size: 1rem;
+	box-shadow: none;
 }
 
 .emptyState {
@@ -285,15 +317,9 @@
 		gap: clamp(var(--spacing-xl), 3vw, var(--spacing-2xl));
 	}
 
-	.modal {
-		top: var(--spacing-l);
-		right: var(--spacing-l);
-		bottom: var(--spacing-l);
-		width: min(calc(100vw - (var(--spacing-l) * 2)), 30rem);
-	}
-
 	.drawerHeader {
-		padding: 1.125rem 1.25rem;
+		padding: 1.25rem 1.5rem;
+		flex-shrink: 0;
 	}
 }
 
@@ -310,11 +336,39 @@
 @keyframes sheet-slide {
 	from {
 		opacity: 0;
-		transform: translateX(1rem);
+		transform: translateX(100%);
 	}
 
 	to {
 		opacity: 1;
 		transform: translateX(0);
+	}
+}
+
+.drawerCheckoutButton:hover:not(:disabled) {
+	background: #333;
+	border-color: #333;
+	box-shadow: none;
+}
+.closeButton:focus-visible,
+.drawerCheckoutButton:focus-visible {
+	outline: 2px solid #111;
+	outline-offset: 3px;
+}
+@media (max-width: 30rem) {
+	.drawerHeader,
+	.drawerFooter {
+		padding-inline: 1rem;
+	}
+	.drawerContent {
+		padding-inline: 1rem;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.overlay[data-entering],
+	.overlay[data-exiting],
+	.modal[data-entering],
+	.modal[data-exiting] {
+		animation: none;
 	}
 }
