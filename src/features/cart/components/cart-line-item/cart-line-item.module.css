@@ -125,6 +125,7 @@
 }
 
 .removeItemButton {
+	position: relative;
 	background: transparent;
 	border: none;
 	cursor: pointer;
@@ -182,7 +183,9 @@
 	display: flex;
 	-webkit-box-align: center;
 	align-items: center;
+	justify-content: center;
 	position: absolute;
+	inset: 0;
 	margin-inline-end: 0px;
 	font-size: 1em;
 }

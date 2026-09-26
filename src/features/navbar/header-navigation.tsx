@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { Button, Dialog, DialogTrigger, Heading, Modal, ModalOverlay } from "react-aria-components";
-import { Menu, User, X } from "lucide-react";
+import { User } from "lucide-react";
+import MobileNavigation from "./mobile-navigation";
+import SearchDialog from "@/features/search/search-dialog";
 import Navigation from "@/components/navigation/navigation";
 import headerIcon from "@/components/icon-button/header-icon.module.css";
 import s from "./navbar.module.css";
@@ -15,7 +16,6 @@ const shopAll = { id: "all", label: "Shop all products", href: "/products" };
 
 export default function HeaderNavigation({ categories, collections, cart }: Props) {
 	const [active, setActive] = useState<string | null>(null);
-	const [mobileOpen, setMobileOpen] = useState(false);
 	const triggers = useRef(new Map<string, HTMLButtonElement>());
 	const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const sections: Section[] = [
@@ -131,57 +131,17 @@ export default function HeaderNavigation({ categories, collections, cart }: Prop
 					))}
 				</div>
 				<div className={s.actions}>
-					<Navigation href="/account" aria-label="Your account" className={headerIcon.button} onClick={close}>
+					<SearchDialog onOpen={close} categories={categories} />
+					<Navigation
+						href="/account"
+						aria-label="Your account"
+						className={`${headerIcon.button} ${s.accountLink}`}
+						onClick={close}
+					>
 						<User size={22} strokeWidth={1.75} aria-hidden="true" />
 					</Navigation>
 					{cart}
-					<DialogTrigger isOpen={mobileOpen} onOpenChange={setMobileOpen}>
-						<Button className={`${s.iconButton} ${s.mobileTrigger}`} aria-label="Open navigation">
-							<Menu size={24} />
-						</Button>
-						<ModalOverlay isDismissable className={s.mobileOverlay}>
-							<Modal className={s.mobileModal}>
-								<Dialog className={s.mobileDialog}>
-									<div className={s.mobileHeading}>
-										<Heading>NORDFORM</Heading>
-										<Button
-											className={s.iconButton}
-											aria-label="Close navigation"
-											onPress={() => setMobileOpen(false)}
-										>
-											<X />
-										</Button>
-									</div>
-									<nav aria-label="Mobile navigation" className={s.mobileLinks}>
-										<Navigation href="/products" onClick={() => setMobileOpen(false)}>
-											Shop all
-										</Navigation>
-										{sections.map((section) => (
-											<details key={section.id}>
-												<summary>{section.id === "shop" ? "Shop by category" : section.label}</summary>
-												<div>
-													{section.links
-														.filter((link) => link.id !== "all")
-														.map((link) => (
-															<Navigation key={link.id} href={link.href} onClick={() => setMobileOpen(false)}>
-																{link.label}
-															</Navigation>
-														))}
-												</div>
-											</details>
-										))}
-										<Navigation
-											href="/account"
-											className={s.mobileAccount}
-											onClick={() => setMobileOpen(false)}
-										>
-											Your account
-										</Navigation>
-									</nav>
-								</Dialog>
-							</Modal>
-						</ModalOverlay>
-					</DialogTrigger>
+					<MobileNavigation categories={categories} collections={collections} onOpen={close} />
 				</div>
 			</div>
 			{active && <div className={s.backdrop} aria-hidden="true" onPointerDown={close} onMouseEnter={close} />}

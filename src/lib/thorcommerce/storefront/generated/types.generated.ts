@@ -2100,6 +2100,45 @@ export type ProductDetailQuery = {
 	} | null;
 };
 
+export type SearchSuggestionsQueryVariables = Exact<{
+	storeId: string | number;
+	currency: string;
+	priceChannel?: string | number | null | undefined;
+	query: string;
+}>;
+
+export type SearchSuggestionsQuery = {
+	products: {
+		nodes: Array<{
+			id: string;
+			name: string;
+			slug: string;
+			heroVariant: { image: { src: string } | null } | null;
+			variants: { totalCount: number };
+			priceRange: {
+				minPrice: {
+					validFrom: string | null;
+					validUntil: string | null;
+					discountedPrice: {
+						discount: {
+							validFrom: string | null;
+							validUntil: string | null;
+							value:
+								| {
+										__typename: "ProductDiscountAbsoluteValue";
+										value: { centAmount: number; currencyCode: string; fractionDigits: number } | null;
+								  }
+								| { __typename: "ProductDiscountRelativeValue"; factor: number };
+						} | null;
+						value: { centAmount: number; currencyCode: string; fractionDigits: number };
+					} | null;
+					value: { centAmount: number; currencyCode: string; fractionDigits: number };
+				};
+			} | null;
+		}> | null;
+	};
+};
+
 export class TypedDocumentString<TResult, TVariables>
 	extends String
 	implements DocumentTypeDecoration<TResult, TVariables>
@@ -4487,3 +4526,64 @@ fragment Price on Price {
     ...Money
   }
 }`) as unknown as TypedDocumentString<ProductDetailQuery, ProductDetailQueryVariables>;
+export const SearchSuggestionsDocument = new TypedDocumentString(`
+    query SearchSuggestions($storeId: ID!, $currency: String!, $priceChannel: ID, $query: String!) {
+  products(
+    first: 6
+    storeId: $storeId
+    priceCurrency: $currency
+    priceChannelId: $priceChannel
+    query: $query
+  ) {
+    nodes {
+      id
+      name
+      slug
+      heroVariant {
+        image {
+          src
+        }
+      }
+      variants {
+        totalCount
+      }
+      priceRange {
+        minPrice {
+          ...Price
+        }
+      }
+    }
+  }
+}
+    fragment Money on Money {
+  centAmount
+  currencyCode
+  fractionDigits
+}
+fragment Price on Price {
+  validFrom
+  validUntil
+  discountedPrice {
+    discount {
+      validFrom
+      validUntil
+      value {
+        __typename
+        ... on ProductDiscountAbsoluteValue {
+          value {
+            ...Money
+          }
+        }
+        ... on ProductDiscountRelativeValue {
+          factor
+        }
+      }
+    }
+    value {
+      ...Money
+    }
+  }
+  value {
+    ...Money
+  }
+}`) as unknown as TypedDocumentString<SearchSuggestionsQuery, SearchSuggestionsQueryVariables>;

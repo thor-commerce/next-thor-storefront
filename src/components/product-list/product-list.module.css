@@ -215,6 +215,7 @@
 }
 
 .hero {
+	min-width: 0;
 	display: flex;
 	align-items: baseline;
 	gap: 0.65rem;
@@ -339,29 +340,228 @@
 	}
 }
 
-.filterDrawerModal {
-	inset: auto 0 0;
-	top: var(--spacing-l);
-	width: 100%;
-	max-height: calc(100svh - var(--spacing-l));
-	border-radius: 0;
-
-	@media (--bp-sm-up) {
-		top: var(--spacing-s);
-		right: var(--spacing-s);
-		bottom: var(--spacing-s);
-		left: auto;
-		width: min(calc(100vw - (var(--spacing-s) * 2)), 32rem);
-		max-height: none;
-	}
+/* Keep the page and fixed header stable until the exit transition finishes. */
+:global(html):has(.filterOverlay) {
+	--modal-page-inset: var(--filter-scrollbar-width, 0px);
+	scrollbar-gutter: auto !important;
+	overflow: hidden;
+	padding-right: var(--modal-page-inset);
+	scroll-behavior: auto;
 }
-
+.filterOverlay {
+	position: fixed;
+	inset: 0;
+	/* Pin to the viewport edges rather than a JavaScript height measurement. */
+	z-index: 10000;
+	background: #0006;
+	overflow: hidden;
+}
+.filterOverlay[data-entering] {
+	animation: filter-backdrop 240ms ease-out both;
+}
+.filterOverlay[data-exiting] {
+	animation: filter-backdrop 200ms ease-in reverse both;
+}
+.filterDrawerModal {
+	position: absolute;
+	inset: 0 0 0 auto;
+	width: min(360px, 100%);
+	display: flex;
+	background: var(--color-surface);
+	color: #161616;
+	overflow: hidden;
+}
+.filterDrawerModal[data-entering] {
+	animation: filter-slide 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.filterDrawerModal[data-exiting] {
+	animation: filter-slide 200ms ease-in reverse both;
+}
+.filterDialog {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-width: 0;
+	min-height: 0;
+	outline: none;
+}
+.filterDialog :focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 3px;
+}
+.filterDrawerHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-shrink: 0;
+	min-height: 60px;
+	padding: max(10px, env(safe-area-inset-top)) 16px 10px 20px;
+}
+.filterDrawerHeader h2 {
+	font-size: 18px;
+	font-weight: 500;
+	line-height: 1.25;
+}
+.filterClose {
+	display: grid;
+	place-items: center;
+	width: 36px;
+	height: 36px;
+	flex-shrink: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: #f5f5f5;
+	color: inherit;
+	cursor: pointer;
+}
+.filterClose[data-hovered] {
+	background: #e5e5e5;
+}
+.filterClose svg {
+	width: 20px;
+	height: 20px;
+}
 .filterDrawerBody {
 	flex: 1 1 auto;
 	min-height: 0;
 	overflow-y: auto;
 	overscroll-behavior: contain;
-	padding: 0 1.5rem 1.5rem;
+	padding: 0 20px 16px;
+}
+.filterDrawerBody .filterAccordion {
+	border-bottom: 1px solid #e5e5e5;
+	margin: 0;
+}
+.filterDrawerBody .filterAccordion:first-child {
+	border-top: 1px solid #e5e5e5;
+}
+.filterDrawerBody .accordionTrigger {
+	min-height: 48px;
+	padding: 12px 0;
+}
+.filterDrawerBody .accordionLabel {
+	font-size: 15px;
+	font-weight: 500;
+}
+.filterDrawerBody .accordionContent {
+	padding-bottom: 12px;
+}
+.filterDrawerBody .accordionIcon svg {
+	width: 16px;
+	height: 16px;
+}
+.filterDrawerBody .filterOptions {
+	gap: 0;
+}
+.filterDrawerBody .filterOption {
+	min-height: 36px;
+	gap: 10px;
+	font-size: 13px;
+}
+.filterDrawerBody .filterCheckbox {
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	flex-shrink: 0;
+	margin: 0;
+	border: 1px solid #707072;
+	border-radius: 3px;
+	background: white;
+	box-shadow: none;
+}
+.filterDrawerBody .filterCheckbox:checked {
+	border-color: #161616;
+	background: #161616
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 8 2.5 2.5L12 5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+		center / 14px 14px no-repeat;
+}
+.filterDrawerBody .filterCheckbox:focus {
+	box-shadow: none;
+	outline: none;
+}
+.filterDrawerBody .filterCheckbox:focus-visible {
+	outline: 2px solid #707072;
+	outline-offset: 3px;
+}
+.filterDrawerBody .priceSliderThumb {
+	width: 20px;
+	height: 20px;
+	border: 1px solid #161616;
+	background: white;
+	box-shadow: none;
+}
+.filterDrawerBody .priceSliderOutput,
+.filterDrawerBody .priceSliderBounds {
+	font-size: 13px;
+}
+.filterDrawerFooter {
+	display: flex;
+	flex-shrink: 0;
+	gap: 8px;
+	padding: 12px 20px max(12px, env(safe-area-inset-bottom));
+	border-top: 1px solid #e5e5e5;
+}
+.filterClear,
+.filterDone {
+	flex: 1;
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid #ccc;
+	border-radius: 999px;
+	background: white;
+	color: #161616;
+	font: inherit;
+	font-size: 13px;
+	font-weight: 500;
+	cursor: pointer;
+}
+.filterDone {
+	border-color: #161616;
+	background: #161616;
+	color: white;
+}
+.filterClear[data-disabled] {
+	color: #707072;
+	cursor: default;
+}
+.filterClear[data-hovered] {
+	border-color: #161616;
+}
+.filterDone[data-hovered] {
+	background: #393939;
+}
+@keyframes filter-slide {
+	from {
+		transform: translateX(100%);
+	}
+	to {
+		transform: translateX(0);
+	}
+}
+@keyframes filter-backdrop {
+	from {
+		background-color: #0000;
+	}
+	to {
+		background-color: #0006;
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	.filterOverlay[data-entering],
+	.filterOverlay[data-exiting],
+	.filterDrawerModal[data-entering],
+	.filterDrawerModal[data-exiting] {
+		animation: none;
+	}
+}
+@media (forced-colors: active) {
+	.filterDrawerBody .filterCheckbox {
+		appearance: auto;
+	}
+	.filterDrawerBody .filterCheckbox:checked {
+		background-image: none;
+	}
 }
 
 .grid {
@@ -447,6 +647,8 @@
 }
 
 .heading {
+	min-width: 0;
+	overflow-wrap: anywhere;
 	font-size: clamp(1.5rem, 3vw, 2rem);
 	line-height: var(--leading-tight);
 	font-weight: var(--font-weight-semibold);
@@ -487,15 +689,37 @@
 		margin-bottom: 1.25rem;
 	}
 	.toolbar {
-		justify-content: space-between;
+		justify-content: flex-start;
 		gap: 0.5rem;
 	}
 	.sort {
-		gap: 0.25rem;
+		gap: 0;
 		font-size: 0.8125rem;
 	}
+	.sortLabel {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+		white-space: nowrap;
+	}
+	.mobileFilterButton,
 	.sortTrigger {
-		gap: 0.5rem;
+		min-height: 36px;
+		padding: 0 12px;
+		gap: 6px;
+		font-size: 13px;
+		line-height: 1.25;
+		border-color: #e5e5e5;
+	}
+	.mobileFilterButton svg,
+	.sortTrigger svg {
+		width: 16px;
+		height: 16px;
+		flex-shrink: 0;
 	}
 	.grid {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
