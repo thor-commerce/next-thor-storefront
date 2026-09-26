@@ -15,6 +15,7 @@ import MobileFilterDrawer from "@/components/product-list/mobile-filter-drawer";
 
 type Props = {
 	title: string;
+	emptyMessage?: string;
 	products: ProductListTileFragment[];
 	breadcrumbs?: { label: string; href: string }[];
 	sorting: {
@@ -31,6 +32,7 @@ type Props = {
 
 export default function ProductList({
 	title,
+	emptyMessage = "Try adjusting your filters to find something you love.",
 	products,
 	breadcrumbs = [],
 	sorting,
@@ -45,29 +47,35 @@ export default function ProductList({
 	return (
 		<div className={s.page}>
 			<div className={s.wrapper}>
-				<nav className={s.breadcrumbs} aria-label="Breadcrumb">
-					<ol className={s.breadcrumbList}>
-						{breadcrumbs.map((item, i) => {
-							const isActive = i === breadcrumbs.length - 1;
-							return (
-								<li key={item.href} className={s.breadcrumbItem} aria-current={isActive ? "page" : undefined}>
-									{isActive ? (
-										<Text size="body-3" weight={"medium"} className={s.breadcrumbLink}>
-											{item.label}
-										</Text>
-									) : (
-										<Navigation href={item.href} className={s.breadcrumbLink}>
-											<Text size="body-3" weight={"medium"}>
+				{breadcrumbs.length > 0 && (
+					<nav className={s.breadcrumbs} aria-label="Breadcrumb">
+						<ol className={s.breadcrumbList}>
+							{breadcrumbs.map((item, i) => {
+								const isActive = i === breadcrumbs.length - 1;
+								return (
+									<li
+										key={item.href}
+										className={s.breadcrumbItem}
+										aria-current={isActive ? "page" : undefined}
+									>
+										{isActive ? (
+											<Text size="body-3" weight={"medium"} className={s.breadcrumbLink}>
 												{item.label}
 											</Text>
-										</Navigation>
-									)}
-									{!isActive && <ChevronRight size={16} />}
-								</li>
-							);
-						})}
-					</ol>
-				</nav>
+										) : (
+											<Navigation href={item.href} className={s.breadcrumbLink}>
+												<Text size="body-3" weight={"medium"}>
+													{item.label}
+												</Text>
+											</Navigation>
+										)}
+										{!isActive && <ChevronRight size={16} />}
+									</li>
+								);
+							})}
+						</ol>
+					</nav>
+				)}
 				<header className={s.header}>
 					<div className={s.hero}>
 						<h1 className={s.heading}>{title}</h1>
@@ -88,7 +96,7 @@ export default function ProductList({
 						{products.length === 0 && (
 							<div className={s.emptyState}>
 								<h2>No products found</h2>
-								<p>Try adjusting your filters to find something you love.</p>
+								<p>{emptyMessage}</p>
 							</div>
 						)}
 						<ul className={s.grid}>

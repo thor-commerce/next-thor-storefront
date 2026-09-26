@@ -19,24 +19,23 @@
 
 .cartCount {
 	position: absolute;
-	right: -0.15rem;
-	bottom: -0.1rem;
+	right: 2px;
+	bottom: 2px;
 	z-index: 1;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	inline-size: 1.2rem;
-	block-size: 1.2rem;
-	padding-inline: var(--spacing-2xs);
-	border: 2px solid var(--color-surface);
+	min-inline-size: 16px;
+	block-size: 16px;
+	padding-inline: 3px;
+	border: 1px solid var(--color-surface);
 	border-radius: var(--radius-pill);
 	background: var(--color-ink-950);
 	color: var(--color-white);
-	font-size: var(--text-2xs);
+	font-size: 10px;
 	font-weight: var(--font-weight-bold);
 	line-height: 1;
 	letter-spacing: var(--tracking-snug);
-	box-shadow: var(--shadow-xs);
 	pointer-events: none;
 }
 

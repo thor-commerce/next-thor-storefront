@@ -1,0 +1,28 @@
+query SearchSuggestions($storeId: ID!, $currency: String!, $priceChannel: ID, $query: String!) {
+	products(
+		first: 6
+		storeId: $storeId
+		priceCurrency: $currency
+		priceChannelId: $priceChannel
+		query: $query
+	) {
+		nodes {
+			id
+			name
+			slug
+			heroVariant {
+				image {
+					src
+				}
+			}
+			variants {
+				totalCount
+			}
+			priceRange {
+				minPrice {
+					...Price
+				}
+			}
+		}
+	}
+}

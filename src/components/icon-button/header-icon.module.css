@@ -24,6 +24,16 @@
 	outline: 2px solid currentColor;
 	outline-offset: 4px;
 }
+.button > svg {
+	width: 20px;
+	height: 20px;
+}
+@media (width >= 768px) {
+	.button {
+		width: 36px;
+		height: 36px;
+	}
+}
 @media (prefers-reduced-motion: reduce) {
 	.button {
 		transition: none;

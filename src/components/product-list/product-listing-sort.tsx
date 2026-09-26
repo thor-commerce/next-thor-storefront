@@ -38,7 +38,7 @@ export default function ProductListingSort({ value, defaultValue, options }: Pro
 				if (key !== null) handleChange(String(key));
 			}}
 		>
-			<Label>Sort by</Label>
+			<Label className={s.sortLabel}>Sort by</Label>
 			<Button className={s.sortTrigger}>
 				<SelectValue />
 				<ChevronDown size={16} aria-hidden />
