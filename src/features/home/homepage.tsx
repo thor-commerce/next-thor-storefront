@@ -6,26 +6,9 @@ import { mapEdgesToItems } from "@/utils/maps";
 import { formatMoney } from "@/utils/money";
 import s from "./homepage.module.css";
 import ProductCarousel from "./product-carousel";
+import { getCollectionCampaign } from "./campaigns";
 
 type Props = { data: HomePageQuery };
-
-type Campaign = { src: string; alt: string; headline?: string };
-const defaultCampaign: Campaign = {
-	src: "/campaign/nordform-everyday.png",
-	alt: "Two people wearing relaxed neutral layers beside a coastal concrete wall",
-};
-const collectionCampaigns: Record<string, Campaign> = {
-	"everyday-essentials": {
-		src: "/campaign/nordform-courtyard.png",
-		alt: "Woman in an ivory tee and charcoal trousers walking through a sunlit courtyard",
-		headline: "Your everyday. Elevated.",
-	},
-	"soft-layers": {
-		src: "/campaign/nordform-soft-layers.png",
-		alt: "Man wearing a moss green knit and beige trousers on a rocky coast",
-		headline: "A softer kind of outside.",
-	},
-};
 
 export default function Homepage({ data }: Props) {
 	const collections = mapEdgesToItems(data.collections);
@@ -58,8 +41,8 @@ export default function Homepage({ data }: Props) {
 
 			{collections.length > 0 && (
 				<section className={s.campaignGrid} aria-label="Shop the Nordform collections">
-					{collections.map((collection) => {
-						const campaign = collectionCampaigns[collection.slug] ?? defaultCampaign;
+					{collections.map((collection, index) => {
+						const campaign = getCollectionCampaign(collection.slug, index);
 						return (
 							<article key={collection.id} className={s.campaignCard}>
 								<Image
